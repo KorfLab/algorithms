@@ -36,9 +36,47 @@ community style guides, however there is always some flexibility.
 + longestorf - read sequences, output the longest open reading frame of each
 + smithwaterman - read sequences, produce local alignments
 
+## Not Just Programs ##
+
+Providing programs that work is only part of the goal. In order to be 
+"beautiful" every program must have other qualities.
+
++ GitHub
++ Documentation
++ Testing
+
+### GitHub ###
+
+All software should be in GitHub repositories and have open source licenses. 
+Following standard practices, all repos should have a `README.md` that 
+describes the intent of the software.
+
+### Documentation ###
+
+The minimal documentation for every program is a usage statement that is 
+reported when the program is run without arguments or with a help flag such as 
+`-h` or `--help`. Usage statements should follow standard Unix practices.
+
+All programs should have command line arguments. Use the most standard CLI 
+library for the language.
+
+Most projects should also include a `TUTORIAL.md` that walks a user through 
+running a program or using a library.
+
+### Testing ###
+
+Almost every program should come with a small set of test data. This is used 
+for both automated testing and tutorials.
+
+Libraries should have unit tests.
+
+Programs should have functional tests. 
+
+## Programs ##
+
 Each program is described in more detail below.
 
-## randomseq ##
+### randomseq ###
 
 Generate random DNA sequences of fixed length. The composition of the sequences
 defaults to 25% for each nucleotide, but the program should take other
@@ -49,15 +87,16 @@ Inputs
 + Number of sequences to generate
 + Length of each sequence
 + Probability of each letter
++ Random seed
 
 Outputs
 
 + Multi-FASTA format to STDOUT
 
-## kmerfreq ##
+### kmerfreq ###
 
-Determine the k-mer frequencies in a FASTA file. The value of K should be an
-argument with a default parameter of 3. Output format should include
+Determine the k-mer frequencies in a FASTA file. The value of K should be an 
+argument with a default parameter (e.g. 3). Output format should include 
 tab-separated and JSON.
 
 Inputs
@@ -70,7 +109,7 @@ Outputs
 + TSV
 + JSON
 
-## dust ##
+### dust ###
 
 Mask sequences with an entropy filter. The window size and entropy should have
 default parameters and command line options. There should be an option to
@@ -87,11 +126,10 @@ Outputs
 
 + Multi-FASTA file to STDOUT
 
-## longestorf ##
+### longestorf ###
 
-Translate each sequence and provide a translation with the longest open reading
-frame. There should be an option to do 3- or 6-frame translations. The output
-is peptide sequence.
+Translate each sequence and provide the protein sequence with the longest open 
+reading frame. There should be an option to do 3- or 6-frame translations.
 
 Inputs
 
@@ -102,13 +140,15 @@ Outputs
 
 + Multi-FASTA file to STDOUT
 
-## smithwaterman ##
+### smithwaterman ###
 
-Classic local alignment algorithm using match, mismatch, and gap scores.
+Classic local alignment algorithm using match, mismatch, and gap scores. There 
+should be a query sequence and database, both in FASTA format. Output formats 
+should include tabular (score, coordinates) and human readable (alignments).
 
 Inputs
 
-+ Query sequence in FASTA format (gzipped ok)
++ Query sequence in FASTA format
 + Database sequence in Multi-FASTA format (gzipped ok)
 + Match score
 + Mismatach score
@@ -116,4 +156,19 @@ Inputs
 
 Outputs
 
-+ Alginments to STDOUT in human-readable format
++ Tabular format
++ Alignment format
+
+## Checklist ##
+
++ GitHub
++ Open source license
++ README.md
++ TUTORIAL.md
++ Test data
++ Unit/functional tests
++ Usage statement
++ Unix-standard CLI
++ Inputs as specified
++ Outputs as specified
++ Performs job as expected
