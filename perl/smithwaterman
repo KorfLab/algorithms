@@ -97,7 +97,6 @@ sub align {
 				$score[$j][$i] = 0;
 				$trace[$j][$i] = ' '
 			}
-			#display_matrix($s1, $s2, \@score, \@trace);
 		}
 	}
 
@@ -125,6 +124,7 @@ sub align {
 	return $max_score, reverse $a1, reverse $a2;
 }
 
+__END__
 sub display_matrix {
 	my ($s1, $s2, $mat, $trc) = @_;
 	print "\t";
@@ -136,7 +136,6 @@ sub display_matrix {
 	$s2 = " " . $s2;
 
 	for (my $i = 0; $i < @$mat; $i++) {
-		#my @row = @{$mat->[$i]};
 		print substr($s2, $i, 1);
 		for (my $j = 0; $j < @{$mat->[$i]}; $j++) {
 			print "\t", $mat->[$i][$j], $trc->[$i][$j];

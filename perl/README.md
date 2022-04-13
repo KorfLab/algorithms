@@ -9,9 +9,10 @@ kept up with recent changes in the language, of which there have been several.
 To emphasize this, the Perl module `FAlite.pm`, included here, is something I
 last edited back in 1999. I haven't even changed the outdated email address.
 
-+ randomseq - done
-+ kmerfreq - done
-+ dust - done
-+ longestorf
-+ smithwaterman
+## To Do ##
 
+The programs "work" but the project isn't done.
+
++ test data
++ test harness
++ documentation
