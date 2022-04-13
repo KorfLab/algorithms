@@ -1,33 +1,33 @@
 Algorithms
 ==========
 
-In the Korf Lab, the goal is always to write simple, beautiful code. When one 
-focuses on speed, efficiency, or cleverness, code becomes difficult to 
+In the Korf Lab, the goal is always to write simple, beautiful code. When one
+focuses on speed, efficiency, or cleverness, code becomes difficult to
 maintain, extend, and debug.
 
 ## Languages ##
 
-Python is a very useful language. However, it is not the fastest language. 
-Sometimes we need more speed or less memory usage. For these purposes there are 
-compiled languages like C or Go. Before you make the compiled version of a 
-program, build the Python version first. That may be sufficient. If you need 
-something faster later, the Python program will help to ensure that both 
+Python is a very useful language. However, it is not the fastest language.
+Sometimes we need more speed or less memory usage. For these purposes there are
+compiled languages like C or Go. Before you make the compiled version of a
+program, build the Python version first. That may be sufficient. If you need
+something faster later, the Python program will help to ensure that both
 programs are getting the correct answers.
 
 ## Small Tools Manifesto ##
 
-It is worth reading the [Small Tools 
-Manifesto](https://github.com/pjotrp/bioinformatics) which is basically a 
-philosophy that bioinformatics programs should work like other Linux CLI 
+It is worth reading the [Small Tools
+Manifesto](https://github.com/pjotrp/bioinformatics) which is basically a
+philosophy that bioinformatics programs should work like other Linux CLI
 programs: small, interoperable, open source, documented, etc.
 
 ## Demonstration Programs ##
 
-This repo is a collection of several _demonstration_ programs that are designed 
-to be simple and beautiful. Think of these as _templates_ for your own 
-projects. Don't extend these source codes. They are purposefully too simple and 
-too self-contained. Each program is written in multiple languages to get the 
-feel of how to program in that language. Generally, we seek to follow the 
+This repo is a collection of several _demonstration_ programs that are designed
+to be simple and beautiful. Think of these as _templates_ for your own
+projects. Don't extend these source codes. They are purposefully too simple and
+too self-contained. Each program is written in multiple languages to get the
+feel of how to program in that language. Generally, we seek to follow the
 community style guides, however there is always some flexibility.
 
 + randomseq - generate random FASTA files of DNA sequences
@@ -40,8 +40,8 @@ Each program is described in more detail below.
 
 ## randomseq ##
 
-Generate random DNA sequences of fixed length. The composition of the sequences 
-defaults to 25% for each nucleotide, but the program should take other 
+Generate random DNA sequences of fixed length. The composition of the sequences
+defaults to 25% for each nucleotide, but the program should take other
 distributions of mononucleotides.
 
 Inputs
@@ -56,9 +56,9 @@ Outputs
 
 ## kmerfreq ##
 
-Determine the k-mer frequencies in a FASTA file. The value of K should be an 
-argument with a default parameter of 3. Output format should include tab- or 
-comma-separated as well as JSON.
+Determine the k-mer frequencies in a FASTA file. The value of K should be an
+argument with a default parameter of 3. Output format should include
+tab-separated and JSON.
 
 Inputs
 
@@ -68,13 +68,12 @@ Inputs
 Outputs
 
 + TSV
-+ CSV
 + JSON
 
 ## dust ##
 
-Mask sequences with an entropy filter. The window size and entropy should have 
-default parameters and command line options. There should be an option to 
+Mask sequences with an entropy filter. The window size and entropy should have
+default parameters and command line options. There should be an option to
 change the output from N-based (hard) masking to lowercase (soft) masking.
 
 Inputs
@@ -90,8 +89,9 @@ Outputs
 
 ## longestorf ##
 
-Translate each sequence and provide a translation with the longest open reading 
-frame. There should be an option to do 3- or 6-frame translations.
+Translate each sequence and provide a translation with the longest open reading
+frame. There should be an option to do 3- or 6-frame translations. The output
+is peptide sequence.
 
 Inputs
 
