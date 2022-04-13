@@ -1,0 +1,147 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Getopt::Std;
+use vars qw($opt_m $opt_n $opt_g);
+use lib ".";
+use FAlite;
+
+#######
+# CLI #
+#######
+
+getopts("m:n:g");
+my $M =  2;
+my $N = -1;
+my $G = -1;
+
+my $usage = "
+usage: $0 <query> <database>
+options:
+	-m <int>   match score [$M]
+	-n <int>   mismatch score [$N]
+	-g <int>   gap score [$G]
+";
+die $usage unless @ARGV == 2;
+$M = $opt_m if $opt_m;
+$N = $opt_n if $opt_n;
+$G = $opt_g if $opt_g;
+
+my ($qfile, $dfile) = @ARGV;
+
+#########
+# Query #
+#########
+
+open(my $fh, $qfile) or die;
+my $qfa = new FAlite($fh);
+my $query = $qfa->nextEntry;
+
+#############
+# Main Loop #
+#############
+
+open($fh, $dfile) or die;
+my $dfa = new FAlite($fh);
+while (my $sbjct = $dfa->nextEntry) {
+	my ($score, $a1, $a2) = align($query->seq, $sbjct->seq, $M, $N, $G);
+	print "Score: $score\n$a1\n$a2\n\n";
+}
+
+########
+# subs #
+########
+
+sub align {
+	my ($s1, $s2, $mat, $mis, $gap) = @_;
+
+	# allocate/initialize matrix
+	my @score; # scores
+	my @trace; # tracebacks
+
+	for (my $i = 0; $i <= length($s1); $i++) {
+		for (my $j = 0; $j <= length($s2); $j++) {
+			$score[$j][$i] = 0;
+			$trace[$j][$i] = '.';
+		}
+	}
+
+	# fill
+	my $max_score = 0;
+	my $max_i;
+	my $max_j;
+	for (my $j = 1; $j <= length($s2); $j++) {
+		for (my $i = 1; $i <= length($s1); $i++) {
+			my $vs = $score[$j-1][$i]   + $gap;
+			my $hs = $score[$j  ][$i-1] + $gap;
+			my $c1 = substr($s1, $i-1, 1);
+			my $c2 = substr($s2, $j-1, 1);
+			my $ds = $c1 eq $c2
+				? $score[$j-1][$i-1] + $mat
+				: $score[$j-1][$i-1] + $mis;
+			if ($ds >= $hs and $ds >= $vs and $ds > 0) {
+				$score[$j][$i] = $ds;
+				$trace[$j][$i] = 'd';
+				if ($ds > $max_score) {
+					$max_score = $ds;
+					$max_i = $i;
+					$max_j = $j;
+				}
+			} elsif ($hs >= $vs and $hs > 0) {
+				$score[$j][$i] = $hs;
+				$trace[$j][$i] = 'h';
+			} elsif ($vs > 0) {
+				$score[$j][$i] = $vs;
+				$trace[$j][$i] = 'v';
+			} else {
+				$score[$j][$i] = 0;
+				$trace[$j][$i] = ' '
+			}
+			#display_matrix($s1, $s2, \@score, \@trace);
+		}
+	}
+
+	# traceback
+	my $a1 = "";
+	my $a2 = "";
+	my $e1 = $max_i;
+	my $e2 = $max_j;
+	while ($score[$max_j][$max_i] > 0) {
+		if ($trace[$max_j][$max_i] eq 'h') {
+			$a1 .= substr($s1, $max_i -1, 1);
+			$a2 .= '-';
+			$max_i--;
+		} elsif ($trace[$max_j][$max_i] eq 'v') {
+			$a1 .= '-';
+			$a2 .= substr($s2, $max_j -1, 1);
+			$max_j--;
+		} else {
+			$a1 .= substr($s1, $max_i -1, 1);
+			$a2 .= substr($s2, $max_j -1, 1);
+			$max_i--;
+			$max_j--;
+		}
+	}
+	return $max_score, reverse $a1, reverse $a2;
+}
+
+sub display_matrix {
+	my ($s1, $s2, $mat, $trc) = @_;
+	print "\t";
+	for (my $i = 0; $i < length($s1); $i++) {
+		print "\t", substr($s1, $i, 1);
+	}
+	print "\n";
+
+	$s2 = " " . $s2;
+
+	for (my $i = 0; $i < @$mat; $i++) {
+		#my @row = @{$mat->[$i]};
+		print substr($s2, $i, 1);
+		for (my $j = 0; $j < @{$mat->[$i]}; $j++) {
+			print "\t", $mat->[$i][$j], $trc->[$i][$j];
+		}
+		print "\n";
+	}
+	print "\n";
+}

@@ -1,0 +1,116 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Getopt::Std;
+use vars qw($opt_6);
+use lib ".";
+use FAlite;
+
+##########
+# Global #
+##########
+
+my %GC = (
+	'AAA' => 'K', 'AAC' => 'N', 'AAG' => 'K', 'AAT' => 'N',
+	'ACA' => 'T', 'ACC' => 'T', 'ACG' => 'T', 'ACT' => 'T',
+	'AGA' => 'R', 'AGC' => 'S', 'AGG' => 'R', 'AGT' => 'S',
+	'ATA' => 'I', 'ATC' => 'I', 'ATG' => 'M', 'ATT' => 'I',
+	'CAA' => 'Q', 'CAC' => 'H', 'CAG' => 'Q', 'CAT' => 'H',
+	'CCA' => 'P', 'CCC' => 'P', 'CCG' => 'P', 'CCT' => 'P',
+	'CGA' => 'R', 'CGC' => 'R', 'CGG' => 'R', 'CGT' => 'R',
+	'CTA' => 'L', 'CTC' => 'L', 'CTG' => 'L', 'CTT' => 'L',
+	'GAA' => 'E', 'GAC' => 'D', 'GAG' => 'E', 'GAT' => 'D',
+	'GCA' => 'A', 'GCC' => 'A', 'GCG' => 'A', 'GCT' => 'A',
+	'GGA' => 'G', 'GGC' => 'G', 'GGG' => 'G', 'GGT' => 'G',
+	'GTA' => 'V', 'GTC' => 'V', 'GTG' => 'V', 'GTT' => 'V',
+	'TAA' => '*', 'TAC' => 'Y', 'TAG' => '*', 'TAT' => 'Y',
+	'TCA' => 'S', 'TCC' => 'S', 'TCG' => 'S', 'TCT' => 'S',
+	'TGA' => '*', 'TGC' => 'C', 'TGG' => 'W', 'TGT' => 'C',
+	'TTA' => 'L', 'TTC' => 'F', 'TTG' => 'L', 'TTT' => 'F'
+);
+
+#######
+# CLI #
+#######
+
+getopts("6");
+
+my $usage = "
+usage: $0 <fasta file>
+options:
+	-6  perform a 6-frame translation [default 3]
+note: use - for stdin
+";
+die $usage unless @ARGV == 1;
+
+my $SIXFRAME = $opt_6 ? 1 : 0;
+
+my ($file) = @ARGV;
+
+#########
+# Input #
+#########
+
+my $fh;
+if    ($file eq "--")    {$fh = *STDIN}
+elsif ($file =~ /\.gz$/) {open($fh, "gunzip -c $file |")}
+else                     {open($fh, $file)}
+
+#############
+# Main Loop #
+#############
+
+my $fasta = new FAlite($fh);
+while (my $entry = $fasta->nextEntry) {
+	print $entry->def, "\n";
+	my $pep = longest_orf($entry->seq);
+	if ($opt_6) {
+		my $anti = reverse_complement($entry->seq);
+		my $apep = longest_orf($anti);
+		$pep = $apep if length($apep) > length($pep);
+	}
+	for (my $i = 0; $i < length($pep); $i += 80) {
+		print substr($pep, $i, 80), "\n";
+	}
+}
+
+########
+# Subs #
+########
+
+sub reverse_complement {
+	my ($seq) = @_;
+	$seq =~ tr/ACGT/TGCA/;
+	return reverse $seq;
+}
+
+sub translate {
+	my ($seq, $frame) = @_;
+	my $pep = "";
+	for (my $i = $frame; $i < length($seq); $i += 3) {
+		my $codon = substr($seq, $i, 3);
+		if (defined $GC{$codon}) {$pep .= $GC{$codon}}
+		else                     {$pep .= 'X'}
+	}
+	return $pep;
+}
+
+sub longest_orf {
+	my ($seq) = @_;
+	my $maxlen = 0;
+	my $maxpep = "";
+	for (my $frame = 0; $frame <= 2; $frame++) {
+		my $trans = translate($seq, $frame);
+		my @orf = split(/\*/, $trans);
+		foreach my $orf (@orf) {
+			my ($cds) = $orf =~ /(?=)(M.+)$/;
+			next if not defined $cds;
+			if (length($cds) > $maxlen) {
+				$maxpep = $cds;
+				$maxlen = length($cds);
+			}
+		}
+	}
+	return $maxpep;
+}
+

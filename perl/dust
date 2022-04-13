@@ -1,0 +1,101 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Getopt::Std;
+use vars qw($opt_w $opt_t $opt_l);
+use lib ".";
+use FAlite;
+
+#######
+# CLI #
+#######
+
+getopts("w:t:l");
+my $W = 11;
+my $T = 1.5;
+
+my $usage = "
+usage: $0 <fasta file>
+options:
+	-w <int>   window size [$W]
+	-t <float> entropy threshold [$T]
+	-l         lowercase (N default)
+note: use - for stdin
+";
+die $usage unless @ARGV == 1;
+$W = $opt_w if $opt_w;
+$T = $opt_t if $opt_t;
+my $LOWER = $opt_l ? 1 : 0;
+
+my ($file) = @ARGV;
+
+#########
+# Input #
+#########
+
+my $fh;
+if    ($file eq "--")    {$fh = *STDIN}
+elsif ($file =~ /\.gz$/) {open($fh, "gunzip -c $file |")}
+else                     {open($fh, $file)}
+
+#############
+# Main Loop #
+#############
+
+my $fasta = new FAlite($fh);
+while (my $entry = $fasta->nextEntry) {
+	my $seq = dust($entry->seq, $W, $T, $LOWER);
+	print $entry->def, "\n";
+	for (my $i = 0; $i < length($seq); $i += 80) {
+		print substr($seq, $i, 80), "\n";
+	}
+}
+
+
+########
+# subs #
+########
+
+sub entropy {
+	my @p = @_;
+	my $sum = 0;
+	for (@p) {$sum += $_}
+	die "must sum near 1.0" unless abs($sum -1) < 1e6;
+	my $h = 0;
+	for (@p) {
+		$h += $_ * log($_)
+	}
+	return -$h / log(2);
+}
+
+sub seq_entropy {
+	my ($seq) = @_;
+	my $A = $seq =~ tr/A/A/;
+	my $C = $seq =~ tr/C/C/;
+	my $G = $seq =~ tr/G/G/;
+	my $T = $seq =~ tr/T/T/;
+	my @p;
+	push @p, $A/length($seq) if $A;
+	push @p, $C/length($seq) if $C;
+	push @p, $G/length($seq) if $G;
+	push @p, $T/length($seq) if $T;
+	return entropy(@p);
+}
+
+sub dust {
+	my ($seq, $w, $t, $lc) = @_;
+	my $mask = $seq;
+	my $w2 = int($w/2);
+	for (my $i = 0; $i < length($seq) -$w +1; $i++) {
+		my $window = substr($seq, $i, $w);
+		my $h = seq_entropy($window);
+		if ($h < $t) {
+			if ($lc) {
+				substr($mask, $i + $w2, 1) = lc(substr($seq, $i + $w2, 1));
+			} else {
+				substr($mask, $i + $w2, 1) = 'N';
+			}
+		}
+	}
+	return $mask;
+}

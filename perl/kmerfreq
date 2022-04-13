@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Getopt::Std;
+use vars qw($opt_k $opt_j $opt_h);
+use lib ".";
+use FAlite;
+
+#######
+# CLI #
+#######
+
+getopts("k:jh");
+my $K = 3;
+
+my $usage = "
+usage: $0 <fasta file>
+options:
+	-k <int> k-mer size [$K]
+	-j       json output [default is tsv]
+	-h       help (this message)
+note: use - for stdin
+";
+die $usage if $opt_h or @ARGV != 1;
+
+$K = $opt_k if $opt_k;
+my $JSON = $opt_j ? 1 : 0;
+
+my ($file) = @ARGV;
+
+#########
+# Input #
+#########
+
+my $fh;
+if    ($file eq "--")    {$fh = *STDIN}
+elsif ($file =~ /\.gz$/) {open($fh, "gunzip -c $file |")}
+else                     {open($fh, $file)}
+
+#############
+# Main loop #
+#############
+
+my %count;
+my $total = 0;
+my $fasta = new FAlite($fh);
+while (my $entry = $fasta->nextEntry) {
+	my $seq = $entry->seq;
+	for (my $i = 0; $i < length($seq) -$K +1; $i++) {
+		my $kmer = substr($seq, $i, $K);
+		$count{$kmer}++;
+		$total += 1;
+	}
+}
+
+##########
+# Output #
+##########
+
+if ($JSON) {
+	print "{\n";
+	print join ",\n", map {"\t\"$_:\" " . $count{$_}/$total} sort keys %count;
+	print "\n}\n";
+} else {
+	foreach my $kmer (sort keys %count) {
+		print "$kmer\t", $count{$kmer}/$total, "\n";
+	}
+}
+

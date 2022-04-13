@@ -1,0 +1,63 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Getopt::Std;
+use vars qw($opt_a $opt_c $opt_g $opt_t);
+
+#######
+# CLI #
+#######
+
+getopts("a:c:g:t:");
+my $A = 0.25;
+my $C = 0.25;
+my $G = 0.25;
+my $T = 0.25;
+
+die "
+usage: $0 <count> <length>
+options:
+	-a <float> percentage of A [$A]
+	-c <float> percentage of C [$C]
+	-g <float> percentage of G [$G]
+	-t <float> percentage of T [$T]
+" unless @ARGV == 2;
+
+my ($count, $length) = @ARGV;
+$A = $opt_a if $opt_a;
+$C = $opt_c if $opt_c;
+$G = $opt_g if $opt_g;
+$T = $opt_t if $opt_t;
+
+if (abs(($A + $C + $G + $T)) -1 > 1e-6) {
+	die "error: probabilities don't sum close enough to 1.0"
+}
+
+#############
+# main loop #
+#############
+
+for (my $i = 0; $i < $count; $i++) {
+	my $seq = randseq($length, $A, $C, $G, $T);
+	print ">seq-$i\n";
+	for (my $j = 0; $j < length($seq); $j += 80) {
+		print substr($seq, $j, 80), "\n";
+	}
+}
+
+########
+# subs #
+########
+
+sub randseq {
+	my ($size, $a, $c, $g, $t) = @_;
+	my $seq = "";
+	for (my $i = 0; $i < $size; $i++) {
+		my $r = rand(1);
+		if    ($r < $a)       {$seq .= "A"}
+		elsif ($r < $a+$c)    {$seq .= "C"}
+		elsif ($r < $a+$c+$g) {$seq .= "G"}
+		else                  {$seq .= "T"}
+	}
+	return $seq;
+}
