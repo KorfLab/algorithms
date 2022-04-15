@@ -1,5 +1,4 @@
 import itertools
-from turtle import back
 import numpy as np
 
 """
