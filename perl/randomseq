@@ -2,13 +2,13 @@
 use strict;
 use warnings;
 use Getopt::Std;
-use vars qw($opt_a $opt_c $opt_g $opt_t);
+use vars qw($opt_a $opt_c $opt_g $opt_t $opt_s);
 
 #######
 # CLI #
 #######
 
-getopts("a:c:g:t:");
+getopts("a:c:g:t:s:");
 my $A = 0.25;
 my $C = 0.25;
 my $G = 0.25;
@@ -21,6 +21,7 @@ options:
 	-c <float> percentage of C [$C]
 	-g <float> percentage of G [$G]
 	-t <float> percentage of T [$T]
+	-s <int>   random seed
 " unless @ARGV == 2;
 
 my ($count, $length) = @ARGV;
@@ -28,6 +29,7 @@ $A = $opt_a if $opt_a;
 $C = $opt_c if $opt_c;
 $G = $opt_g if $opt_g;
 $T = $opt_t if $opt_t;
+srand($opt_s) if $opt_s;
 
 if (abs(($A + $C + $G + $T)) -1 > 1e-6) {
 	die "error: probabilities don't sum close enough to 1.0"

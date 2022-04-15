@@ -38,7 +38,7 @@ community style guides, however there is always some flexibility.
 
 ## Not Just Programs ##
 
-Providing programs that work is only part of the goal. In order to be 
+Providing programs that work is only part of the goal. In order to be
 "beautiful" every program must have other qualities.
 
 + GitHub
@@ -47,30 +47,30 @@ Providing programs that work is only part of the goal. In order to be
 
 ### GitHub ###
 
-All software should be in GitHub repositories and have open source licenses. 
-Following standard practices, all repos should have a `README.md` that 
+All software should be in GitHub repositories and have open source licenses.
+Following standard practices, all repos should have a `README.md` that
 describes the intent of the software.
 
 ### Documentation ###
 
-The minimal documentation for every program is a usage statement that is 
-reported when the program is run without arguments or with a help flag such as 
+The minimal documentation for every program is a usage statement that is
+reported when the program is run without arguments or with a help flag such as
 `-h` or `--help`. Usage statements should follow standard Unix practices.
 
-All programs should have command line arguments. Use the most standard CLI 
+All programs should have command line arguments. Use the most standard CLI
 library for the language.
 
-Most projects should also include a `TUTORIAL.md` that walks a user through 
+Most projects should also include a `TUTORIAL.md` that walks a user through
 running a program or using a library.
 
 ### Testing ###
 
-Almost every program should come with a small set of test data. This is used 
+Almost every program should come with a small set of test data. This is used
 for both automated testing and tutorials.
 
 Libraries should have unit tests.
 
-Programs should have functional tests. 
+Programs should have functional tests.
 
 ## Programs ##
 
@@ -95,8 +95,8 @@ Outputs
 
 ### kmerfreq ###
 
-Determine the k-mer frequencies in a FASTA file. The value of K should be an 
-argument with a default parameter (e.g. 3). Output format should include 
+Determine the k-mer frequencies in a FASTA file. The value of K should be an
+argument with a default parameter (e.g. 3). Output format should include
 tab-separated and JSON.
 
 Inputs
@@ -128,7 +128,7 @@ Outputs
 
 ### longestorf ###
 
-Translate each sequence and provide the protein sequence with the longest open 
+Translate each sequence and provide the protein sequence with the longest open
 reading frame. There should be an option to do 3- or 6-frame translations.
 
 Inputs
@@ -142,8 +142,8 @@ Outputs
 
 ### smithwaterman ###
 
-Classic local alignment algorithm using match, mismatch, and gap scores. There 
-should be a query sequence and database, both in FASTA format. Output formats 
+Classic local alignment algorithm using match, mismatch, and gap scores. There
+should be a query sequence and database, both in FASTA format. Output formats
 should include tabular (score, coordinates) and human readable (alignments).
 
 Inputs
@@ -172,3 +172,36 @@ Outputs
 + Inputs as specified
 + Outputs as specified
 + Performs job as expected
+
+## Benchmarks ##
+
+Each program is tested on 3 hardware configurations:
+
++ T1 spitfire
++ T2 Lubuntu VM on Mac Mini
++ T3 Chromebook
+
+| Lang | Prog | Len | T1 | T2 | T3 | Ave | Notes
+|:-----|:-----|:---:|:--:|:---|:--:|:---:|:--------
+| .c   | rseq |
+|      | kfreq|
+|      | dust |
+|      | lorf |
+|      | sw   |
+| .go  | rseq |
+|      | kfreq|
+|      | dust |
+|      | lorf |
+|      | sw   |
+| .pl  | rseq |
+|      | kfreq|
+|      | dust |
+|      | lorf |
+|      | sw   |
+| .py  | rseq |
+|      | kfreq|
+|      | dust |
+|      | lorf |
+|      | sw   |
+
+### command lines for each program ###
