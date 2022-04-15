@@ -1,17 +1,18 @@
-#randomseq
-#Generate random DNA sequences of fixed length.
-#The composition of the sequences defaults to 25% for each nucleotide, 
-#but the program should take other distributions of mononucleotides.
+"""
+Generate random DNA sequences of fixed length.
+The composition of the sequences defaults to 25% for each nucleotide, 
+but the program should take other distributions of mononucleotides.
 
-#Inputs
+Inputs
 
-#Number of sequences to generate
-#Length of each sequence
-#Probability of each letter
-#Random seed
+Number of sequences to generate
+Length of each sequence
+Probability of each letter
+Random seed
 
-#Outputs
-#Multi-FASTA format to STDOUT
+Outputs
+Multi-FASTA format to STDOUT
+"""
 
 import argparse
 import random
