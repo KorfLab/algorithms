@@ -10,11 +10,11 @@ arg_parser.add_argument('-len_each' ,required=False, type= int, default=50, meta
 
 arg_parser.add_argument('-probabilities', required=False, type= float, nargs=4, default=[0.25, 0.25, 0.25, 0.25], metavar='prob_of_nucleotides', help='enter the probabilities of each type of nucleotide in an array [A, C, G, T] (defauts to 25% each)')
 
-arg_parser.add_argument('-seed', required=True, type=float, metavar='seed', help='enter the random seed')
+arg_parser.add_argument('-seed', required=False, default=random.seed(10), type=float, metavar='seed', help='enter the random seed')
 
 entered_args = arg_parser.parse_args()
 
-for each in range(entered_args.num):
+for each in range(entered_args.len_each):
     print(f'>id{each+1}')
     seq = ''.join(random.choices('ACGT', weights=entered_args.probabilities, k=entered_args.len_each))
     print(seq)
