@@ -1,6 +1,7 @@
 import gzip
 import random
 import math
+import sys
 
 def read_record(filename):
 	
@@ -8,12 +9,13 @@ def read_record(filename):
 	seq = []
 	
 	fp = None
-	if filename.endswith('.gz'): 
-		fp = gzip.open(filename, 'rt')
-	else: 
-		fp = open(filename)
+	if    filename == '-':         fp = sys.stdin
+	elif filename.endswith('.gz'): fp = gzip.open(filename, 'rt')
+	else:                          fp = open(filename)
 
-	for line in fp.readlines(): #change to readline() for memory
+	while True:
+		line = fp.readline()
+		if line == '': break
 		line = line.rstrip()
 		if line.startswith('>'):
 			if len(seq) > 0:
@@ -27,4 +29,3 @@ def read_record(filename):
 			seq.append(line)
 	yield(label, ''.join(seq))
 	fp.close()
-	
