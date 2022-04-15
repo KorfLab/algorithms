@@ -75,15 +75,11 @@ def smith_waterman(seq_1, seq_2, match_score=3, gap_cost=2):
     return final_seq, pos, pos+len(final_seq)
 
 
-def main():
-    seq_1 = 'GGTTGACTA'
-    seq_2 = 'TGTTACGG'
 
-    print(scoring_matrix('GGTTGACTA', 'TGTTACGG'))
-    final_seq, start, end = smith_waterman(seq_1,seq_2)
-    print(final_seq)
-    print(seq_1[start:end])
+seq_1 = 'GGTTGACTA'
+seq_2 = 'TGTTACGG'
 
-
-if __name__ == '__main__':
-    main()
+print(scoring_matrix('GGTTGACTA', 'TGTTACGG'))
+final_seq, start, end = smith_waterman(seq_1,seq_2)
+print(final_seq)
+print(seq_1[start:end])
