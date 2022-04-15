@@ -1,18 +1,4 @@
-"""
-Determine the k-mer frequencies in a FASTA file. 
-The value of K should be an argument with a default parameter (e.g. 3). 
-Output format should include tab-separated and JSON.
-
-Inputs
-
-Multi-FASTA file (gzipped or STDIN)
-K-mer size
-
-Outputs
-
-TSV
-JSON
-"""
+#!/usr/bin/env python3
 
 import argparse
 import csv
