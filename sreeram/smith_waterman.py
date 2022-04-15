@@ -33,7 +33,7 @@ calculates the backtrace and returns the final sequence and the index where the 
 
 inputs are the scoring matrix, the 2nd sequence, return sequence(optional), and the starting index(optional)
 
-outputs are the final sequence after alignment, and the starting index in the 2nd sequence where the final sequence is
+outputs are the final sequence after alignment, and the starting index in the 1st sequence where the final sequence is
 """
 
 def backtrace(scoring_matrix, seq_2, ret_seq='', old_i=0):
