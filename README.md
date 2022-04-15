@@ -106,8 +106,7 @@ Inputs
 
 Outputs
 
-+ TSV
-+ JSON
+Either TSV or JSON to STDOUT.
 
 ### dust ###
 
