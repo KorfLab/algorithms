@@ -212,8 +212,8 @@ Benchmarks
 |      | dust | 22.37 |
 |      | lorf |  5.71 |
 |      | sw   |       |
-| .py  | rseq |       |
-|      | kfreq|       |
+| .py  | rseq |  2.67 |
+|      | kfreq|  9.46 |
 |      | dust |       |
 |      | lorf |       |
 |      | sw   |       |
@@ -225,13 +225,16 @@ to record other hardware.
 ### command lines for each program
 
 The `randomseq` command generates a random sequence file approximately the size
-of an a bacterial genome (4,000 genes, 1,000 bp average).
+of a bacterial genome (4,000 genes, 1,000 bp per gene).
 
 + Perl
 	+ time ./randomseq 4000 1000 > foo
 	+ time ./kmerfreq -k 10 foo > /dev/null
 	+ time ./longestorf -6 foo > /dev/null
 	+ time ./dust foo > /dev/null
++ Python
+	+ time ./randomseq 4000 1000 > foo
+	+ time ./kmerfreq -k 10 foo > /dev/null
 
 Pipelines
 ---------
