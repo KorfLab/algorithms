@@ -209,7 +209,7 @@ Benchmarks
 |      | sw   |       |
 | .pl  | rseq |  2.44 |
 |      | kfreq|  7.94 |
-|      | dust | 22.37 |
+|      | dust | 14.28 |
 |      | lorf |  5.71 |
 |      | sw   |       |
 | .py  | rseq |  2.67 |
