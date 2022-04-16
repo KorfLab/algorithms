@@ -11,7 +11,13 @@ your own projects. Don't extend these source codes. They are purposefully too
 simple and too self-contained. Write something _better_.
 
 Providing programs/pipelines that work is only part of our goal. In order to be
-"beautiful" every project must be distributable to others.
+"beautiful" every project must be distributable, reproducible, and educational
+to others. Maybe not project is every truly complete, but it can be considered
+ready to release when it passes these criteria (which are explained more fully
+below).
+
+Checklist
+---------
 
 + GitHub
 + Open source license
@@ -27,7 +33,7 @@ Small Tools Manifesto
 It is worth reading the [Small Tools
 Manifesto](https://github.com/pjotrp/bioinformatics) which is basically a
 philosophy that bioinformatics programs should work like other Linux CLI
-programs: small, interoperable, open source, documented, etc.
+programs: small, interoperable, open source, documented, tested, etc.
 
 Languages
 ---------
@@ -36,7 +42,7 @@ Python is a very useful language. However, it is not the fastest language.
 Sometimes we need more speed or less memory usage. For these purposes there are
 compiled languages like C or Go. Before you make the compiled version of a
 program, build the Python version first. That may be sufficient. If you need
-something faster later, the Python program will help to ensure that both
+something faster later, the Python implementation will help to ensure that both
 programs are getting the correct answers.
 
 For running pipelines, the community standard is Snakemake, so that's what we
@@ -46,7 +52,8 @@ Markdown
 --------
 
 All documentation should be in Markdown format. Make sure that the document
-looks good in plain text by using 80-column line breaks and padding tables.
+looks good in plain text by using 80-column line breaks and padding tables. See
+the plain text version of this document as an example.
 
 Conda
 -----
@@ -73,6 +80,8 @@ include the following in your document.
 + Specific build requirements if any
 + External data files if required
 + Testing procedure (see below)
++ Authors who directly contributed to the project
++ Attributions to those who contributed indirectly to project
 + Any other information that might be useful
 
 Most projects should also include a `TUTORIAL.md` that walks a user through
@@ -99,9 +108,9 @@ malformed (e.g. no input where a positional argument is required).
 Each program in this repo is written in multiple languages to get the feel of
 how to program in that language. Generally, we seek to follow the community
 style guides, however there is always some room for personal style. When
-coding, there are difficult choices between straightforward vs. abstract,
-simple vs. efficient, peurile vs. sophisticated, and general vs.
-language-specific. We lean towards the simple.
+coding, there are difficult choices between simple vs. abstract, simple vs.
+efficient, simple vs. sophisticated, and simple vs. language-specific. In this
+lab, we lean towards the simple.
 
 + randomseq - generate random FASTA files of DNA sequences
 + kmerfreq - read sequences, output a table of kmer frequencies
@@ -120,6 +129,7 @@ Inputs
 + Number of sequences to generate
 + Length of each sequence
 + Probability of each letter
++ Prefix for sequence identifiers
 + Random seed
 
 Outputs
@@ -136,6 +146,7 @@ Inputs
 
 + Multi-FASTA file (gzipped or STDIN)
 + K-mer size
++ Flag for JSON output (defaults to tabular)
 
 Outputs
 
@@ -152,7 +163,7 @@ Inputs
 + Multi-FASTA file (gzipped or STDIN)
 + Window size
 + Entropy threshold
-+ N-based or lowercase masking
++ Flag for lowercase masking (defaults to N)
 
 Outputs
 
@@ -166,7 +177,7 @@ reading frame. There should be an option to do 3- or 6-frame translations.
 Inputs
 
 + Multi-FASTA file (gzipped or STDIN)
-+ Single or double-stranded translation
++ Flag for double-stranded translation (defaults to positive strand)
 
 Outputs
 
@@ -180,17 +191,17 @@ should include tabular (score, coordinates) and human readable (alignments).
 
 Inputs
 
-+ Query sequence in FASTA format
-+ Database sequence in Multi-FASTA format (gzipped ok)
++ Query sequence in FASTA format (gzipped ok)
++ Database sequence in Multi-FASTA format (gzipped or STDIN)
 + Match score
 + Mismatach score
 + Gap score
++ Flag for tabular output
 
 Outputs
 
 + Tabular format
 + Alignment format
-
 
 Benchmarks
 ----------
@@ -211,7 +222,7 @@ Benchmarks
 |      | kfreq|  7.94 |
 |      | dust | 14.28 |
 |      | lorf |  5.71 |
-|      | sw   |       |
+|      | sw   |  8.52 |
 | .py  | rseq |  2.67 |
 |      | kfreq|  9.46 |
 |      | dust |       |
@@ -232,6 +243,7 @@ of a bacterial genome (4,000 genes, 1,000 bp per gene).
 	+ time ./kmerfreq -k 10 foo > /dev/null
 	+ time ./longestorf -6 foo > /dev/null
 	+ time ./dust foo > /dev/null
+	+ time head -80 foo | ./smithwaterman data/testseq.fa - > /dev/null
 + Python
 	+ time ./randomseq 4000 1000 > foo
 	+ time ./kmerfreq -k 10 foo > /dev/null

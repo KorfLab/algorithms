@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use Getopt::Std;
-use vars qw($opt_m $opt_n $opt_g);
+use vars qw($opt_m $opt_n $opt_g $opt_t);
 use lib ".";
 use FAlite;
 
@@ -10,8 +10,8 @@ use FAlite;
 # CLI #
 #######
 
-getopts("m:n:g");
-my $M =  2;
+getopts("m:n:gt");
+my $M =  1;
 my $N = -1;
 my $G = -1;
 
@@ -21,11 +21,16 @@ options:
 	-m <int>   match score [$M]
 	-n <int>   mismatch score [$N]
 	-g <int>   gap score [$G]
+	-t         tabular output
+notes:
+  query may be compressed
+  database may be compressed or stdin (use -)
 ";
 die $usage unless @ARGV == 2;
 $M = $opt_m if $opt_m;
 $N = $opt_n if $opt_n;
 $G = $opt_g if $opt_g;
+my $TABULAR = $opt_t if $opt_t;
 
 my ($qfile, $dfile) = @ARGV;
 
@@ -33,24 +38,83 @@ my ($qfile, $dfile) = @ARGV;
 # Query #
 #########
 
-open(my $fh, $qfile) or die;
-my $qfa = new FAlite($fh);
+my $qfh;
+if ($qfile =~ /\.gz$/) {open($qfh, "gunzip -c $qfile |")}
+else                   {open($qfh, $qfile)}
+
+open($qfh, $qfile) or die;
+my $qfa = new FAlite($qfh);
 my $query = $qfa->nextEntry;
+close($qfh);
 
 #############
 # Main Loop #
 #############
 
-open($fh, $dfile) or die;
-my $dfa = new FAlite($fh);
+my $dfh;
+if    ($dfile eq "-")     {$dfh = *STDIN}
+elsif ($dfile =~ /\.gz$/) {open($dfh, "gunzip -c $dfile |")}
+else                      {open($dfh, $dfile)}
+
+my $dfa = new FAlite($dfh);
 while (my $sbjct = $dfa->nextEntry) {
-	my ($score, $a1, $a2) = align($query->seq, $sbjct->seq, $M, $N, $G);
-	print "Score: $score\n$a1\n$a2\n\n";
+	my $result = align($query->seq, $sbjct->seq, $M, $N, $G);
+	if ($TABULAR) {display_table($query, $sbjct, $result)}
+	else          {display_long($query, $sbjct, $result)}
 }
 
 ########
 # subs #
 ########
+
+sub display_table {
+	my ($q, $s, $r) = @_;
+	print join("\t",
+		substr($q->def, 1),
+		substr($s->def, 1),
+		$r->{score},
+		$r->{qbeg},
+		$r->{qend},
+		$r->{sbeg},
+		$r->{send}
+		), "\n";
+}
+
+sub display_long {
+	my ($q, $s, $r) = @_;
+	print "Query: ", substr($q->def, 1), "\n";
+	print "Sbjct: ", substr($s->def, 1), "\n";
+	print "Score: ", $r->{score}, "\n";
+	my $qb = $r->{qbeg};
+	my $sb = $r->{sbeg};
+	print "\n";
+
+	for (my $i = 0; $i < length($r->{query}); $i += 60) {
+
+		# alignment
+		my $qs = substr($r->{query}, $i, 60);
+		my $ss = substr($r->{sbjct}, $i, 60);
+		my $as = "";
+		for (my $j = 0; $j < length($qs); $j++) {
+			$as .= substr($qs, $j, 1) eq substr($ss, $j, 1) ? "|" : " ";
+		}
+
+		# compute coordinates
+		my $qg = $qs =~ tr/-/-/;
+		my $sg = $ss =~ tr/-/-/;
+		my $qe = $qb + length($qs) - $qg;
+		my $se = $sb + length($ss) - $sg;
+
+		print $qb, "\t", $qs, "\t", $qe, "\n";
+		print "\t", $as, "\n";
+		print $sb, "\t", $ss, "\t", $se, "\n";
+		print "\n";
+
+		$qb = $qe + 1;
+		$sb = $se + 1;
+	}
+
+}
 
 sub align {
 	my ($s1, $s2, $mat, $mis, $gap) = @_;
@@ -121,7 +185,16 @@ sub align {
 			$max_j--;
 		}
 	}
-	return $max_score, reverse $a1, reverse $a2;
+
+	return {
+		score => $max_score,
+		qbeg => $max_i,
+		sbeg => $max_j,
+		qend => $e1,
+		send => $e2,
+		query => reverse $a1,
+		sbjct => reverse $a2,
+	}
 }
 
 __END__

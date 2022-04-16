@@ -35,5 +35,6 @@ last edited back in 1999. I haven't even changed the outdated email address.
 
 + `smithwaterman` program isn't quite finished
 	+ needs to read compressed files/stdin
+	+ needs tabular vs human readable
 	+ needs a test
 + No `TUTORIAL.md` yet

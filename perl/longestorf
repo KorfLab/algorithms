@@ -52,7 +52,7 @@ my ($file) = @ARGV;
 #########
 
 my $fh;
-if    ($file eq "--")    {$fh = *STDIN}
+if    ($file eq "-")     {$fh = *STDIN}
 elsif ($file =~ /\.gz$/) {open($fh, "gunzip -c $file |")}
 else                     {open($fh, $file)}
 
@@ -113,4 +113,3 @@ sub longest_orf {
 	}
 	return $maxpep;
 }
-
