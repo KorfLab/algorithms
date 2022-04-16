@@ -2,26 +2,28 @@
 use strict;
 use warnings;
 use Getopt::Std;
-use vars qw($opt_a $opt_c $opt_g $opt_t $opt_s);
+use vars qw($opt_a $opt_c $opt_g $opt_t $opt_p $opt_s);
 
 #######
 # CLI #
 #######
 
-getopts("a:c:g:t:s:");
+getopts("a:c:g:t:p:s:");
 my $A = 0.25;
 my $C = 0.25;
 my $G = 0.25;
 my $T = 0.25;
+my $PREFIX = "seq-";
 
 die "
 usage: $0 <count> <length>
 options:
-	-a <float> percentage of A [$A]
-	-c <float> percentage of C [$C]
-	-g <float> percentage of G [$G]
-	-t <float> percentage of T [$T]
-	-s <int>   random seed
+	-a <float>  percentage of A [$A]
+	-c <float>  percentage of C [$C]
+	-g <float>  percentage of G [$G]
+	-t <float>  percentage of T [$T]
+	-p <string> prefix          [seq]
+	-s <int>    random seed
 " unless @ARGV == 2;
 
 my ($count, $length) = @ARGV;
@@ -29,6 +31,7 @@ $A = $opt_a if $opt_a;
 $C = $opt_c if $opt_c;
 $G = $opt_g if $opt_g;
 $T = $opt_t if $opt_t;
+$PREFIX = $opt_p if $opt_p;
 srand($opt_s) if $opt_s;
 
 if (abs(($A + $C + $G + $T)) -1 > 1e-6) {
@@ -41,7 +44,7 @@ if (abs(($A + $C + $G + $T)) -1 > 1e-6) {
 
 for (my $i = 0; $i < $count; $i++) {
 	my $seq = randseq($length, $A, $C, $G, $T);
-	print ">seq-$i\n";
+	print ">$PREFIX$i\n";
 	for (my $j = 0; $j < length($seq); $j += 80) {
 		print substr($seq, $j, 80), "\n";
 	}
