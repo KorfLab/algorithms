@@ -195,34 +195,43 @@ Outputs
 Benchmarks
 ----------
 
-At some point it would be fun to compare the various implementations on various
-hardware.
+| Lang | Prog | Time  | Notes
+|:-----|:-----|:-----:|:------------
+| .c   | rseq |       |
+|      | kfreq|       |
+|      | dust |       |
+|      | lorf |       |
+|      | sw   |       |
+| .go  | rseq |       |
+|      | kfreq|       |
+|      | dust |       |
+|      | lorf |       |
+|      | sw   |       |
+| .pl  | rseq |  2.44 |
+|      | kfreq|  7.94 |
+|      | dust | 22.37 |
+|      | lorf |  5.71 |
+|      | sw   |       |
+| .py  | rseq |       |
+|      | kfreq|       |
+|      | dust |       |
+|      | lorf |       |
+|      | sw   |       |
 
-| Lang | Prog | Len | T1 | T2 | T3 | Ave | Notes
-|:-----|:-----|:---:|:--:|:---|:--:|:---:|:--------
-| .c   | rseq |
-|      | kfreq|
-|      | dust |
-|      | lorf |
-|      | sw   |
-| .go  | rseq |
-|      | kfreq|
-|      | dust |
-|      | lorf |
-|      | sw   |
-| .pl  | rseq |
-|      | kfreq|
-|      | dust |
-|      | lorf |
-|      | sw   |
-| .py  | rseq |
-|      | kfreq|
-|      | dust |
-|      | lorf |
-|      | sw   |
+Times are recorded by running 3 times and taking the best real time. Computer
+is Ian's home PC running Lunbuntu in a VM with 2 cores and 4G RAM. Would be fun
+to record other hardware.
 
 ### command lines for each program
 
+The `randomseq` command generates a random sequence file approximately the size
+of an a bacterial genome (4,000 genes, 1,000 bp average).
+
++ Perl
+	+ time ./randomseq 4000 1000 > foo
+	+ time ./kmerfreq -k 10 foo > /dev/null
+	+ time ./longestorf -6 foo > /dev/null
+	+ time ./dust foo > /dev/null
 
 Pipelines
 ---------

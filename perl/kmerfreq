@@ -66,4 +66,3 @@ if ($JSON) {
 		print "$kmer\t", $count{$kmer}/$total, "\n";
 	}
 }
-
