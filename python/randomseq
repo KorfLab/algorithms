@@ -6,13 +6,13 @@ import random
 
 parser = argparse.ArgumentParser(
 	description='Generate random sequences in FASTA format')
-parser.add_argument('--num', required=False, type=int, default=10,
-	metavar='<int>', help='number of sequences [%(default)i]')
-parser.add_argument('--len', required=False, type=int, default=100,
-	metavar='<int>', help='length of sequences [%(default)i]')
+parser.add_argument('num', type=int, default=10,
+	metavar='<number>', help='number of sequences [%(default)i]')
+parser.add_argument('len', type=int, default=100,
+	metavar='<length>', help='length of sequences [%(default)i]')
 parser.add_argument('--comp', required=False, type=float, nargs=4,
 	default=[0.25, 0.25, 0.25, 0.25], metavar='<float>',
-	help='probability of each base: A C G T %(default)s')
+	help='probability of each base: A C G T [%(default)s]')
 parser.add_argument('--prefix', required=False, type=str, default='id.',
 	help='prefix for identifier [%(default)s]')
 parser.add_argument('--seed', required = False, type=int, metavar='<int>',
