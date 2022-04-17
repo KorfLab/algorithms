@@ -22,7 +22,7 @@ options:
 	-c <float>  percentage of C [$C]
 	-g <float>  percentage of G [$G]
 	-t <float>  percentage of T [$T]
-	-p <string> prefix          [seq]
+	-p <string> prefix          [$PREFIX]
 	-s <int>    random seed
 " unless @ARGV == 2;
 

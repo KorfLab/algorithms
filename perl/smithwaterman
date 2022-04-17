@@ -10,8 +10,8 @@ use FAlite;
 # CLI #
 #######
 
-getopts("m:n:gt");
-my $M =  1;
+getopts("m:n:g:t");
+my $M = 1;
 my $N = -1;
 my $G = -1;
 
@@ -20,7 +20,7 @@ usage: $0 <query> <database>
 options:
 	-m <int>   match score [$M]
 	-n <int>   mismatch score [$N]
-	-g <int>   gap score [$G]
+	-g <int>   gap penalty [$G]
 	-t         tabular output
 notes:
   query may be compressed
@@ -31,6 +31,10 @@ $M = $opt_m if $opt_m;
 $N = $opt_n if $opt_n;
 $G = $opt_g if $opt_g;
 my $TABULAR = $opt_t if $opt_t;
+
+die "-m must be positive\n" if $M < 1;
+die "-n must be negative\n" if $N >= 0;
+die "-g must be negative\n" if $G >= 0;
 
 my ($qfile, $dfile) = @ARGV;
 

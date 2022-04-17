@@ -20,7 +20,7 @@ my @TEST = (
 	},
 	{
 		name => "dust soft",
-		cli  => "gunzip -c $TD | ./dust -l - | $MD5",
+		cli  => "gunzip -c $TD | ./dust -s - | $MD5",
 		pass => "77de668c6d42b885260676c9140fdf92",
 	},
 
@@ -66,16 +66,16 @@ my @TEST = (
 	},
 
 	# smithwaterman
-	{
-		name => "smithwaterman",
-		cli  => "gunzip -c $TD | head -8 | ./smithwaterman $TS - | $MD5",
-		pass => "ddf95a0a5416ccf10905f2f61d6bdeff",
-	},
-	{
-		name => "smithwaterman tabular",
-		cli  => "gunzip -c $TD | head -8 | ./smithwaterman -t $TS - | $MD5",
-		pass => "5fbd17e7f648d7fe9300094f594e41bb",
-	},
+	#{
+	#	name => "smithwaterman",
+	#	cli  => "gunzip -c $TD | head -8 | ./smithwaterman $TS - | $MD5",
+	#	pass => "ddf95a0a5416ccf10905f2f61d6bdeff",
+	#},
+	#{
+	#	name => "smithwaterman tabular",
+	#	cli  => "gunzip -c $TD | head -8 | ./smithwaterman -t $TS - | $MD5",
+	#	pass => "5fbd17e7f648d7fe9300094f594e41bb",
+	#},
 
 );
 
