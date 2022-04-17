@@ -30,4 +30,4 @@ if arg.j:
 	print(json.dumps(freq, indent=4))
 else:
 	for key in freq:
-		print(f'{key}	{freq[key]}')
+		print(f'{key}\t{freq[key]}')
