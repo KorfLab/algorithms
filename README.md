@@ -10,22 +10,24 @@ that are designed to be simple and beautiful. Think of these as _templates_ for
 your own projects. Don't extend these source codes. They are purposefully too
 simple and too self-contained. Write something _better_.
 
-Providing programs/pipelines that work is only part of our goal. In order to be
-"beautiful" every project must be distributable, reproducible, and educational
-to others. Maybe not project is every truly complete, but it can be considered
-ready to release when it passes these criteria (which are explained more fully
-below).
 
 Checklist
 ---------
 
+Providing programs/pipelines that work is only part of our goal. In order to be 
+"beautiful" every project must be distributable, reproducible, and educational 
+to others. Maybe no project is every truly complete, but it can be considered 
+ready to release when it passes these criteria (which are explained more fully 
+below).
+
 + GitHub
-+ Open source license
++ Open source
 + README.md
 + TUTORIAL.md
 + Unix-standard CLI
 + Test data
 + Unit/functional tests
+
 
 Small Tools Manifesto
 ---------------------
@@ -34,6 +36,7 @@ It is worth reading the [Small Tools
 Manifesto](https://github.com/pjotrp/bioinformatics) which is basically a
 philosophy that bioinformatics programs should work like other Linux CLI
 programs: small, interoperable, open source, documented, tested, etc.
+
 
 Languages
 ---------
@@ -48,12 +51,14 @@ programs are getting the correct answers.
 For running pipelines, the community standard is Snakemake, so that's what we
 use. For some tasks, we still use ordinary `make`.
 
+
 Markdown
 --------
 
 All documentation should be in Markdown format. Make sure that the document
 looks good in plain text by using 80-column line breaks and padding tables. See
 the plain text version of this document as an example.
+
 
 Conda
 -----
@@ -69,6 +74,7 @@ software, not tell everyone to require out-dated components.
 
 For pipelines, we are not in control of other peoples' software. For this
 reason, we have to specify our environment more precisely.
+
 
 Documentation
 -------------
@@ -87,6 +93,7 @@ include the following in your document.
 Most projects should also include a `TUTORIAL.md` that walks a user through
 using the various programs and/or libraries in the project.
 
+
 Testing
 -------
 
@@ -96,6 +103,7 @@ testing harness should generally follow community standards.
 + Libraries should have unit tests
 + Programs should have functional tests
 + Pipelines should have functional tests
+
 
 Programs
 --------
@@ -203,6 +211,7 @@ Outputs
 + Tabular format
 + Alignment format
 
+
 Benchmarks
 ----------
 
@@ -235,8 +244,9 @@ to record other hardware.
 
 ### command lines for each program
 
-The `randomseq` command generates a random sequence file approximately the size
-of a bacterial genome (4,000 genes, 1,000 bp per gene).
+The `randomseq` command generates a random sequence file approximately the size 
+of a bacterial genome (4,000 genes, 1,000 bp per gene). This is used for 
+subsequent tests.
 
 + Perl
 	+ time ./randomseq 4000 1000 > foo
@@ -247,6 +257,7 @@ of a bacterial genome (4,000 genes, 1,000 bp per gene).
 + Python
 	+ time ./randomseq 4000 1000 > foo
 	+ time ./kmerfreq -k 10 foo > /dev/null
+
 
 Pipelines
 ---------
