@@ -38,9 +38,3 @@ Nobody in the lab programs in Perl anymore, not even me. I haven't kept up with
 recent changes in the language, so the software here may appear old fashioned.
 To emphasize this, the Perl module `FAlite.pm`, included here, is something I
 last edited back in 1999. I haven't even changed the outdated email address.
-
-To Do
------
-
-smithwaterman coordinates are bugged, need to fix that and maybe more
-

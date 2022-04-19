@@ -169,10 +169,8 @@ For testing, let's just get a couple sequences from a compressed test file.
 
 Those sequences are then sent to `smithwaterman` via STDIN. The match,
 mismatch, and gap values have their own options as shown in the usage
-statement. In the command below, the gap score has been set to -2.
+statement.
 
-	gunzip -c data/testdb.fa.gz | head -16 | ./smithwaterman -g -2 data/testseq.fa  -
+	gunzip -c data/testdb.fa.gz | head -16 | ./smithwaterman data/testseq.fa  -
 
 This results in 2 alignments...
-
-Code testing here isn't complete, so tutorial isn't complete

@@ -66,16 +66,16 @@ my @TEST = (
 	},
 
 	# smithwaterman
-	#{
-	#	name => "smithwaterman",
-	#	cli  => "gunzip -c $TD | head -8 | ./smithwaterman $TS - | $MD5",
-	#	pass => "ddf95a0a5416ccf10905f2f61d6bdeff",
-	#},
-	#{
-	#	name => "smithwaterman tabular",
-	#	cli  => "gunzip -c $TD | head -8 | ./smithwaterman -t $TS - | $MD5",
-	#	pass => "5fbd17e7f648d7fe9300094f594e41bb",
-	#},
+	{
+		name => "smithwaterman",
+		cli  => "gunzip -c $TD | head -8 | ./smithwaterman $TS - | $MD5",
+		pass => "222a905c8dfed818b8a6e8b871579253",
+	},
+	{
+		name => "smithwaterman tabular",
+		cli  => "gunzip -c $TD | head -8 | ./smithwaterman -t $TS - | $MD5",
+		pass => "2b2b07c48651ed37f72a4ceceff86674",
+	},
 
 );
 

@@ -11,9 +11,9 @@ use FAlite;
 #######
 
 getopts("m:n:g:t");
-my $M = 1;
+my $M =  1;
 my $N = -1;
-my $G = -1;
+my $G = -2;
 
 my $usage = "
 usage: $0 <query> <database>
@@ -89,10 +89,10 @@ sub display_long {
 	print "Query: ", substr($q->def, 1), "\n";
 	print "Sbjct: ", substr($s->def, 1), "\n";
 	print "Score: ", $r->{score}, "\n";
-	my $qb = $r->{qbeg};
-	my $sb = $r->{sbeg};
 	print "\n";
 
+	my $qb = $r->{qbeg};
+	my $sb = $r->{sbeg};
 	for (my $i = 0; $i < length($r->{query}); $i += 60) {
 
 		# alignment
@@ -106,8 +106,8 @@ sub display_long {
 		# compute coordinates
 		my $qg = $qs =~ tr/-/-/;
 		my $sg = $ss =~ tr/-/-/;
-		my $qe = $qb + length($qs) - $qg;
-		my $se = $sb + length($ss) - $sg;
+		my $qe = $qb + length($qs) - $qg -1;
+		my $se = $sb + length($ss) - $sg -1;
 
 		print $qb, "\t", $qs, "\t", $qe, "\n";
 		print "\t", $as, "\n";
@@ -189,15 +189,17 @@ sub align {
 			$max_j--;
 		}
 	}
+	$a1 = reverse $a1;
+	$a2 = reverse $a2;
 
 	return {
 		score => $max_score,
-		qbeg => $max_i,
-		sbeg => $max_j,
+		qbeg => $max_i +1,
+		sbeg => $max_j +1,
 		qend => $e1,
 		send => $e2,
-		query => reverse $a1,
-		sbjct => reverse $a2,
+		query => $a1,
+		sbjct => $a2,
 	}
 }
 
