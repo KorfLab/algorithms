@@ -3,7 +3,12 @@ use warnings;
 
 my $TS = "data/testseq.fa";
 my $TD = "data/testdb.fa.gz";
-my $MD5 = "md5sum | cut -f1 -d ' '";
+
+my $unix = `uname`;
+my $MD5;
+if    ($unix =~ /Linux/)  {$MD5 = "md5sum | cut -f1 -d ' '"}
+elsif ($unix =~ /Darwin/) {$MD5 = "md5 -q"}
+else                      {die "tests not supported outside Linux/Mac"}
 
 my @TEST = (
 
@@ -61,7 +66,7 @@ my @TEST = (
 	# randomseq
 	{
 		name => "randomseq",
-		cli  => "./randomseq 100 500 | wc -c",
+		cli  => "./randomseq 100 500 | wc -c | xargs",
 		pass => "51490",
 	},
 
