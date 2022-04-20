@@ -1,0 +1,61 @@
+import argparse
+import math
+from readfasta import read_record
+
+parser = argparse.ArgumentParser(
+	description='mask sequences with an entropy filter')
+parser.add_argument('fasta', type=str, metavar='<file>',
+	help='input fasta file(s)')
+parser.add_argument('-w', '--window_size', required=False, type=int, default=11,
+	metavar='<int>', help='input window size [%(default)i]')
+parser.add_argument('-t', '--entropy_threshold', required=False, type=float,
+	default=1.5, metavar='<float>', help='input entropy threshold [%(default)f]')
+parser.add_argument('-lc', action='store_true',
+	help='mask to lowercase, (default mask to N)')
+arg = parser.parse_args()
+
+def get_entropy(seq):
+	a, c, g, t = 0, 0, 0, 0
+	for nt in seq:
+		if nt == 'A': a+=1
+		if nt == 'C': c+=1
+		if nt == 'G': g+=1
+		if nt == 'T': t+=1
+	tot = a + c + g + t
+	
+	pa = a / tot
+	pc = c / tot
+	pg = g / tot
+	pt = t / tot
+	
+	h = 0
+	if pa > 0: h -= pa * math.log(pa)
+	if pc > 0: h -= pc * math.log(pc)
+	if pg > 0: h -= pg * math.log(pg)
+	if pt > 0: h -= pt * math.log(pt)
+	h /= math.log(2)
+	
+	return h
+	
+# Main
+w = arg.window_size
+t = arg.entropy_threshold
+lc = arg.lc
+
+for idn, seq in read_record(arg.fasta):
+	mask = list(seq)
+	
+	for i in range(len(seq)-w+1):
+		sub = seq[i:i+w]
+		h = get_entropy(sub)
+		if h < t:
+			pos = i + int(w/2)
+			if lc: mask[pos] = mask[pos].lower()
+			else:  mask[pos] = 'N'
+	
+	mask = ''.join(mask)
+	
+	print(f'>{idn}')
+	for i in range(0, len(mask), 80):
+		print(mask[i:i+80])
+			
