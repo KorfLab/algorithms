@@ -198,7 +198,7 @@ Score: 12
 73      CAGTTAAACTCCTTCGATCA    92
 ```
 
-If you prefer, you can get that in tabular format witht he `-t` option.
+To view in tabular format, use the `-t` option.
 
 ```
 test-0  seq-0   18      239     281     394     438
