@@ -39,11 +39,11 @@ def revcomp(seq):
 
 def findallpeps(seq):
 	peps = []
-	for i in range(0,len(seq)-3):
+	for i in range(0,len(seq)-2):
 		start = (codons[seq[i:i+3]] == 'M')
 		if start:
 			pep = ''
-			for j in range(i,len(seq)-3,3):
+			for j in range(i,len(seq)-2,3):
 				codon = seq[j:j+3]
 				pep += codons[codon]
 				if codons[codon] == '*':
