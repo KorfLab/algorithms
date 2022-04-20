@@ -27,7 +27,6 @@ $W = $opt_w if $opt_w;
 $T = $opt_t if $opt_t;
 my $SOFT = $opt_s ? 1 : 0;
 my $ALT = $opt_a; # use alternative simple algorithm, not an advertised option
-
 my ($file) = @ARGV;
 
 #########
@@ -46,8 +45,8 @@ else                     {open($fh, $file)}
 my $fasta = new FAlite($fh);
 while (my $entry = $fasta->nextEntry) {
 	my $seq = $ALT
-		? dust1($entry->seq, $W, $T, $SOFT)
-		: dust2($entry->seq, $W, $T, $SOFT);
+		? dust1(uc $entry->seq, $W, $T, $SOFT)
+		: dust2(uc $entry->seq, $W, $T, $SOFT);
 	print $entry->def, "\n";
 	for (my $i = 0; $i < length($seq); $i += 80) {
 		print substr($seq, $i, 80), "\n";
