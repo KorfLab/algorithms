@@ -215,7 +215,7 @@ Outputs
 Benchmarks
 ----------
 
-| Lang | Prog | Time  | Notes
+| Lang | Prog | Time1 | Notes
 |:-----|:-----|:-----:|:------------
 | .c   | rseq |       |
 |      | kfreq|       |
@@ -227,20 +227,20 @@ Benchmarks
 |      | dust |       |
 |      | lorf |       |
 |      | sw   |       |
-| .pl  | rseq |  2.44 |
-|      | kfreq|  7.94 |
-|      | dust | 14.28 |
-|      | lorf |  5.71 |
-|      | sw   |  8.52 |
-| .py  | rseq |  2.67 |
-|      | kfreq|  9.46 |
+| .pl  | rseq |  0.63 |
+|      | kfreq|  4.71 |
+|      | dust |  4.56 |
+|      | lorf |  1.80 |
+|      | sw   |  3.67 |
+| .py  | rseq |  0.59 |
+|      | kfreq|  3.69 |
 |      | dust |       |
 |      | lorf |       |
 |      | sw   |       |
 
-Times are recorded by running 3 times and taking the best real time. Computer
-is Ian's home PC running Lunbuntu in a VM with 2 cores and 4G RAM. Would be fun
-to record other hardware.
+Times are recorded by running 3 times and taking the best real time. Computer is
+Ian's Mac Mini running Lunbuntu in a VirtualBox with 2 cores and 2G RAM. Would
+be fun to record other hardware.
 
 ### command lines for each program
 
@@ -251,8 +251,8 @@ subsequent tests.
 + Perl
 	+ time ./randomseq 4000 1000 > foo
 	+ time ./kmerfreq -k 10 foo > /dev/null
-	+ time ./longestorf -6 foo > /dev/null
 	+ time ./dust foo > /dev/null
+	+ time ./longestorf -6 foo > /dev/null
 	+ time head -80 foo | ./smithwaterman data/testseq.fa - > /dev/null
 + Python
 	+ time ./randomseq 4000 1000 > foo
