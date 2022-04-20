@@ -4,6 +4,7 @@ TUTORIAL
 Before doing this tutorial, make sure to run `perl test.pl`. If any of the
 tests should fail, please contact the author.
 
+
 randomseq
 ---------
 
@@ -41,6 +42,7 @@ CAAACCTGTC
 As you can see, each sequence is given an identifier that begins with "seq-".
 You can override this with the `-p` option. Should you want to make the
 randomness repeatable, set the random seed to a specific integer.
+
 
 kmerfreq
 --------
@@ -87,6 +89,7 @@ case, use `-` as the filename as shown below.
 
 	gunzip -c data/testdb.fa.gz | ./kmerfreq -
 
+
 dust
 ----
 
@@ -121,6 +124,7 @@ TGTGCGGAAGGTTATACATCTGANTTTTTCGCATGTGCGGTGACTTTTNNNNTTTTNNNNNNNNNTTATCGGATANGGAA
 GTTACGTTTGTACTGGGCCT
 ```
 
+
 longestorf
 ----------
 
@@ -144,6 +148,7 @@ MCGDFLAFPTFLSDMEVTFVLGX
 
 If you want to perform a 6-frame translation (reverse-complement the sequence
 and also search the 3 frames on the other side), use the `-6` option.
+
 
 smithwaterman
 --------------
@@ -173,4 +178,29 @@ statement.
 
 	gunzip -c data/testdb.fa.gz | head -16 | ./smithwaterman data/testseq.fa  -
 
-This results in 2 alignments...
+This results in 2 alignments:
+
+```
+Query: test-0
+Sbjct: seq-0
+Score: 18
+
+239     GCACTTACCT-AGGATAAAATTG-ACACGAGTCTCTGGT-AGCAAA  281
+        ||| || ||| | |  ||||| | || |||||| | ||| ||||||
+394     GCA-TTGCCTAATGTGAAAATAGAACTCGAGTCCCGGGTGAGCAAA  438
+
+Query: test-0
+Sbjct: seq-1
+Score: 12
+
+146     CAGTCAGACACCATCGATCA    165
+        |||| | || || |||||||
+73      CAGTTAAACTCCTTCGATCA    92
+```
+
+To view in tabular format, use the `-t` option.
+
+```
+test-0  seq-0   18      239     281     394     438
+test-0  seq-1   12      146     165     73      92
+```
