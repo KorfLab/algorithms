@@ -55,6 +55,9 @@ def entropy_calc(seq):
 
 
 
+
+
+
 cur_seq = ""
 total_seq = []
 num_seq = []
