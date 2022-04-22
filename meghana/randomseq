@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+
+import argparse
+import math
+import random
+import time
+
+parser = argparse.ArgumentParser(
+	description='Generate random DNA sequences offixed length.')
+parser.add_argument('-s', type = int, required = False, default = 10, 
+metavar = 'seqs', help = 'Number of sequences to generate.')
+parser.add_argument('-l', type = int, required = False, default = 80,
+metavar = 'length', help = 'Length of each sequence')
+parser.add_argument('-p', type = float, nargs=4, required = False, 
+default = [.25, .25, .25, .25], help = 'Probability of each nt [A, C, G, T]') #
+parser.add_argument('-seed', type = float, required = False, default = time.time(),
+help = 'Random seed')
+arg = parser.parse_args()
+
+random.seed(arg.seed)
+assert(math.isclose(sum(arg.p),1))
+
+for i in range(arg.s):
+	print(f'>ID {i+1}')
+	seq = ''.join(random.choices(population=['A', 'C', 'G', 'T'], weights=arg.p,
+	k=arg.l))
+	print(seq)
+	
