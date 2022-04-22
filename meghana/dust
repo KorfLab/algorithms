@@ -8,12 +8,12 @@ from readfasta import read_record
 parser = argparse.ArgumentParser(description='Mask sequences with an entropy \
 filter')
 parser.add_argument('fasta', type = str, help = 'path to file')
-parser.add_argument('-w', type = int, required = False, default = 11,
+parser.add_argument('-w', type = int, required = False, default = 11, #letter and word flags
 help = 'window size')
 parser.add_argument('-e', type = float, required = False, default = 1.1,
 help = 'enthropy threshold')
 parser.add_argument('-n', type = str, required = False, default = 'True',
-help = 'N based masking = True, lowercase = False')
+help = 'N based masking = True, lowercase = False') ## action = 'store_true'
 arg = parser.parse_args()
 
 
@@ -23,7 +23,7 @@ def entropy(freqs):
 	g = freqs[2]
 	c = freqs[3]
 	total = sum(freqs)
-	if total == 0: return 0
+	if total == 0: return 0 # use math.isclose()
 	
 	pa = a/total
 	pt = t/total
@@ -39,10 +39,10 @@ def entropy(freqs):
 	return h/math.log(2)
 	
 for id, seq in read_record(arg.fasta):
-	newline = seq[0:arg.w//2]
+	newline = seq[0:arg.w//2] #change var
 	for i in range(len(seq)-arg.w+1):
 		string = seq[i:i+arg.w]
-		counts = {'A': 0,
+		counts = {'A': 0, #identation
 				  'C': 0,
 				  'G': 0,
 				  'T': 0}
@@ -57,6 +57,5 @@ for id, seq in read_record(arg.fasta):
 		else:
 			newline += seq[i+arg.w//2+1]
 	newline += seq[-arg.w//2 + 1:]	
-	print(f'>{id}')
+	print(f'>{id}') #wrap to 80c
 	print(newline)
-		
