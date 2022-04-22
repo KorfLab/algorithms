@@ -238,9 +238,9 @@ Benchmarks
 |      | lorf |       |
 |      | sw   |       |
 
-Times are recorded by running 3 times and taking the best real time. Computer is
-Ian's Mac Mini running Lunbuntu in a VirtualBox with 2 cores and 2G RAM. Would
-be fun to record other hardware.
+Times are recorded by running 3 times and taking the best real time. Time1
+corresponds to Ian's Mac Mini running Lunbuntu in a VirtualBox with 2 cores and
+2G RAM. Would be fun to record other hardware.
 
 ### command lines for each program
 

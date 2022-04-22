@@ -54,43 +54,73 @@ def entropy_calc(seq):
     return entropy
 
 
-
-
-
-
-cur_seq = ""
-total_seq = []
-num_seq = []
-
-for id, seq in read_record(arg.fasta_file):
-    cur_line = seq
-
-    if seq[0] == '>':
-        if len(num_seq) > 0:
-            total_seq.append(cur_seq)
-            cur_seq = ""
-        
-        num_seq.append(cur_line[1:])
-    else:
-        cur_seq += cur_line
-
-total_seq.append(cur_seq)
-
-# entropy calc
+print("testing: ", list("sreeram"))
 lower = arg.lower
 threshold = arg.entropy
 window = arg.window
-for i in range(0, len(num_seq)):
-    seq_used = total_seq[i]
 
-    for j in range(0, len(seq_used)-window+1):
-        cur_entropy = entropy_calc(seq_used[j:j+window])
+cur_seq = ""
+# total_seq = []
+# num_seq = []
 
-        if cur_entropy < threshold:
-            if lower:
-                cur_seq = cur_seq[:j+int(window/2)] + cur_seq[j+int(window/2)].lower() + cur_seq[j+int((window/2))+1:]
-            else:
-                cur_seq = cur_seq[:j+int(window/2)] + "N" + cur_seq[j+int((window/2))+1:]
+for id, seq in read_record(arg.fasta_file):
 
-    print('f' + id)
+    cur_seq = list(seq)
+
+    for i in range(len(seq)-window+1):
+        sub_seq = cur_seq[i:i+window]
+        cur_entropy = entropy_calc(sub_seq)
+
+        if cur_entropy < threshold and lower:
+            cur_seq[i+int(window/2)].lower()
+        else:
+            cur_seq[i+int(window/2)] = '*'
+    cur_seq = "".join(cur_seq)
+    print('>', id)
     print(cur_seq)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#     cur_line = seq
+
+#     if seq[0] == '>':
+#         if len(num_seq) > 0:
+#             total_seq.append(cur_seq)
+#             cur_seq = ""
+        
+#         num_seq.append(cur_line[1:])
+#     else:
+#         cur_seq += cur_line
+
+#     total_seq.append(cur_seq)
+
+# # entropy calc
+# lower = arg.lower
+# threshold = arg.entropy
+# window = arg.window
+
+# for i in range(0, len(num_seq)):
+#     seq_used = total_seq[i]
+
+#     for j in range(0, len(seq_used)-window+1):
+#         cur_entropy = entropy_calc(seq_used[j:j+window])
+
+#         if cur_entropy < threshold:
+#             if lower:
+#                 cur_seq = cur_seq[:j+int(window/2)] + cur_seq[j+int(window/2)].lower() + cur_seq[j+int((window/2))+1:]
+#             else:
+#                 cur_seq = cur_seq[:j+int(window/2)] + "N" + cur_seq[j+int((window/2))+1:]
+
