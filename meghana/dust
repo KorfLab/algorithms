@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+
+import argparse
+import math
+
+from readfasta import read_record
+
+parser = argparse.ArgumentParser(description='Mask sequences with an entropy \
+filter')
+parser.add_argument('fasta', type = str, help = 'path to file')
+parser.add_argument('-w', type = int, required = False, default = 11,
+help = 'window size')
+parser.add_argument('-e', type = float, required = False, default = 1.1,
+help = 'enthropy threshold')
+parser.add_argument('-n', type = str, required = False, default = 'True',
+help = 'N based masking = True, lowercase = False')
+arg = parser.parse_args()
+
+
+def entropy(freqs):
+	a = freqs[0]
+	t = freqs[1]
+	g = freqs[2]
+	c = freqs[3]
+	total = sum(freqs)
+	if total == 0: return 0
+	
+	pa = a/total
+	pt = t/total
+	pg = g/total
+	pc = c/total
+	
+	h = 0
+	if (a != 0): h -= pa * math.log(pa)
+	if (t != 0): h -= pt * math.log(pt)
+	if (g != 0): h -= pg * math.log(pg)
+	if (c != 0): h -= pc * math.log(pc)
+	
+	return h/math.log(2)
+	
+for id, seq in read_record(arg.fasta):
+	newline = seq[0:arg.w//2]
+	for i in range(len(seq)-arg.w+1):
+		string = seq[i:i+arg.w]
+		counts = {'A': 0,
+				  'C': 0,
+				  'G': 0,
+				  'T': 0}
+		for nt in string:
+			counts[nt] += 1
+		count_list = [counts[value] for value in counts]
+		if entropy(count_list) < arg.e:
+			if arg.n == 'True':
+				newline += 'N'
+			elif arg.n == 'False':
+				newline += seq[i+arg.w//2 + 1].lower()
+		else:
+			newline += seq[i+arg.w//2+1]
+	newline += seq[-arg.w//2 + 1:]	
+	print(f'>{id}')
+	print(newline)
+		

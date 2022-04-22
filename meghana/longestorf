@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+
+import argparse
+
+from readfasta import read_record
+
+parser = argparse.ArgumentParser(description=
+'Translate sequences and provide proteins with the longest reading frame')
+parser.add_argument('fasta', type = str, help = 'path to file')
+parser.add_argument('-s', action = "store_true", 
+	help = 'add flag for double stranded translation')
+arg = parser.parse_args()
+
+def rc(seq):
+	reverse = ""
+	nts = {'A':'T',
+		   'C':'G',
+		   'G':'C',
+		   'T':'A'}
+	for i in reversed(range(len(seq))):
+		reverse += nts[seq[i]]
+	return reverse
+	
+def translation(seq):
+	i = 0
+	aaseq = ""
+	for i in range(0, len(seq)-2, 3):
+		kmer = seq[i:i+3]
+		if codons[kmer] == "*": return aaseq
+		aaseq += codons[kmer]
+	return aaseq
+
+def lorf(id, seqs, s):
+	longest_orf = ""
+	for i in range(len(seqs)-2):
+		if codons[seqs[i:i+3]] == 'M' and translation(seqs[i:]): 
+			if len(translation(seqs[i:])) > len(longest_orf): 
+				longest_orf = translation(seqs[i:])
+		if s:
+			reverse = rc(seqs)
+			for i in range(len(reverse)-2):
+				if codons[reverse[i:i+3]] == 'M' and translation(reverse[i:]): 
+					if len(translation(reverse[i:])) > len(longest_orf): 
+						longest_orf = translation(reverse[i:])
+	print(f'>{id}')
+	if longest_orf != "": print(longest_orf)
+		
+codons = {
+    "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A", 
+    "TGT": "C", "TGC": "C", "GAT": "D", "GAC": "D", 
+    "GAA": "E", "GAG": "E", "TTT": "F", "TTC": "F", 
+    "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G", 
+    "CAT": "H", "CAC": "H", "ATA": "I", "ATT": "I", 
+	"ATC": "I", "AAA": "K", "AAG": "K", "TTA": "L", 
+	"TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", 
+	"CTG": "L", "ATG": "M", "AAT": "N", "AAC": "N", 
+	"CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P", 
+	"CAA": "Q", "CAG": "Q", "CGT": "R", "CGC": "R", 
+    "CGA": "R", "CGG": "R", "AGA": "R", "AGG": "R",
+    "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", 
+    "AGT": "S", "AGC": "S", "ACT": "T", "ACC": "T", 
+    "ACA": "T", "ACG": "T", "GTT": "V", "GTC": "V", 
+    "GTA": "V", "GTG": "V", "TGG": "W", "TAT": "Y", 
+    "TAC": "Y", "TAA": "*", "TAG": "*", "TGA": "*"
+}
+
+for id, seq in read_record(arg.fasta):
+	lorf(id, seq, arg.s)
