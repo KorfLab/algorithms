@@ -83,6 +83,7 @@ Python Code Review Sessions
 		+ slow algorithm
 		+ doesn't wrap
 + meghana
+	+ don't copy readfasta, alias it if you must
 	+ longestorf
 		+ sometimes better to define class variables
 		+ what if the codon isn't in the code?
@@ -96,7 +97,3 @@ Python Code Review Sessions
 		+ using 'True' and 'False' not right
 		+ weird indenting
 		+ not wrapping out
-
-
-
-
