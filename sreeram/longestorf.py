@@ -165,7 +165,7 @@ for id, seq in read_record(arg.fasta_file):
         if longest_c != -1:
             final_orfs.append(complement[start_c:stop_c])
 
-    # check to see if we have two orfs in the final_orfs list and print accordingly
+    # check to see if we have two orfs in the final_orfs list and print longest one
     if len(final_orfs) == 2:
         print('>'+ id)
         print(max(final_orfs, key=len))
