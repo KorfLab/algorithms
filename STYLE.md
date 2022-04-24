@@ -1,6 +1,12 @@
 Style Guide
 ===========
 
+Contents
+
++ Python
++ Go
++ Snakemake
++ Perl
 
 Python Best Practices
 ---------------------
@@ -126,3 +132,32 @@ Don't use function annotations. The Python interpreter ignores them.
 	def max(values) -> int:
 
 Use doc-strings instead.
+
+
+Go Best Practices
+-----------------
+
+Not started yet
+
+
+Snakemake Best Practices
+------------------------
+
+Not started yet
+
+
+Perl Best Practices
+-------------------
+
+While Perl played a major part of the Korf Lab in the past, we don't use Perl
+for large projects anymore. For quick-n-dirty jobs, Perl is still quite useful.
+
++ Always, always, always `use strict` and `use warnings`
++ Executable programs should have interpreter directives and no file extension
++ Non-executable scripts should end with `.pl`
++ Libraries end with `.pm` as required by the language
++ Use `Getopt::Std` or `Getopt::Long` for CLI
++ Whitespace & Line length follow the usual conventions
++ Variable and function names follow the usual conventions
++ API docs should use the POD system
+

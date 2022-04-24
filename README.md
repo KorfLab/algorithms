@@ -1,8 +1,8 @@
 Algorithms
 ==========
 
-In the Korf Lab, the goal is always to write simple, beautiful code. When one
-focuses on speed, efficiency, or cleverness, code becomes difficult to
+In the Korf Lab, our programming goal is to write simple, beautiful code. When
+one focuses on speed, efficiency, or cleverness, code becomes difficult to
 maintain, extend, and debug.
 
 This repo is a collection of several _demonstration_ programs and pipelines
@@ -24,6 +24,7 @@ below).
 + Open source
 + README.md
 + TUTORIAL.md
++ API documentation
 + Unix-standard CLI
 + Test data
 + Unit/functional tests
@@ -41,15 +42,42 @@ programs: small, interoperable, open source, documented, tested, etc.
 Languages
 ---------
 
-Python is a very useful language. However, it is not the fastest language.
-Sometimes we need more speed or less memory usage. For these purposes there are
-compiled languages like Go. Before you make the Go version of a program, build
-the Python version first. That may be sufficient. If you need something faster
-later, the Python implementation will help to ensure that both programs are
-getting the correct answers.
++ Python - default
++ Go - high performance
++ Snakemake - pipelines
++ R - some statistical analyses
++ Perl - legacy, hacks
++ C - legacy, high performance
++ Shell - automation
 
-For running pipelines, the community standard is Snakemake, so that's what we
-use. For some tasks, we still use ordinary `make`.
+Python is our default language. Python is a very popular and useful language
+with minimal development time, so always start here.
+
+Go is our language of choice for our high performance needs. It's a good idea
+to develop your application in Python before Go as the one will help debug the
+other.
+
+Snakemake is becoming the community standard for pipelines, so that's what we
+use.
+
+R is used for some statistical analyses. Although we don't write R very often,
+there are a variety of very useful programs written in R.
+
+Perl is no longer used for large-scale projects, but remains useful for
+quick-n-dirty hacks.
+
+C was our previous language for high performance needs. New projects should not
+be started in C, but there are some legacy projects that may still be usefully
+extended.
+
+Bash and other shell languages should be used only to automate very simple
+tasks. If you find yourself writing loops and conditionals in bash, consider
+doing that in Python or Perl instead.
+
+What about other languages like C++, C#, Java, Javascript, Julia, Kotlin, Lua,
+PHP, Raku, Ruby, Rust, Swift, etc? It's a good idea to educate yourself in
+other languages, but please don't write lab software in anything other than
+Python, Go, Snakemake, R, Perl, or C.
 
 
 Markdown
@@ -92,6 +120,9 @@ include the following in your document.
 
 Most projects should also include a `TUTORIAL.md` that walks a user through
 using the various programs and/or libraries in the project.
+
+Libraries should have API documentation. See `STYLE.md`, which describes
+language-specific guidelines for documentation (among other things).
 
 
 Testing
@@ -261,4 +292,6 @@ Unfinished section
 
 + Something with Snakemake designed for local use
 + Something with Snakemake designed for cluster use
-+ Something with make
++ A simple bash script?
++ Something with make?
+

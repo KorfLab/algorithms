@@ -8,9 +8,8 @@ programs.
 Disclaimer
 ----------
 
-I don't encourage people in my lab to program in C (or C++, C#, Java, Rust,
-etc.). If you want something faster than Python, I would rather you program in
-Go.
+I don't encourage people in my lab to program in C. If your project requires a
+compiled language, I prefer that you write it in Go.
 
 
 Resources
