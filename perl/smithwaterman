@@ -168,6 +168,18 @@ sub align {
 		}
 	}
 
+	if ($max_score == 0) {
+		return {
+			score => 0,
+			qbeg => 0,
+			sbeg => 0,
+			qend => 0,
+			send => 0,
+			query => '',
+			sbjct => '',
+		}
+	}
+
 	# traceback
 	my $a1 = "";
 	my $a2 = "";

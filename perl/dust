@@ -44,6 +44,10 @@ else                     {open($fh, $file)}
 
 my $fasta = new FAlite($fh);
 while (my $entry = $fasta->nextEntry) {
+	if (length($entry->seq) < $W) {
+		print($entry);
+		next;
+	}
 	my $seq = $ALT
 		? dust1(uc $entry->seq, $W, $T, $SOFT)
 		: dust2(uc $entry->seq, $W, $T, $SOFT);
