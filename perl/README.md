@@ -21,8 +21,8 @@ The `data/testseq.fa` and `data/testdb.fa.gz` files were created with the
 following command lines:
 
 ```
-randomseq -a 0.3 -c 0.2 -g 0.2 -t 0.3 -p test 1 500 > data/testseq.fa
-randomseq 100 500 | gzip > data/testdb.fa.gz
+./randomseq -a 0.3 -c 0.2 -g 0.2 -t 0.3 -p test 1 500 > data/testseq.fa
+./randomseq 100 500 | gzip > data/testdb.fa.gz
 ```
 
 The functional tests are all run with `perl test.pl`. The output should show
