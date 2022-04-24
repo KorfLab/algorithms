@@ -3,11 +3,19 @@ import random
 import math
 import sys
 
+
 def read_record(filename):
-	
+	"""
+	Input: path to fasta file
+	Return: generates a tuple of (name, seq)
+	Example:
+		for name, seq in readfasta.read_record(filepath):
+			print(name, seq)
+	"""
+
 	label = None
 	seq = []
-	
+
 	fp = None
 	if    filename == '-':         fp = sys.stdin
 	elif filename.endswith('.gz'): fp = gzip.open(filename, 'rt')
@@ -25,7 +33,7 @@ def read_record(filename):
 				seq = []
 			else:
 				label = line[1:]
-		else:	
+		else:
 			seq.append(line)
 	yield(label, ''.join(seq))
 	fp.close()

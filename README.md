@@ -14,10 +14,10 @@ simple and too self-contained. Write something _better_.
 Checklist
 ---------
 
-Providing programs/pipelines that work is only part of our goal. In order to be 
-"beautiful" every project must be distributable, reproducible, and educational 
-to others. Maybe no project is every truly complete, but it can be considered 
-ready to release when it passes these criteria (which are explained more fully 
+Providing programs/pipelines that work is only part of our goal. In order to be
+"beautiful" every project must be distributable, reproducible, and educational
+to others. Maybe no project is every truly complete, but it can be considered
+ready to release when it passes these criteria (which are explained more fully
 below).
 
 + GitHub
@@ -43,10 +43,10 @@ Languages
 
 Python is a very useful language. However, it is not the fastest language.
 Sometimes we need more speed or less memory usage. For these purposes there are
-compiled languages like C or Go. Before you make the compiled version of a
-program, build the Python version first. That may be sufficient. If you need
-something faster later, the Python implementation will help to ensure that both
-programs are getting the correct answers.
+compiled languages like Go. Before you make the Go version of a program, build
+the Python version first. That may be sufficient. If you need something faster
+later, the Python implementation will help to ensure that both programs are
+getting the correct answers.
 
 For running pipelines, the community standard is Snakemake, so that's what we
 use. For some tasks, we still use ordinary `make`.
@@ -217,11 +217,6 @@ Benchmarks
 
 | Lang | Prog | Time1 | Notes
 |:-----|:-----|:-----:|:------------
-| .c   | rseq |       |
-|      | kfreq|       |
-|      | dust |       |
-|      | lorf |       |
-|      | sw   |       |
 | .go  | rseq |       |
 |      | kfreq|       |
 |      | dust |       |
@@ -244,8 +239,8 @@ corresponds to Ian's Mac Mini running Lunbuntu in a VirtualBox with 2 cores and
 
 ### command lines for each program
 
-The `randomseq` command generates a random sequence file approximately the size 
-of a bacterial genome (4,000 genes, 1,000 bp per gene). This is used for 
+The `randomseq` command generates a random sequence file approximately the size
+of a bacterial genome (4,000 genes, 1,000 bp per gene). This is used for
 subsequent tests.
 
 + Perl

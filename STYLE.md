@@ -38,62 +38,91 @@ properly.
 + Programs should be able to read from STDIN
 + Programs should generally write to STDOUT, not named files
 
-### Whitespace
+### Whitespace & Line Length
 
-+ `if a == b:` not `if a==b:`
-+ `func(arg1, arg2)` not `func(arg1,arg2)`
-+ `func(arg1, key=value)` not `func(arg1, key = value)`
-+ Be consistent
+Use a single space after a comma.
 
-Python Code Review Sessions
----------------------------
+	i, j = 1, 2 # yes
+	i,j = 1,2   # no
 
-### Notes session 2
+Use spaces on each side of operators with dual operands.
 
-+ alan
-	+ programs still have .py on them
-	+ longestorf
-		+ have consistent style
-		+ if the argument is a switch, use a flag, don't require an argument
-		+ indent instantiated dictionaries
-		+ if if if, is better as if-elsif-else
-		+ don't indent positives, delete negatives
-	+ dust
-		+ probably should uppercase reading before lowercase writing
-		+ slow algorithm for large windows
-		+ nobody wants to type --entropy_threshold
-+ sreeram
-	+ programs still have .py on them
-	+ dont' duplicate readfasta.py, use alias if you need to
-	+ longestorf
-		+ lines are too long
-		+ long indents aren't better, especially when not consistent
-		+ 4 spaces is standard but I hate it
-		+ double dash is the usual for long options
-		+ `< >` means required while `[ ]` means optional in unix
-		+ program doesn't translate codons
-		+ like the docs! how is this processed?
-		+ not sure how I feel about function annotations, except be consistent
-		+ not sure how I feel about try/except
-		+ the while loop is a bit odd and not a dictionary
-		+ 2 orfs?
-		+ no orf case is malformed FASTA, but what to put there?
-	+ dust
-		+ long lines and long indents
-		+ slow algorithm
-		+ doesn't wrap
-+ meghana
-	+ don't copy readfasta, alias it if you must
-	+ longestorf
-		+ sometimes better to define class variables
-		+ what if the codon isn't in the code?
-		+ doesn't wrap fasta output
-		+ weird indenting
-	+ dust
-		+ should use a store_true flag for N
-		+ should check sum probably
-		+ slow algorithm
-		+ newline isn't a good variable name
-		+ using 'True' and 'False' not right
-		+ weird indenting
-		+ not wrapping out
+	if a >= b: # yes
+	if a>=b:   # no
+
+The exception to this rule is named function parameters.
+
+	print('hello', file=sys.stderr)   # yes
+	print('hello', file = sys.stderr) # no
+
+We follow the usual 80 character limit. If it's a few characters over, that's
+okay, but split long lines after commas and add an additional indent to
+differentiate the previous line from the loop lines.
+
+	for item in very_long_object.with_very_long_method_name(param1,
+			param2, positional=vale):
+		do_something...
+
+### Variable and Function Names
+
+Variable names should be short and should accurately describe the contents.
+
+	nt = 'A'           # good
+	nucleicacid = 'A'  # too long
+	nt = 'Q'           # inaccurate
+	value = 5          # not obvious
+
+For variables of very limited scope, such as loop variables, a single letter
+may suffice. If you use `i`, `j`, `k`, for integers and `x`, `y`, and `z` for
+floating points, nobody will be confused.
+
+	for i in range(10):
+
+For variables of greater scope, use longer names. In Python, use snake_case
+rather than camelCase.
+
+	max_score = 0 # yes
+	maxScore = 0  # no
+
+Arrays should be plural:
+
+	for ball in balls:
+
+But dictionaries should be singular:
+
+	for thing in container:
+
+Function names should be verbs.
+
+	pro = translate_rna(rna) # verb
+	pro = translation(rna)   # noun
+
+### Documentation
+
+To read Python3 documentation, there is the `pydoc3` tool distributed with
+Python3. You can read man-page-style documentation directly in the terminal for
+any module that is in your library path.
+
+	pydoc3 sys.stderr
+
+To provide API documentation for you own modules, put doc-strings immediately
+after your function declarations.
+
+```
+def max(values):
+	"""
+	Input: an array of numbers
+	Returns: the maximum value
+	"""
+```
+
+To make beautiful html documentation for your module, use the `-w` flag to
+write a file in the current directory.
+
+	pydoc3 readfasta
+
+Don't use function annotations. The Python interpreter ignores them.
+
+	def max(values) -> int:
+
+Use doc-strings instead.
