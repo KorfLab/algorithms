@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+
+import argparse
+import math
+
+from readfasta import read_record
+
+def seq_entropy(seq):
+	a = 0
+	t = freqs[1]
+	g = freqs[2]
+	c = freqs[3]
+	total = sum(freqs)
+	if total == 0: return 0 # use math.isclose()
+	
+	pa = a/total
+	pt = t/total
+	pg = g/total
+	pc = c/total
+	
+	h = 0
+	if (a != 0): h -= pa * math.log(pa)
+	if (t != 0): h -= pt * math.log(pt)
+	if (g != 0): h -= pg * math.log(pg)
+	if (c != 0): h -= pc * math.log(pc)
+	
+	return h/math.log(2)
+
+parser = argparse.ArgumentParser(
+	description='Mask sequences with an entropy filter')
+parser.add_argument('fasta', metavar='<fasta file>', type=str, 
+	help='path to file')
+parser.add_argument('-w', type=int, metavar='<int>', required=False, default=11,
+	help = 'window size [%(default)i]')
+parser.add_argument('-t', type=float, metavar='<float>', required=False,
+	default=1.1, help = 'enthropy threshold [%(default).2f]')
+parser.add_argument('-s', action='store_true',
+	help='mask to lowercase, (default mask to N)')
+arg = parser.parse_args()
+
+half = arg.w // 2
+
+for id, seq in read_record(arg.fasta):
+	
+	mask_seq = list(seq)
+
+	for i in range(len(seq) - arg.w + 1):
+		if seq_entropy(seq[i:i+arg.w]) < arg.t:
+			if arg.s:
+				mask_seq[i+half] = mask_seq[i+half].lower()
+			else:
+				mask_seq[i+half] = 'N'
+	
