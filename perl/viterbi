@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 use strict;
-use warnings;
+use warnings FATAL=>'all';
 use Getopt::Std;
-use vars qw($opt_x $opt_s);
+use vars qw($opt_x $opt_y $opt_f);
 use lib ".";
 use FAlite;
 
@@ -10,34 +10,104 @@ use FAlite;
 # CLI #
 #######
 
-getopts("x:s:");
+getopts("x:y:f");
 my $X = 1e-3; # generic transition probability
-my $LOW_SCORE = -99; # for log-space zero probabilities
+my $Y = 1e-2; # spoke transition probability
+my $LOW_SCORE = -999; # for log-space zero probabilities
 
 my $usage = "
-usage: $0 <sequence> <mod1> <mod2> [mod3, mod4, ...]
+usage: $0 <sequence> <table.1> <table.2> [... table.n]
 options:
-	-x <int>   switch probability (0 < x < 1) [$X]
-	-s <int>   use spoke toplogy (0 < s < 1) [default 'ava' topology]
+	-x <float> switch probability (0 < x < 1) [$X]
+	-y <float> switch probability (0 < y < 1) [$Y]
+	-f <int>   use full topology [default star]
 notes:
   sequence may be compressed or stdin (use -)
-  models may be compressed
-  must provide 2+ models for 'ava' topology
+  tables may be compressed
 ";
 die $usage unless @ARGV >= 3;
 my ($fasta, @file) = @ARGV;
 $X = $opt_x if $opt_x;
+$Y = $opt_y if $opt_y;
 die "x out of range\n" if $X <= 0 or $X >= 1;
+die "x out of range\n" if $Y <= 0 or $Y >= 1;
 
-my $Y; # spoke transition probability
-if ($opt_s) {
-	$Y = $opt_s;
-	die "s out of range\n" if $Y <= 0 or $Y >= 1;
+my $STAR = not $opt_f;
+
+#############
+# Emissions # aka tables of k-mers
+#############
+
+my @mod;
+my $K;
+foreach my $mf (@file) {
+	die "Model name Null is reserved\n" if $mf eq 'Null';
+	my ($table, $k) = read_kmer_table($mf);
+	push @mod, $table;
+	$K = $k if not defined $K;
+	die "insconsistent k-mer size: $K != $k\n" if $K != $k;
 }
 
-#########
-# FASTA #
-#########
+# Null model
+my %Null;
+foreach my $kmer (keys %{$mod[0]}) {
+	$Null{$kmer} = 1 / 4**$K;
+}
+
+# convert all emission probabilities to log-odds with Null expected
+foreach my $mod (@mod) {
+	foreach my $kmer (keys %Null) {
+		$mod->{$kmer} = log($mod->{$kmer} / $Null{$kmer});
+	}
+}
+
+###############
+# Transitions # either star or full
+###############
+
+if ($STAR) {
+	push @file, 'Null';
+	push @mod, \%Null;
+}
+
+my @trans;
+if ($STAR) {
+	my $null = @mod -1;
+	for (my $i = 0; $i < @mod; $i++) {
+		for (my $j = 0; $j < @mod; $j++) {
+			if ($i == $null and $j == $null) {
+				$trans[$i][$j] = 1 - (@mod -1) * $X;
+			} elsif ($j == $null) {
+				$trans[$i][$j] = $Y;
+			} elsif ($i == $null) {
+				$trans[$i][$j] = $X;
+			} elsif ($i == $j) {
+				$trans[$i][$j] = 1 - $Y;
+			} else {
+				$trans[$i][$j] = 0;
+			}
+		}
+	}
+} else {
+	for (my $i = 0; $i < @mod; $i++) {
+		for (my $j = 0; $j < @mod; $j++) {
+			if ($i == $j) {$trans[$i][$j] = 1 - (@mod -1) * $X}
+			else          {$trans[$i][$j] = $X}
+		}
+	}
+}
+
+# convert all transition probabilities to log
+for (my $i = 0; $i < @mod; $i++) {
+	for (my $j = 0; $j < @mod; $j++) {
+		if ($trans[$i][$j] == 0) {$trans[$i][$j] = $LOW_SCORE}
+		else                     {$trans[$i][$j] = log($trans[$i][$j])}
+	}
+}
+
+#############
+# MAIN LOOP #
+#############
 
 my $ffh;
 if    ($fasta =~ /\.gz$/) {open($ffh, "gunzip -c $fasta |")}
@@ -46,24 +116,84 @@ else                      {open($ffh, $fasta)}
 
 open($ffh, $fasta) or die;
 my $fa = new FAlite($ffh);
-my $seq = $fa->nextEntry;
+while (my $entry = $fa->nextEntry) {
+	my $features = viterbi($entry->seq, $K, \@mod, \@trans);
+	print $entry->def, "\n";
+	foreach my $f (@$features) {
+		print join("\t", $f->[0], $f->[1], $file[$f->[2]]), "\n";
+	}
+}
 close($ffh);
 
-##########
-# MODELS # these have been provided by the user
-##########
+#############
+# Functions #
+#############
 
-my @mod;
-my $K;
-foreach my $mf (@file) {
-	die "illegal file name" if $mf eq 'Null';
-	my ($table, $k) = read_model($mf);
-	push @mod, $table;
-	$K = $k if not defined $K;
-	die "insconsistent k-mer size: $K != $k\n" if $K != $k;
+sub viterbi {
+	my ($seq, $K, $mods, $trans) = @_;
+
+	my @score;
+	my @trace;
+
+	# init: all equally probable... maybe change
+	for (my $j = 0; $j < @$mods; $j++) {
+		$score[$j][0] = 0;
+		$trace[$j][0] = undef;
+	}
+
+	# fill: i indexes sequence, j indexes state, k indexes previous state
+	for (my $i = 1; $i < length($seq) -$K +2; $i++) {
+		my $kmer = substr($seq, $i-1, $K);
+		for (my $j = 0; $j < @mod; $j++) {
+			my $max_state;
+			my $max_score;
+			my $emit = $mods->[$j]{$kmer};
+			for (my $k = 0; $k < @$mods; $k++) {
+				my $prev = $score[$k][$i-1];
+				my $ts = $trans->[$k][$j];
+				my $score = $prev + $emit + $ts;
+				$max_score = $score if not defined $max_score;
+				if ($score >= $max_score) {
+					$max_score = $score;
+					$max_state = $k;
+				}
+			}
+			$score[$j][$i] = $max_score;
+			$trace[$j][$i] = $max_state;
+		}
+	}
+
+	# trace:
+	my $max_score = $score[0][-1];
+	my $max_state = $trace[0][-1];
+	for (my $j = 1; $j < @mod; $j++) {
+		if ($score[$j][-1] > $max_score) {
+			$max_score = $score[$j][-1];
+			$max_state = $j;
+		}
+	}
+
+	my $len = scalar(@{$score[0]});
+	my ($beg, $end) = ($len -1, $len -1);
+	my $hk = int($K/2); # half k-mer width
+	my @feature;
+	for (my $i = $len -1; $i > 0; $i--) {
+		if ($trace[$max_state][$i] == $max_state) {
+			$beg = $i;
+		} else {
+			push @feature, [$beg + $hk, $end + $hk, $max_state];
+			$beg = $i;
+			$end = $i;
+			$max_state = $trace[$max_state][$i];
+		}
+	}
+	push @feature, [$beg + $hk, $end + $hk, $max_state];
+	@feature = reverse @feature;
+
+	return \@feature;
 }
 
-sub read_model {
+sub read_kmer_table {
 	my ($filename) = @_;
 	my %model;
 	my $fh;
@@ -81,67 +211,3 @@ sub read_model {
 	die "incomplete kmers" if scalar(keys %model) != 4 ** $k;
 	return \%model, $k;
 }
-
-##############
-# Null Model # this is provided internally
-##############
-my %Null;
-foreach my $kmer (keys %{$mod[0]}) {
-	$Null{$kmer} = 1 / 4**$K;
-}
-
-#######
-# HMM # either ava or spoke topology
-#######
-
-if (defined $Y) {
-	push @file, 'Null';
-	push @mod, \%Null;
-}
-
-my @trans; # transition probability
-if ($Y) {
-	my $null = @mod -1;
-	for (my $i = 0; $i < @mod; $i++) {
-		for (my $j = 0; $j < @mod; $j++) {
-			if ($i == $null and $j == $null) {
-				$trans[$i][$j] = 1 - (@mod -1) * $Y;
-			} elsif ($j == $null) {
-				$trans[$i][$j] = $X;
-			} elsif ($i == $null) {
-				$trans[$i][$j] = $Y;
-			} elsif ($i == $j) {
-				$trans[$i][$j] = 1 - $X;
-			} else {
-				$trans[$i][$j] = 0;
-			}
-		}
-	}
-} else {
-	for (my $i = 0; $i < @mod; $i++) {
-		for (my $j = 0; $j < @mod; $j++) {
-			if ($i == $j) {$trans[$i][$j] = 1 - (@mod -1) * $X}
-			else          {$trans[$i][$j] = $X}
-		}
-	}
-}
-
-# convert all transition probabilities to log space
-foreach my $mod (@mod) {
-	foreach my $kmer (keys %Null) {
-		$mod->{$kmer} /= $Null{$kmer};
-	}
-}
-
-# convert all emission probabilities to log-odds with Null model as expected
-for (my $i = 0; $i < @mod; $i++) {
-	for (my $j = 0; $j < @mod; $j++) {
-		if ($trans[$i][$j] == 0) {$trans[$i][$j] = $LOW_SCORE}
-		else                     {$trans[$i][$j] = log($trans[$i][$j])}
-	}
-}
-
-###########
-# Viterbi #
-###########
-
