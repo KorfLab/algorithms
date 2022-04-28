@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import argparse
 from readfasta import read_record
 
@@ -26,12 +27,14 @@ codons = {
 	'TGT' : 'C', 'CGT' : 'R', 'AGT' : 'S', 'GGT' : 'G',
 	'TGC' : 'C', 'CGC' : 'R', 'AGC' : 'S', 'GGC' : 'G', 
 	'TGA' : '*', 'CGA' : 'R', 'AGA' : 'R', 'GGA' : 'G',
-	'TGG' : 'W', 'CGG' : 'R', 'AGG' : 'R', 'GGG' : 'G'
+	'TGG' : 'W', 'CGG' : 'R', 'AGG' : 'R', 'GGG' : 'G',
+	'UCN' : 'S', 'CUN' : 'L', 'CCN' : 'P', 'CGN' : 'R',
+	'ACN' : 'T', 'GUN' : 'V', 'GCN' : 'A', 'GGN' : 'G'
 }
 
 def revcomp(seq):
 	rc = ''
-	for nt in seq:
+	for nt in reversed(seq):
 		if nt == 'A': rc += 'T'
 		if nt == 'C': rc += 'G'
 		if nt == 'G': rc += 'C'
@@ -41,15 +44,16 @@ def revcomp(seq):
 def findallpeps(seq):
 	peps = []
 	for i in range(0, len(seq) - 2):
-		start = (codons[seq[i:i+3]] == 'M')
+		start = (seq[i:i+3] in codons and codons[seq[i:i+3]] == 'M')
 		if start:
 			pep = ''
 			for j in range(i, len(seq) - 2, 3):
 				codon = seq[j:j+3]
-				pep += codons[codon]
-				if codons[codon] == '*':
+				if codon not in codons: pep += 'X'
+				elif codons[codon] == '*':
 					if pep not in peps: peps.append(pep)
 					break
+				else: pep += codons[codon]
 	return peps
 
 # Main
@@ -60,9 +64,5 @@ for idn, seq in read_record(arg.fasta):
 	
 	print(f'>{idn}')
 	if len(peps) > 0: print(max(peps, key=len))
-	else:             print('*')
+	else:             print()
 	
-				
-			
-			
-
