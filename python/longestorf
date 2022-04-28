@@ -28,8 +28,8 @@ codons = {
 	'TGC' : 'C', 'CGC' : 'R', 'AGC' : 'S', 'GGC' : 'G', 
 	'TGA' : '*', 'CGA' : 'R', 'AGA' : 'R', 'GGA' : 'G',
 	'TGG' : 'W', 'CGG' : 'R', 'AGG' : 'R', 'GGG' : 'G',
-	'UCN' : 'S', 'CUN' : 'L', 'CCN' : 'P', 'CGN' : 'R',
-	'ACN' : 'T', 'GUN' : 'V', 'GCN' : 'A', 'GGN' : 'G'
+	'TCN' : 'S', 'CTN' : 'L', 'CCN' : 'P', 'CGN' : 'R',
+	'ACN' : 'T', 'GTN' : 'V', 'GCN' : 'A', 'GGN' : 'G'
 }
 
 def revcomp(seq):
