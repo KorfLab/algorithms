@@ -7,39 +7,62 @@ parser = argparse.ArgumentParser(
 	description='Get the protein sequence with the longest open reading frame')
 parser.add_argument('fasta', type=str, metavar='<file>',
 	help='input fasta file(s)')
-parser.add_argument('--frame', type=str, default='single', metavar='<single/double>',
-	help='input single(3) or double(6) frame translation [%(default)s]')
+parser.add_argument('-r', action='store_true',
+	help='also translate reverse complement strand')
+#flags for incomplete 5' and 3' ends
 arg = parser.parse_args()
 
-codons = {
-	'TTT' : 'F', 'CTT' : 'L', 'ATT' : 'I', 'GTT' : 'V',
-	'TTC' : 'F', 'CTC' : 'L', 'ATC' : 'I', 'GTC' : 'V',
-	'TTA' : 'L', 'CTA' : 'L', 'ATA' : 'I', 'GTA' : 'V',
-	'TTG' : 'L', 'CTG' : 'L', 'ATG' : 'M', 'GTG' : 'V',
-	'TCT' : 'S', 'CCT' : 'P', 'ACT' : 'T', 'GCT' : 'A',
-	'TCC' : 'S', 'CCC' : 'P', 'ACC' : 'T', 'GCC' : 'A',
-	'TCA' : 'S', 'CCA' : 'P', 'ACA' : 'T', 'GCA' : 'A',
-	'TCG' : 'S', 'CCG' : 'P', 'ACG' : 'T', 'GCG' : 'A',
-	'TAT' : 'Y', 'CAT' : 'H', 'AAT' : 'N', 'GAT' : 'D',
-	'TAC' : 'Y', 'CAC' : 'H', 'AAC' : 'N', 'GAC' : 'D', 
-	'TAA' : '*', 'CAA' : 'Q', 'AAA' : 'K', 'GAA' : 'E',
-	'TAG' : '*', 'CAG' : 'Q', 'AAG' : 'K', 'GAG' : 'E',
-	'TGT' : 'C', 'CGT' : 'R', 'AGT' : 'S', 'GGT' : 'G',
-	'TGC' : 'C', 'CGC' : 'R', 'AGC' : 'S', 'GGC' : 'G', 
-	'TGA' : '*', 'CGA' : 'R', 'AGA' : 'R', 'GGA' : 'G',
-	'TGG' : 'W', 'CGG' : 'R', 'AGG' : 'R', 'GGG' : 'G',
-	'TCN' : 'S', 'CTN' : 'L', 'CCN' : 'P', 'CGN' : 'R',
-	'ACN' : 'T', 'GTN' : 'V', 'GCN' : 'A', 'GGN' : 'G'
+CODONS = {
+	'AAA' : 'K',	'AAC' : 'N',	'AAG' : 'K',	'AAT' : 'N',
+	'AAR' : 'K',	'AAY' : 'N',	'ACA' : 'T',	'ACC' : 'T',
+	'ACG' : 'T',	'ACT' : 'T',	'ACR' : 'T',	'ACY' : 'T',
+	'ACK' : 'T',	'ACM' : 'T',	'ACW' : 'T',	'ACS' : 'T',
+	'ACB' : 'T',	'ACD' : 'T',	'ACH' : 'T',	'ACV' : 'T',
+	'ACN' : 'T',	'AGA' : 'R',	'AGC' : 'S',	'AGG' : 'R',
+	'AGT' : 'S',	'AGR' : 'R',	'AGY' : 'S',	'ATA' : 'I',
+	'ATC' : 'I',	'ATG' : 'M',	'ATT' : 'I',	'ATY' : 'I',
+	'ATM' : 'I',	'ATW' : 'I',	'ATH' : 'I',	'CAA' : 'Q',
+	'CAC' : 'H',	'CAG' : 'Q',	'CAT' : 'H',	'CAR' : 'Q',
+	'CAY' : 'H',	'CCA' : 'P',	'CCC' : 'P',	'CCG' : 'P',
+	'CCT' : 'P',	'CCR' : 'P',	'CCY' : 'P',	'CCK' : 'P',
+	'CCM' : 'P',	'CCW' : 'P',	'CCS' : 'P',	'CCB' : 'P',
+	'CCD' : 'P',	'CCH' : 'P',	'CCV' : 'P',	'CCN' : 'P',
+	'CGA' : 'R',	'CGC' : 'R',	'CGG' : 'R',	'CGT' : 'R',
+	'CGR' : 'R',	'CGY' : 'R',	'CGK' : 'R',	'CGM' : 'R',
+	'CGW' : 'R',	'CGS' : 'R',	'CGB' : 'R',	'CGD' : 'R',
+	'CGH' : 'R',	'CGV' : 'R',	'CGN' : 'R',	'CTA' : 'L',
+	'CTC' : 'L',	'CTG' : 'L',	'CTT' : 'L',	'CTR' : 'L',
+	'CTY' : 'L',	'CTK' : 'L',	'CTM' : 'L',	'CTW' : 'L',
+	'CTS' : 'L',	'CTB' : 'L',	'CTD' : 'L',	'CTH' : 'L',
+	'CTV' : 'L',	'CTN' : 'L',	'GAA' : 'E',	'GAC' : 'D',
+	'GAG' : 'E',	'GAT' : 'D',	'GAR' : 'E',	'GAY' : 'D',
+	'GCA' : 'A',	'GCC' : 'A',	'GCG' : 'A',	'GCT' : 'A',
+	'GCR' : 'A',	'GCY' : 'A',	'GCK' : 'A',	'GCM' : 'A',
+	'GCW' : 'A',	'GCS' : 'A',	'GCB' : 'A',	'GCD' : 'A',
+	'GCH' : 'A',	'GCV' : 'A',	'GCN' : 'A',	'GGA' : 'G',
+	'GGC' : 'G',	'GGG' : 'G',	'GGT' : 'G',	'GGR' : 'G',
+	'GGY' : 'G',	'GGK' : 'G',	'GGM' : 'G',	'GGW' : 'G',
+	'GGS' : 'G',	'GGB' : 'G',	'GGD' : 'G',	'GGH' : 'G',
+	'GGV' : 'G',	'GGN' : 'G',	'GTA' : 'V',	'GTC' : 'V',
+	'GTG' : 'V',	'GTT' : 'V',	'GTR' : 'V',	'GTY' : 'V',
+	'GTK' : 'V',	'GTM' : 'V',	'GTW' : 'V',	'GTS' : 'V',
+	'GTB' : 'V',	'GTD' : 'V',	'GTH' : 'V',	'GTV' : 'V',
+	'GTN' : 'V',	'TAA' : '*',	'TAC' : 'Y',	'TAG' : '*',
+	'TAT' : 'Y',	'TAR' : '*',	'TAY' : 'Y',	'TCA' : 'S',
+	'TCC' : 'S',	'TCG' : 'S',	'TCT' : 'S',	'TCR' : 'S',
+	'TCY' : 'S',	'TCK' : 'S',	'TCM' : 'S',	'TCW' : 'S',
+	'TCS' : 'S',	'TCB' : 'S',	'TCD' : 'S',	'TCH' : 'S',
+	'TCV' : 'S',	'TCN' : 'S',	'TGA' : '*',	'TGC' : 'C',
+	'TGG' : 'W',	'TGT' : 'C',	'TGY' : 'C',	'TTA' : 'L',
+	'TTC' : 'F',	'TTG' : 'L',	'TTT' : 'F',	'TTR' : 'L',
+	'TTY' : 'F',	'TRA' : '*',	'YTA' : 'L',	'YTG' : 'L',
+	'YTR' : 'L',	'MGA' : 'R',	'MGG' : 'R',	'MGR' : 'R',
 }
 
 def revcomp(seq):
-	rc = ''
-	for nt in reversed(seq):
-		if nt == 'A': rc += 'T'
-		if nt == 'C': rc += 'G'
-		if nt == 'G': rc += 'C'
-		if nt == 'T': rc += 'A'
-	return rc
+	comp = str.maketrans('ACGTRYMKWSBDHVN', 'TGCAYRKMWSVHDBN')
+	anti = seq.translate(comp)[::-1]
+	return anti
 
 def findallpeps(seq):
 	peps = []
@@ -58,11 +81,13 @@ def findallpeps(seq):
 
 # Main
 for idn, seq in read_record(arg.fasta):
+	seq = seq.upper()
 	peps = findallpeps(seq) 
-	if arg.frame == 'double':
+	if arg.r:
 		peps+=findallpeps(revcomp(seq))
-	
 	print(f'>{idn}')
-	if len(peps) > 0: print(max(peps, key=len))
-	else:             print()
+	protein = max(peps, key=len)
+	for i in range(0, len(protein), 80):
+		print(protein[i:i+80])
+	if len(protein) == 0: print('*')
 	
