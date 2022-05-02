@@ -3,8 +3,6 @@ use warnings;
 
 my $TS = "data/testseq.fa";
 my $TD = "data/testdb.fa.gz";
-
-my $unix = `uname`;
 my $sum = "cksum | cut -f1 -d ' '";
 
 my @TEST = (
