@@ -5,62 +5,59 @@ my $TS = "data/testseq.fa";
 my $TD = "data/testdb.fa.gz";
 
 my $unix = `uname`;
-my $MD5;
-if    ($unix =~ /Linux/)  {$MD5 = "md5sum | cut -f1 -d ' '"}
-elsif ($unix =~ /Darwin/) {$MD5 = "md5 -q"}
-else                      {die "tests not supported outside Linux/Mac"}
+my $sum = "cksum | cut -f1 -d ' '";
 
 my @TEST = (
 
 	# dust
 	{
 		name => "dust *.gz",
-		cli  => "./dust $TD | $MD5",
-		pass => "9154561d8a4ca4c7377be87d0e3f6cf0",
+		cli  => "./dust $TD | $sum",
+		pass => "1587978681",
 	},
 	{
 		name => "dust stdin",
-		cli  => "gunzip -c $TD | ./dust - | $MD5",
-		pass => "9154561d8a4ca4c7377be87d0e3f6cf0",
+		cli  => "gunzip -c $TD | ./dust - | $sum",
+		pass => "1587978681",
 	},
 	{
 		name => "dust soft",
-		cli  => "gunzip -c $TD | ./dust -s - | $MD5",
-		pass => "77de668c6d42b885260676c9140fdf92",
+		cli  => "gunzip -c $TD | ./dust -s - | $sum",
+		pass => "3012041873",
 	},
 
 	# kmerfreq
 	{
 		name => "kmerfreq *.gz",
-		cli  => "./kmerfreq $TD | $MD5",
-		pass => "3debb76c314fa3fe51fcac2952d2eebd",
+		cli  => "./kmerfreq $TD | $sum",
+		pass => "3351802717",
 	},
 	{
 		name => "kmerfreq stdin",
-		cli  => "gunzip -c $TD | ./kmerfreq - | $MD5",
-		pass => "3debb76c314fa3fe51fcac2952d2eebd",
+		cli  => "gunzip -c $TD | ./kmerfreq - | $sum",
+		pass => "3351802717",
 	},
 	{
 		name => "kmerfreq json",
-		cli  => "./kmerfreq -j $TD | $MD5",
-		pass => "9495f599da0b83243ac9825878119147",
+		cli  => "./kmerfreq -j $TD | $sum",
+		pass => "3940815226",
 	},
 
 	# longestorf
 	{
 		name => "longestorf *.gz",
-		cli  => "./longestorf $TD | $MD5",
-		pass => "28b6183998f5c4834d9d4c2a2b1c414f",
+		cli  => "./longestorf $TD | $sum",
+		pass => "1472222220",
 	},
 	{
 		name => "longestorf stdin",
-		cli  => "gunzip -c $TD | ./longestorf - | $MD5",
-		pass => "28b6183998f5c4834d9d4c2a2b1c414f",
+		cli  => "gunzip -c $TD | ./longestorf - | $sum",
+		pass => "1472222220",
 	},
 	{
 		name => "longestorf 6-frame",
-		cli  => "./longestorf -6 $TD | $MD5",
-		pass => "43c16b718ff84c030098f43f3c90a4c0",
+		cli  => "./longestorf -6 $TD | $sum",
+		pass => "145014533",
 	},
 
 	# randomseq
@@ -73,13 +70,13 @@ my @TEST = (
 	# smithwaterman
 	{
 		name => "smithwaterman",
-		cli  => "gunzip -c $TD | head -8 | ./smithwaterman $TS - | $MD5",
-		pass => "222a905c8dfed818b8a6e8b871579253",
+		cli  => "gunzip -c $TD | head -8 | ./smithwaterman $TS - | $sum",
+		pass => "3029323616",
 	},
 	{
 		name => "smithwaterman tabular",
-		cli  => "gunzip -c $TD | head -8 | ./smithwaterman -t $TS - | $MD5",
-		pass => "2b2b07c48651ed37f72a4ceceff86674",
+		cli  => "gunzip -c $TD | head -8 | ./smithwaterman -t $TS - | $sum",
+		pass => "4023237785",
 	},
 
 );
