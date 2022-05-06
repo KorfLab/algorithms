@@ -1,28 +1,7 @@
 import os
 import gzip
-import argparse
-
-'''
-We have some defaults up here
-
-This is where our "run conditions" are set?
-
-i.e.:
-{
-When we do dust, we use this file and these settings
-some sort of test value??
-}
 
 
-
-Then there's the execution loop.
-
-run all, dust - whatever,
-
-Here is where we do results, eventually
-
-then done
-'''
 testgz = "data/testdb.fa.gz"
 testfa = "data/testseq.fa"
 
@@ -45,4 +24,4 @@ for test in algorithms:
 	os.system(algorithms[test][0])
 	executed += 1
 
-print(f'{executed}/10 attempted to execute')
+print(f'{executed}/10 executed')
