@@ -22,6 +22,18 @@ test = {
 	'kmerfreq stdin': {
 		'cli': f'gunzip -c {testgz} | ./kmerfreq -',
 		'md5': '1c91216e6304326d5ba1925cf084a132'
+	},
+	'longestorf *.gz': {
+		'cli' : f'./longestorf {testgz}',
+		'md5' : '4560da895e0107a3ba8e5b1bfd23d08b'
+	},
+	'longestorf reverse': {
+		'cli': f'./longestorf -r {testgz}',
+		'md5': '0ed991aeae4c4f9515955a166d112b03'
+	},
+	'longestorft stdin': {
+		'cli': f'gunzip -c {testgz} | ./longestorf -',
+		'md5': '4560da895e0107a3ba8e5b1bfd23d08b'
 	}
 #	"longestorf *.gz": (f'./longestorf {testgz}', None),
 #	"longsetorf stdin": (f'gunzip -c {testgz} | ./longestorf -', None),
@@ -33,7 +45,9 @@ test = {
 }
 
 passed = 0
+runs = 0
 for name in test:
+	runs += 1
 	cli = test[name]['cli']
 	md5 = test[name]['md5']
 	out = subprocess.run(cli, capture_output=True, shell=True).stdout
@@ -43,4 +57,4 @@ for name in test:
 	else:
 		print(f'{name} failed', hashlib.md5(out).hexdigest())
 
-
+print(f'{passed}/{runs} Tests Passed\n')
