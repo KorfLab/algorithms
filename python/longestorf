@@ -67,22 +67,22 @@ def revcomp(seq):
 def findallpeps(seq):
 	peps = []
 	for i in range(0, len(seq) - 2):
-		start = (seq[i:i+3] in codons and codons[seq[i:i+3]] == 'M')
+		start = (seq[i:i+3] in CODONS and CODONS[seq[i:i+3]] == 'M')
 		if start:
 			pep = ''
 			for j in range(i, len(seq) - 2, 3):
 				codon = seq[j:j+3]
-				if codon not in codons: pep += 'X'
-				elif codons[codon] == '*':
+				if codon not in CODONS: pep += 'X'
+				elif CODONS[codon] == '*':
 					if pep not in peps: peps.append(pep)
 					break
-				else: pep += codons[codon]
+				else: pep += CODONS[codon]
 	return peps
 
 # Main
 for idn, seq in read_record(arg.fasta):
 	seq = seq.upper()
-	peps = findallpeps(seq) 
+	peps = findallpeps(seq)
 	if arg.r:
 		peps+=findallpeps(revcomp(seq))
 	print(f'>{idn}')
@@ -90,4 +90,3 @@ for idn, seq in read_record(arg.fasta):
 	for i in range(0, len(protein), 80):
 		print(protein[i:i+80])
 	if len(protein) == 0: print('*')
-	
