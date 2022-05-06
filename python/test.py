@@ -35,13 +35,6 @@ test = {
 		'cli': f'gunzip -c {testgz} | ./longestorf -',
 		'md5': '4560da895e0107a3ba8e5b1bfd23d08b'
 	}
-#	"longestorf *.gz": (f'./longestorf {testgz}', None),
-#	"longsetorf stdin": (f'gunzip -c {testgz} | ./longestorf -', None),
-#	"longestorf reverse": (f'./longestorf -r {testgz}', None),
-#	"dust *.gz": (f'./dust {testgz}', None),
-#	"dust stdin": (f'gunzip -c {testgz} | ./dust -', None),
-#	"dust lowercase": (f'./dust -s {testgz}', None)
-#	}
 }
 
 passed = 0
