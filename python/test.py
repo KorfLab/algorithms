@@ -31,7 +31,7 @@ test = {
 		'cli': f'./longestorf -r {testgz}',
 		'md5': '0ed991aeae4c4f9515955a166d112b03'
 	},
-	'longestorft stdin': {
+	'longestorf stdin': {
 		'cli': f'gunzip -c {testgz} | ./longestorf -',
 		'md5': '4560da895e0107a3ba8e5b1bfd23d08b'
 	}
