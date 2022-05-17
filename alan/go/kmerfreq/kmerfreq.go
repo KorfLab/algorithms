@@ -26,8 +26,6 @@ func main() {
 	
 	var kmer string
 	read_fasta.Read_fasta(*fasta, func (read read_fasta.Read) {
-		//fmt.Println(read.Id)
-		//fmt.Println(read.Seq)
 		for i := 0; i < (len(read.Seq) - *k + 1); i++ {
 			kmer = read.Seq[i:i+*k]
 			freq[kmer] += 1
@@ -44,10 +42,18 @@ func main() {
 	
 	
 	if *j {
-	
+		fmt.Printf("{\n")
+		for i, kmer := range kmers {
+			if i == len(kmers) - 1 {
+				fmt.Printf("\t\"%s\": %f\n", kmer, freq[kmer])
+			} else {
+				fmt.Printf("\t\"%s\": %f,\n", kmer, freq[kmer])
+			}
+		}
+		fmt.Printf("}\n")
 	} else {
 		for _, kmer := range kmers {
-			fmt.Printf("%s\t%.5f\n", kmer, freq[kmer])
+			fmt.Printf("%s\t%f\n", kmer, freq[kmer])
 		}
 	}
 
