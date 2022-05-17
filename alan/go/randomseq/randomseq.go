@@ -22,6 +22,9 @@ func main() {
 	len_seq := flag.Int("len", 100, "length of sequence")
 	prefix := flag.String("prefix", "id", "prefix for identifier")
 	seed := flag.String("seed", "random", "random seed" )
+	// For composition of bases:
+	// option 1: one float flag for each base (e.g. -a 0.25 -c 0.25 -g 0.25 -t 0.25)
+	// option 2: one string flag for all bases (e.g. -comp "0.25 0.25 0.25 0.25")
 	flag.Parse()
 	
 	if *seed != "random" {
