@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/AlanAloha/read_fasta"
+	"github.com/AlanAloha/read_record"
 	"flag"
 	"sort"
 	"fmt"
@@ -25,9 +25,9 @@ func main() {
 	freq := make(map[string]float64)
 	
 	var kmer string
-	read_fasta.Read_fasta(*fasta, func (read read_fasta.Read) {
-		for i := 0; i < (len(read.Seq) - *k + 1); i++ {
-			kmer = read.Seq[i:i+*k]
+	read_record.Read_record(*fasta, func (record read_record.Record) {
+		for i := 0; i < (len(record.Seq) - *k + 1); i++ {
+			kmer = record.Seq[i:i+*k]
 			freq[kmer] += 1
 			total += 1
 		}

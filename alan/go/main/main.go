@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/AlanAloha/read_fasta"
+	"github.com/AlanAloha/read_record"
 	"flag"
 	"fmt"
 	"os"
@@ -16,9 +16,9 @@ func main() {
 		os.Exit(1)
 	}
 	
-	read_fasta.Read_fasta(*fasta, func (read read_fasta.Read) {
-		fmt.Println(read.Id)
-		fmt.Println(read.Seq)
+	read_record.Read_record(*fasta, func (record read_record.Record) {
+		fmt.Println(record.Id)
+		fmt.Println(record.Seq)
 	})
 	
 
