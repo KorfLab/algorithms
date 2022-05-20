@@ -5,6 +5,7 @@ import (
 	"os"
 	"bufio"
 	"strings"
+	"compress/gzip"
 )
 
 type Record struct {
@@ -18,12 +19,21 @@ func Read_record(ff string, callBack func(Record)) {
 	if err != nil {
 		panic(err)
 	}
+	defer fh.Close()
+	scanner := bufio.NewScanner(fh)
+	
+	if strings.HasSuffix(ff, ".gz") {
+		gzfh, err := gzip.NewReader(fh)
+		if err != nil {
+			panic(err)
+		}
+		defer gzfh.Close()
+		scanner = bufio.NewScanner(gzfh)
+	}
 	
 	seq := ""
 	id := ""
 	var record Record
-	
-	scanner := bufio.NewScanner(fh)
 	for scanner.Scan() {
 		line := scanner.Text()
 		if strings.HasPrefix(line, ">") {
@@ -41,4 +51,6 @@ func Read_record(ff string, callBack func(Record)) {
 	}
 	record = Record{Id: id, Seq: seq}
 	callBack(record)
+	
+	fh.Close()
 }
