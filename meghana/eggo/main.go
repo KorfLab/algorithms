@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	
 	"eggo/readfasta"
 )
 
@@ -12,10 +13,8 @@ func main() {
 	flag.Parse()
 	
 	readfasta.Readfasta(*fs, func(fasta readfasta.Fasta) {
-		fmt.Print(fasta.Id)
-		fmt.Print("\n")
-		fmt.Print(fasta.Seq)
-		fmt.Print("\n")
+		fmt.Printf("%v\n", fasta.Id)
+		fmt.Printf("%v\n", fasta.Seq)
 	})
 }
 
