@@ -86,7 +86,10 @@ for idn, seq in read_record(arg.fasta):
 	if arg.r:
 		peps+=findallpeps(revcomp(seq))
 	print(f'>{idn}')
-	protein = max(peps, key=len)
+	if len(peps) >= 1:
+		protein = max(peps, key=len)
+	else:
+		protein = '*'
 	for i in range(0, len(protein), 80):
 		print(protein[i:i+80])
 	if len(protein) == 0: print('*')
