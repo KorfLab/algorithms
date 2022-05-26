@@ -96,7 +96,6 @@ func BuildFasta(scanner *FileScanner, nextid *string) (*Fasta, bool){
         } 
     }
     fasta := NewFasta(*nextid, seq)
-   // fmt.Println("hi")
    
    	if fasta.Seq != ""{
    		return fasta, true
