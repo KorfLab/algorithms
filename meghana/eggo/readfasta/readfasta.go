@@ -1,13 +1,13 @@
 package readfasta
 
 /* 
-multiline fasta files
 gzipped files
 add description
 */
 
 import (
 	"bufio"	
+	"fmt"
 	"log"
 	"os"
 )
@@ -17,6 +17,18 @@ type Fasta struct {
 	//Desc string // description
 	Seq string // sequence
 }
+
+func NewFasta(id string, seq string) *Fasta {
+	r := Fasta{Id: id, Seq: seq}
+	return &r
+}
+
+func Print(fa *Fasta) {
+    fmt.Print(">")
+    fmt.Println(fa.Id)
+    fmt.Println(fa.Seq)
+}
+// wrap ?
 
 func Readfasta(path string, callback func(Fasta)){
 	f, err := os.Open(path)
