@@ -1,13 +1,14 @@
-package kmerfreq
+package main
 
 import (
 	"fmt"
+	"flag"
 	"eggo/sireadfasta"
 )
 
 
 
-func Kmerfreq(fs *string, k int, j bool) {
+func kmerfreq(fs *string, k int, j bool) {
 	freqs := make(map[string]float64)
 	iterator := sireadfasta.NewFastaStatefulIterator(fs)
 	total := 0.0
@@ -40,4 +41,12 @@ func Kmerfreq(fs *string, k int, j bool) {
     }
     }
 
+}
+
+func main(){
+	fs := flag.String("f", "", "path to file")
+	k := flag.Int("k", 3, "kmer size")
+	j := flag.Bool("j", false, "json output (tabular default)")
+	flag.Parse()
+	kmerfreq(fs, *k, *j)
 }
