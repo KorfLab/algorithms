@@ -7,11 +7,16 @@ import (
 	"eggo/readfasta"
 	"eggo/randomseq"
 	"eggo/sireadfasta"
+	"eggo/kmerfreq"
 )
 
 
 func main() {	
-	userandomseq()
+	fs := flag.String("f", "", "path to file")
+	k := flag.Int("k", 3, "kmer size")
+	j := flag.Bool("j", false, "json output (tabular default)")
+	flag.Parse()
+	kmerfreq.Kmerfreq(fs, *k, *j)
 }
 
 
