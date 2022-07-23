@@ -24,3 +24,11 @@ type Choice struct {
 func NewChoice(option str, weight float32) Choice {
   return Choice{Option: option, Weight: weight}
 }
+
+// Creates a Chooser object, which sorts the choices in ascending order of their
+// weights to prepare them to generate the sequence.
+func NewChooser(choices ...Choice) (*Chooser, error) {
+  sort.Slice(choices, func(i, j) int) bool {
+    return choices[i].Weight < choices[j].Weight
+  }
+}
