@@ -1,15 +1,15 @@
 package si_read_record
 
 import (
-	"os"
-	"bufio"
-	"strings"
 	"compress/gzip"
+	"strings"
+	"bufio"
+	"os"
 )
 
 type Record struct {
-	Id string
 	Seq string
+	Id string
 }
 
 type StatefulIterator interface {
@@ -18,22 +18,26 @@ type StatefulIterator interface {
 }
 
 type recordStatefulIterator struct {
-	current *Record
 	scanner *bufio.Scanner
-	fh *os.File
+	linecarrier string
 	gzfh *gzip.Reader
 	idcarrier string
-	linecarrier string
+	current *Record
 	finished bool
+	fh *os.File
 }
 
 func NewRecordStatefulIterator(ff string) *recordStatefulIterator {
-	si := &recordStatefulIterator{current: &Record{Id: "", Seq: ""}, finished: false}
-	
 	fh, err := os.Open(ff)
 	if err != nil {
 		panic(err)
 	}
+	
+	si := &recordStatefulIterator{
+		current: &Record{Id: "", Seq: ""},
+		finished: false,
+		fh: fh}
+		
 	scanner := bufio.NewScanner(fh)
 	if strings.HasSuffix(ff, ".gz") {
 		gzfh, err := gzip.NewReader(fh)
@@ -43,17 +47,8 @@ func NewRecordStatefulIterator(ff string) *recordStatefulIterator {
 		}
 		scanner = bufio.NewScanner(gzfh)
 	}
-	si.fh = fh
 	si.scanner = scanner
 	return si
-	/*
-	return &recordStatefulIterator {
-		current: &Record{Id: "", Seq: ""},
-		scanner: scanner,
-		fh: fh,
-		gzfh: gzfh,
-		finished: false}
-	*/
 }
 
 func (it *recordStatefulIterator) Value() *Record {

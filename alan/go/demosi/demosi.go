@@ -2,16 +2,12 @@ package main
 
 import (
 	"fmt"
-	//"os"
-	//"bufio"
-	//"strings"
-	//"compress/gzip"
 	"github.com/AlanAloha/si_read_record"
 )
 
 func main() {
 
-	iterator := si_read_record.NewRecordStatefulIterator("../test.fa")
+	iterator := si_read_record.NewRecordStatefulIterator("../test.fa.gz")
 
 	for iterator.Next() {
 		record := iterator.Value()
