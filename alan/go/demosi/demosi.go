@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	iterator := si_read_record.NewRecordStatefulIterator("../test.fa.gz")
+	iterator := si_read_record.NewRecordStatefulIterator("../test.fa")
 
 	for iterator.Next() {
 		record := iterator.Value()
