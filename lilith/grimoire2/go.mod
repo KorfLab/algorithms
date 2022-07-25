@@ -1,3 +1,3 @@
-module grimoire2
+module grimoire2 
 
 go 1.18
