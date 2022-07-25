@@ -7,10 +7,10 @@ import (
 
 func main() {
 
-	iterator := si_read_record.NewRecordStatefulIterator("../test.fa.gz")
+	iterator := si_read_record.Read_record("../test.fa.gz")
 
 	for iterator.Next() {
-		record := iterator.Value()
+		record := iterator.Record()
 		fmt.Printf(">%s\n",record.Id)
 		fmt.Println(record.Seq)
 	}

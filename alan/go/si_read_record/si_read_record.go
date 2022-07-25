@@ -13,7 +13,7 @@ type Record struct {
 }
 
 type StatefulIterator interface {
-	Value() Record
+	Record() Record
 	Next() bool
 }
 
@@ -27,7 +27,7 @@ type recordStatefulIterator struct {
 	fh *os.File
 }
 
-func NewRecordStatefulIterator(ff string) *recordStatefulIterator {
+func Read_record(ff string) *recordStatefulIterator {
 	fh, err := os.Open(ff)
 	if err != nil {
 		panic(err)
@@ -51,7 +51,7 @@ func NewRecordStatefulIterator(ff string) *recordStatefulIterator {
 	return si
 }
 
-func (it *recordStatefulIterator) Value() *Record {
+func (it *recordStatefulIterator) Record() *Record {
 	return it.current
 }
 
