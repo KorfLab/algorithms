@@ -92,7 +92,11 @@ func (it *recordStatefulIterator) Next() bool {
 	} else {
 		it.finished = true
 		seq = it.linecarrier + seq
-		it.current = &Record{Id: it.idcarrier, Seq: seq}
+		if id != "" {
+			it.current = &Record{Id: id, Seq: seq}
+		} else {
+			it.current = &Record{Id: it.idcarrier, Seq: seq}
+		}
 		return true
 	}
 }
