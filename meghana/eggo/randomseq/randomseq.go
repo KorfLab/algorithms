@@ -7,8 +7,6 @@ import (
 	"math/rand"
 )
 
-
-
 func randomseq(n int, l int, a float64, c float64, g float64, t float64, prefix string, s int) {
 
 	rand.Seed(int64(s))
@@ -16,7 +14,6 @@ func randomseq(n int, l int, a float64, c float64, g float64, t float64, prefix 
 	c = c + a
 	g = g + c
 	t = t + g
-	
 	
 	for i := 1; i <= n; i ++ {  
 		fmt.Println(">", prefix, i)
@@ -50,5 +47,4 @@ func main() {
 	s := flag.Int("seed", int(time.Now().UnixNano()), "random seed")
 	flag.Parse()
 	randomseq(*n, *l, *a, *c, *g, *t, *prefix, *s)
-	
 }

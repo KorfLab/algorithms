@@ -8,7 +8,6 @@ import (
 	"eggo/sireadfasta"
 )
 
-
 func main() {	
 	fs := flag.String("f", "", "path to file")
 	flag.Parse()
@@ -18,8 +17,6 @@ func main() {
 	}
 }
 
-
-//ignore
 func usereadfasta() {
 	fs := flag.String("f", "", "path to file")
 	flag.Parse()
@@ -28,4 +25,3 @@ func usereadfasta() {
 		readfasta.Print(&fasta)
 	})
 }
-

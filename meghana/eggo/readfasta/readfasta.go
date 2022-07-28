@@ -62,5 +62,4 @@ func Readfasta(path string, callback func(Fasta)){
     if err := scanner.Err(); err != nil {
         log.Fatal(err)
     }
-    
 }
