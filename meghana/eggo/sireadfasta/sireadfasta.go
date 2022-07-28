@@ -96,3 +96,5 @@ func BuildFasta(scanner *FileScanner, nextid *string) (*Fasta, bool){
     	return fasta, false
     }
 }
+
+

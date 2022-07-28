@@ -48,3 +48,4 @@ func main() {
 	flag.Parse()
 	randomseq(*n, *l, *a, *c, *g, *t, *prefix, *s)
 }
+

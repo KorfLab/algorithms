@@ -63,3 +63,4 @@ func Readfasta(path string, callback func(Fasta)){
         log.Fatal(err)
     }
 }
+

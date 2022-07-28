@@ -48,3 +48,4 @@ func main(){
 	flag.Parse()
 	kmerfreq(fs, *k, *j)
 }
+

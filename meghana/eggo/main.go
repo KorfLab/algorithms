@@ -25,3 +25,4 @@ func usereadfasta() {
 		readfasta.Print(&fasta)
 	})
 }
+
