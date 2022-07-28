@@ -2,7 +2,7 @@ package main
 
 
 import (
-  "github.com/KorfLab/algorithms/lilith/grimoire2/randomseq"
+  "grimoire2/randomseq"
 )
 
 
