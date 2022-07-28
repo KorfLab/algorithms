@@ -3,10 +3,9 @@ package main
 import (
 	"fmt"
 	"flag"
+	
 	"eggo/sireadfasta"
 )
-
-
 
 func kmerfreq(fs *string, k int, j bool) {
 	freqs := make(map[string]float64)
@@ -40,7 +39,6 @@ func kmerfreq(fs *string, k int, j bool) {
 		fmt.Println(key, "    ", freqs[key])
     }
     }
-
 }
 
 func main(){
@@ -50,3 +48,4 @@ func main(){
 	flag.Parse()
 	kmerfreq(fs, *k, *j)
 }
+

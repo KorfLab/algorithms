@@ -19,6 +19,12 @@ type Choice struct {
   Weight float32
 }
 
+type Chooser struct {
+  Choices []Choice
+  Breakpoints []float32
+  Maxweight float32
+}
+
 // This function will create a new Choice based on the dictionary and the weights
 // input by the user.
 func NewChoice(option string, weight float32) Choice {
@@ -27,26 +33,28 @@ func NewChoice(option string, weight float32) Choice {
 
 // Creates a Chooser object, which sorts the choices in ascending order of their
 // weights to prepare them to generate the sequence.
-func NewChooser(choices []Choice) {
+func NewChooser(choices []Choice) (*Chooser) {
 //  sort.Slice(choices, func(i, j) int) bool {
 //    return choices[i].Weight < choices[j].Weight
 //  }
-  //breakpoints := make([]float32, len(choices))
+  breakpoints := make([]float32, len(choices))
   var total float32 = 0.00
 
-  for i, j := range choices {
-    weight := j.Weight
+
+  for i, nt := range choices {
+    breakpoints[i] = nt.Weight
     total += choices[i].Weight
-    fmt.Println(weight, total)
   }
+
+  return &Chooser{Choices: choices, Breakpoints: breakpoints, Maxweight: total}
 }
 
-func Run () {
+func MakeChoices () (*Chooser, error) {
   demos := make([]Choice, 4)
   demos[0] = Choice{"A", 0.10}
   demos[1] = Choice{"C", 0.20}
   demos[2] = Choice{"G", 0.30}
   demos[3] = Choice{"T", 0.40}
 
-  NewChooser(demos)
+  weighted := NewChooser(demos)
 }

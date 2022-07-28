@@ -6,7 +6,6 @@ import(
 	"os"
 	"io"
 )
-// general fasta types and functions 
 
 type Fasta struct {
 	Id string // unique identifier
@@ -24,8 +23,6 @@ func Print(fa *Fasta) {
     fmt.Println(fa.Id)
     fmt.Println(fa.Seq)
 }
-
-// stateful iterator code
 
 type FastaStatefulIterator struct {
     current *Fasta
@@ -50,15 +47,12 @@ func (fasta *FastaStatefulIterator) Next() bool {
 	return bools
 }
 
-
 func NewFastaStatefulIterator(path *string) *FastaStatefulIterator {
 	scanner := GetScannerPtr(path)
 	current := NewFasta("","")
 	nextid := ""
     return &FastaStatefulIterator{scanner: scanner, current: current, nextid: &nextid}
 }
-
-//to pass a scanner as a parameter
 
 type FileScanner struct {
     io.Closer
@@ -75,12 +69,10 @@ func GetScannerPtr(filePath *string) *FileScanner  {
     return &FileScanner{f, scanner}
 }
 
-//build current and determine next
 func BuildFasta(scanner *FileScanner, nextid *string) (*Fasta, bool){
     defer scanner.Close()
     seq := ""
     for scanner.Scan() {
-    
         line := scanner.Text()
         if line[0] == '>' && len(seq) != 0 {
 			var fasta *Fasta
@@ -95,6 +87,7 @@ func BuildFasta(scanner *FileScanner, nextid *string) (*Fasta, bool){
         	seq += line
         } 
     }
+    
     fasta := NewFasta(*nextid, seq)
    
    	if fasta.Seq != ""{
@@ -103,3 +96,5 @@ func BuildFasta(scanner *FileScanner, nextid *string) (*Fasta, bool){
     	return fasta, false
     }
 }
+
+
