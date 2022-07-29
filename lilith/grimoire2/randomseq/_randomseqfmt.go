@@ -7,8 +7,8 @@ package randomseq
 import (
 	//"error"
 	"fmt"
-	"strings"
 	"math/rand"
+	"strings"
 	//"sort"
 )
 
@@ -63,9 +63,8 @@ func MakeChooser(dictionary string, freqs []float32) *Chooser {
 	return ntrand
 }
 
-
-func Picknprint (chooser *Chooser, runs int, size int) {
-	var i,j,k int = 0, 0, 0
+func Picknprint(chooser *Chooser, runs int, size int) {
+	var i, j, k int = 0, 0, 0
 	var printstring string
 
 	for i < runs {
@@ -75,7 +74,6 @@ func Picknprint (chooser *Chooser, runs int, size int) {
 		}
 	}
 }
-
 
 func Findfloat(breaks []float32, selector float32) int {
 
