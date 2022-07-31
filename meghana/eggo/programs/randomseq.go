@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"flag"
 	"time"
@@ -35,6 +36,14 @@ func randomseq(n int, l int, a float64, c float64, g float64, t float64, prefix 
 	}
 }
 
+func weights(sum float64) (error) {
+	if (sum) == 0 {panic("Error: Weights cannot sum to 0")}
+    if (sum) != 1.0 {
+        return errors.New("Warning: Weights don't sum to 1")
+    }
+    return nil
+}
+  
 func main() {
 	n := flag.Int("n", 10, "number of sequences")
 	l := flag.Int("l", 80, "length of each sequence")
@@ -42,10 +51,20 @@ func main() {
 	c := flag.Float64("c", .25, "C freq")
 	g := flag.Float64("g", .25, "G freq")
 	t := flag.Float64("t", .25, "T freq")
-	
 	prefix := flag.String("pre", "id", "prefix for sequence identifiers")
 	s := flag.Int("seed", int(time.Now().UnixNano()), "random seed")
 	flag.Parse()
+	
+	sum := *a + *c + *g + *t
+	err := weights(sum)
+	if err != nil {
+		*a /= sum
+		*c /= sum
+		*g /= sum
+		*t /= sum
+		fmt.Println(err)
+	}
+	
 	randomseq(*n, *l, *a, *c, *g, *t, *prefix, *s)
 }
 
