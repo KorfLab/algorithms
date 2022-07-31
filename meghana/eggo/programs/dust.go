@@ -5,25 +5,66 @@ import (
 	"fmt"
 	"flag"
 	"math"
+	"strings"
 	
 	"eggo/sireadfasta"
 )
 
 func dust(fs *string, w int, e float64, l bool) {
-	fmt.Println(*fs, w, e, l)
-	
 	it := sireadfasta.NewFastaStatefulIterator(fs)
 	for it.Next() {
 		ff := it.Value()
 		seq := ff.Seq
-		for i:=1; i<=len(seq)-w; i++ {
-			win := seq[i:i+w]
-			fmt.Println(entropy(win))
+		id := ff.Id
+		fmt.Println(">", id)
+		win := seq[0:0+w]
+		a, c, g, t := count(win)
+		newseq := seq[0:w/2]
+		
+		for i:=1; i<=len(seq)-w+1; i++ {
+			last := seq[i-1]
+			switch last {
+				case 'A':
+					a -= 1
+				case 'C':
+					c -= 1
+				case 'G':
+					g -= 1
+				case 'T':
+					t -= 1 
+			}
+			newest := seq[i+w-2]
+			switch newest {
+				case 'A':
+					a +=1
+				case 'C':
+					c += 1
+				case 'G':
+					g += 1
+				case 'T':
+					t +=1
+			}
+			
+			if l {
+				if entropy(a, c, g, t) > e {
+					newseq += string(seq[i+w/2-1])
+				} else {
+					newseq += strings.ToLower(string(seq[i+w/2-1]))
+				}		
+			} else {
+				if entropy(a, c, g, t) > e {
+					newseq += string(seq[i+w/2-1])
+				} else {
+					newseq += "N"
+				}	
+			}
 		}
+		newseq += string(seq[len(seq)-w/2:])
+		fmt.Println(newseq)
 	}
 }
 
-func entropy(win string) float64{
+func count(win string) (float64, float64, float64, float64){
 	a, c, g, t := 0.0, 0.0, 0.0, 0.0
 	
 	for i:=0; i<=len(win)-1; i++ {
@@ -36,10 +77,13 @@ func entropy(win string) float64{
 			case 'G':
 				g += 1
 			case 'T':
-				t += 1		
+				t += 1		            
 			}
 	}
-	
+	return a, c, g, t
+}
+
+func entropy(a float64, c float64, g float64, t float64) float64{
 	total := a + c + g + t
 	pa := a/total
 	pc := c/total
