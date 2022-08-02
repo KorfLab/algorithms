@@ -1,4 +1,3 @@
-//not done
 package main
 
 import (
