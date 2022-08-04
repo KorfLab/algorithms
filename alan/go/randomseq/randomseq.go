@@ -3,29 +3,28 @@ package main
 import (
 	"math/rand"
 	"strconv"
+	"strings"
 	"time"
 	"flag"
 	"fmt"
 	"os"
 )
 
-func make_seq(length int, a float64, c float64, g float64, t float64) string{
-	seq := ""
+func rand_seq(length int, a float64, c float64, g float64, t float64) string{
+	seq := make([]string, length)
 	for i := 0; i < length; i++ {
 		rf := rand.Float64()
-		var nb string
 		if rf < a {
-			nb = "A"
+			seq[i] = "A"
 		} else if rf < a + c {
-			nb = "C"
+			seq[i] = "C"
 		} else if rf < a + c + g {
-			nb = "G"
+			seq[i] = "G"
 		} else {
-			nb = "T"
+			seq[i] = "T"
 		}
-		seq += nb
 	}
-	return seq
+	return strings.Join(seq,"")
 }
 
 func main() {
@@ -48,7 +47,7 @@ func main() {
 		seed, err:= strconv.ParseInt(*seed, 0, 64)
 		if err != nil {
 		panic(err)
-	}
+		}
 		rand.Seed(seed)
 	} else {
 		rand.Seed(time.Now().UnixNano())
@@ -59,7 +58,8 @@ func main() {
 	for i := 0; i < *num_seq; i++ {
 		fmt.Printf(">%s%d\n", *prefix, i+1)
 		
-		seq = make_seq(*len_seq, *a, *c, *g, *t)
+		
+		seq = rand_seq(*len_seq, *a, *c, *g, *t)
 		for j := 0; j < len(seq); j += 80 {
 			if j + 80 < len(seq) {
 				fmt.Println(seq[j:j+80])
