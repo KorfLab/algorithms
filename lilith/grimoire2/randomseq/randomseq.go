@@ -21,7 +21,7 @@ type Choice struct {
 // The Chooser object contains all the data needed to generate the sequence,
 // including the options, their weights, and the running total
 type Chooser struct {
-	Choices   []Choice
+	Ntoptions   []string
 	Breakpts  []float32
 	Maxweight float32
 }
@@ -36,6 +36,7 @@ func NewChoice(option string, weight float32) Choice {
 // weights to prepare them to generate the sequence.
 func NewChooser(choices []Choice) *Chooser {
 	breakpts := make([]float32, len(choices))
+	ntchoices := make([]string, len(choices))
 	var breakpt float32 = 0.0
 	var total float32
 
@@ -43,13 +44,17 @@ func NewChooser(choices []Choice) *Chooser {
 		breakpt += nt.Weight
 		breakpts[i] = breakpt
 		fmt.Println(breakpt, total)
+		ntoptions[i] = nt.Option
 	}
 
 	maxweight := breakpt
 
-	return &Chooser{Choices: choices, Breakpts: breakpts, Maxweight: maxweight}
+
+	return &Chooser{Options: ntoptions, Breakpts: breakpts, Maxweight: maxweight}
 }
 
+// Takes in the string of letters used to make our sequence and pairs them
+// in a Choice object in an array, then returns that array.
 func MakeChooser(dictionary string, freqs []float32) *Chooser {
 	dictslice := strings.Split(dictionary, ",")
 	demos := make([]Choice, len(dictslice))
@@ -64,19 +69,34 @@ func MakeChooser(dictionary string, freqs []float32) *Chooser {
 }
 
 
-func Picknprint (chooser *Chooser, runs int, size int) {
+func Seqprint(chooser *Chooser, runs int, size int) {
 	var i,j,k int = 0, 0, 0
-	var printstring string
+	var nt,printstring string
 
 	for i < runs {
+		fmt.Println(">id ", i)
 		for j < size {
-			rfloat := rand.Float32()
-			k := Findfloat(chooser.Breakpts, rfloat)
+			r := rand.Float32()
+			k = findfloat(chooser.Breakpts, r)
+			printstring += chooser.Ntoptions[k]
 		}
+
+		fmt.Println(printstring)
 	}
 }
 
 
-func Findfloat(breaks []float32, selector float32) int {
+func findfloat(breaks []float32, selector float32) int {
+	index,max := 0, len(breaks)
 
+	for index < max {
+		half := int(uint(index+max) >> 1)
+
+		if breaks[half] < selector {
+			index = index + half
+		} else {
+			max = half
+		}
+
+		return index
 }
