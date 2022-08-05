@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"flag"
 	"time"
+	"strings"
 	"math/rand"
 )
-
+// 80 len seqs
+//faster using slices
 func randomseq(n int, l int, a float64, c float64, g float64, t float64, prefix string, s int) {
 
 	rand.Seed(int64(s))
@@ -18,21 +20,21 @@ func randomseq(n int, l int, a float64, c float64, g float64, t float64, prefix 
 	
 	for i := 1; i <= n; i ++ {  
 		fmt.Println(">", prefix, i)
-		seq := ""
+		seq := make([]string, l)
 		for j := 0; j < l; j++ {
 			num := rand.Float64()
 			switch {
 			case num < a:
-				seq += "A"
+				seq[j] = "A"
 			case a <= num && num < c:
-				seq += "C"
+				seq[j] = "C"
 			case c <= num && num < g:
-				seq += "G"
+				seq[j] = "G"
 			case g <= num && num < t:
-				seq += "T"
+				seq[j] = "T"
 			}
 		}
-		fmt.Println(seq)
+		fmt.Println(strings.Join(seq, ""))
 	}
 }
 
@@ -45,8 +47,8 @@ func weights(sum float64) (error) {
 }
   
 func main() {
-	n := flag.Int("n", 10, "number of sequences")
-	l := flag.Int("l", 80, "length of each sequence")
+	n := flag.Int("n", 1000, "number of sequences")
+	l := flag.Int("l", 4000, "length of each sequence")
 	a := flag.Float64("a", .25, "A freq")
 	c := flag.Float64("c", .25, "C freq")
 	g := flag.Float64("g", .25, "G freq")
