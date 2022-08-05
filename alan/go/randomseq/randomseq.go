@@ -36,6 +36,18 @@ func main() {
 	c := flag.Float64("c", 0.25, "weight of C")
 	g := flag.Float64("g", 0.25, "weight of G")
 	t := flag.Float64("t", 0.25, "weight of T")
+	
+	flag.Usage = func() {
+		flagSet := flag.CommandLine
+		fmt.Printf("Generate random sequence and print to STDOUT\n")
+		order := []string{"num","len","a", "c", "g", "t", "prefix", "seed"}
+		for _, name := range order {
+			flag := flagSet.Lookup(name)
+			fmt.Printf("-%s\n", flag.Name)
+			fmt.Printf("    %s\n", flag.Usage)
+		}
+	}
+	
 	flag.Parse()
 	
 	if *a + *c + *g + *t - 1.0 > 0.00001 {
@@ -60,6 +72,7 @@ func main() {
 		
 		
 		seq = rand_seq(*len_seq, *a, *c, *g, *t)
+
 		for j := 0; j < len(seq); j += 80 {
 			if j + 80 < len(seq) {
 				fmt.Println(seq[j:j+80])

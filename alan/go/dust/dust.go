@@ -33,6 +33,18 @@ func main() {
 	w := flag.Int("w", 11, "window size (default: 11)")
 	t := flag.Float64("t", 1.5, "entropy threshold (default: 1.1)")
 	s := flag.Bool("s", false, "mask to lowercase, (default mast to N)")
+	
+	flag.Usage = func() {
+		flagSet := flag.CommandLine
+		fmt.Printf("Mask low complexity regions\n")
+		order := []string{"in", "w", "t", "s"}
+		for _, name := range order {
+			flag := flagSet.Lookup(name)
+			fmt.Printf("-%s\n", flag.Name)
+			fmt.Printf("    %s\n", flag.Usage)
+		}
+	}
+	
 	flag.Parse()
 	
 	if *fasta == "" {

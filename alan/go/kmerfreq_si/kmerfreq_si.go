@@ -8,11 +8,22 @@ import (
 	"os"
 )
 
-
 func main() {
 	fasta := flag.String("in", "", "path to fasta file (required)")
-	k := flag.Int("k", 3, "k-mer size")
+	k := flag.Int("k", 3, "k-mer size (default: k=3)")
 	j := flag.Bool("j", false, "output in json (default: tab-separated)")
+	
+	flag.Usage = func() {
+		flagSet := flag.CommandLine
+		fmt.Printf("Kmer frequency in either tab-separated or json format\n")
+		order := []string{"in", "k", "j"}
+		for _, name := range order {
+			flag := flagSet.Lookup(name)
+			fmt.Printf("-%s\n", flag.Name)
+			fmt.Printf("    %s\n", flag.Usage)
+		}
+	}
+	
 	flag.Parse()
 	
 	if *fasta == "" {

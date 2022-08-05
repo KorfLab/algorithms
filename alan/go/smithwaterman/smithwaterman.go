@@ -159,7 +159,7 @@ func main() {
 		for _, name := range order {
 			flag := flagSet.Lookup(name)
 			fmt.Printf("-%s\n", flag.Name)
-			fmt.Printf("	%s\n", flag.Usage)
+			fmt.Printf("    %s\n", flag.Usage)
 		}
 	}
 	flag.Parse()
