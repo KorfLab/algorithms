@@ -9,21 +9,15 @@ import (
 	"github.com/AlanAloha/si_read_record"
 )
 
-
-func seq_entropy (seq string) float64 {
-	a := float64(strings.Count(seq, "A"))
-	c := float64(strings.Count(seq, "C"))
-	g := float64(strings.Count(seq, "G"))
-	t := float64(strings.Count(seq, "T"))
-	
+func get_entropy (a float64, c float64, g float64, t float64) float64 {
+	h := 0.0
 	tot := a + c + g + t
 	
 	pa := a / tot
 	pc := c / tot
 	pg := g / tot
 	pt := t / tot
-	
-	h := 0.0
+
 	if pa > 0 {h -= pa * math.Log(pa)}
 	if pc > 0 {h -= pc * math.Log(pc)}
 	if pg > 0 {h -= pg * math.Log(pg)}
@@ -51,27 +45,52 @@ func main() {
 		record := records.Record()
 		seq := strings.ToUpper(record.Seq)
 		
-		mask := seq
+		mask_list := strings.Split(seq, "")
+		var freqs [4] float64
 		for i := 0; i < len(seq)-*w+1; i++ {
-			sub := seq[i:i+*w]
-			h := seq_entropy(sub)
+			if i == 0 {
+				sub := seq[i:i+*w]
+				freqs[0] = float64(strings.Count(sub, "A"))
+				freqs[1] = float64(strings.Count(sub, "C"))
+				freqs[2] = float64(strings.Count(sub, "G"))
+				freqs[3] = float64(strings.Count(sub, "T"))
+			} else {
+				previous := string(seq[i-1])
+				current := string(seq[i+*w-1])
+				if previous == "A" {
+					freqs[0] -= 1.0
+				} else if previous == "C" {
+					freqs[1] -= 1.0
+				} else if previous == "G" {
+					freqs[2] -= 1.0
+				} else {
+					freqs[3] -= 1.0
+				}
+				
+				if current == "A" {
+					freqs[0] += 1.0
+				} else if current == "C" {
+					freqs[1] += 1.0
+				} else if current == "G" {
+					freqs[2] += 1.0
+				} else {
+					freqs[3] += 1.0
+				}
+			}
+			h := get_entropy(freqs[0], freqs[1], freqs[2], freqs[3])
 			if h < *t {
 				pos := i + int(*w/2)
 				if *s {
-					mask = mask[:pos] + strings.ToLower(string(mask[pos])) + mask[pos+1:]
+					mask_list[pos] = strings.ToLower(string(mask_list[pos]))
 				} else {
-					mask = mask[:pos] + "N" + mask[pos+1:]
+					mask_list[pos] = "N"
 				}
 			}
 		}
+		mask := strings.Join(mask_list,"")
 		fmt.Printf(">%s\n", record.Id)
-		//fmt.Println(mask)
 		for i := 0; i < len(mask); i+=80 {
-			if i+80 < len(mask) {
-				fmt.Println(mask[i:i+80])
-			} else {
-				fmt.Println(mask[i:])
-			}
+			if i+80 < len(mask) {fmt.Println(mask[i:i+80])} else {fmt.Println(mask[i:])}
 		}
 	}
 }

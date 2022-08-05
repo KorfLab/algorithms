@@ -95,8 +95,6 @@ func sm_align (qrr *si_read_record.Record, dbr *si_read_record.Record, m int, n 
 			}
 		}
 	}
-	//display_scoremat(scoremat)
-	//display_tracemat(tracemat)
 	max, maxi, maxj := get_max(scoremat)
 	curri := maxi
 	currj := maxj
@@ -147,20 +145,31 @@ func sm_align (qrr *si_read_record.Record, dbr *si_read_record.Record, m int, n 
 }
 
 func main() {
-	in := flag.String("in", "", "path to fasta file (required)")
+	query := flag.String("query", "", "path to fasta file (required)")
 	db := flag.String("db", "", "path to database sequence or STDIN (required)")
 	m := flag.Int("m", 1, "match score (default: 1)")
 	n := flag.Int("n", -1, "mismatch score (default: -1)")
 	g := flag.Int("g", -2, "gap score (default: -2)")
 	t := flag.Bool("t", false, "output in tabular format")
+	
+	flag.Usage = func() {
+		flagSet := flag.CommandLine
+		fmt.Printf("Search for local alignment using smith-waterman algorithm\n")
+		order := []string{"query", "db", "t", "m", "n", "g"}
+		for _, name := range order {
+			flag := flagSet.Lookup(name)
+			fmt.Printf("-%s\n", flag.Name)
+			fmt.Printf("	%s\n", flag.Usage)
+		}
+	}
 	flag.Parse()
 	
-	if *in == "" || *db == ""{
+	if *query == "" || *db == ""{
 		flag.Usage()
 		os.Exit(1)
 	}
 	
-	qr_records := si_read_record.Read_record(*in)
+	qr_records := si_read_record.Read_record(*query)
 	var qr_record *si_read_record.Record
 	if qr_records.Next() {qr_record = qr_records.Record()}
 	db_records := si_read_record.Read_record(*db)
