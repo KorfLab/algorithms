@@ -248,25 +248,28 @@ Benchmarks
 
 | Lang | Prog | Time1 | Notes
 |:-----|:-----|:-----:|:------------
+| .c   | rseq |  0.10 |
 | .go  | rseq |       |
 |      | kfreq|       |
 |      | dust |       |
 |      | lorf |       |
 |      | sw   |       |
-| .pl  | rseq |  0.63 |
-|      | kfreq|  4.71 |
-|      | dust |  4.56 |
-|      | lorf |  1.80 |
-|      | sw   |  3.67 |
-| .py  | rseq |  0.59 |
-|      | kfreq|  3.69 |
-|      | dust |       |
-|      | lorf |       |
-|      | sw   |       |
+| .pl  | rseq |  1.05 |
+|      | kfreq|  7.11 |
+|      | dust |  7.21 |
+|      | lorf |  2.75 |
+|      | sw   |  5.69 |
+| .py  | rseq |  0.99 |
+|      | kfreq|  5.49 |
+|      | dust |       | broken
+|      | lorf |  3.52 |
+|      | sw   |       | missing
 
 Times are recorded by running 3 times and taking the best real time. Time1
-corresponds to Ian's Mac Mini running Lunbuntu in a VirtualBox with 2 cores and
-2G RAM. Would be fun to record other hardware.
+corresponds to Ian's Lenovo IdeaPad3 running LinuxLite in a VirtualBox with 2
+cores and 4G RAM.
+
+At some point this should be automated
 
 ### command lines for each program
 
