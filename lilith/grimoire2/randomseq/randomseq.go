@@ -7,6 +7,7 @@ package randomseq
 import (
 	//"error"
 	"fmt"
+	"math"
 	"math/rand"
 	"strings"
 )
@@ -69,20 +70,32 @@ func MakeChooser(dictionary string, freqs []float64) *Chooser {
 // arbitrary length. It uses the chooser object made previously, printing a FASTA
 // format sequence.
 func Seqprint(ch *Chooser, count int, size int) {
-	var i, j, k int = 0, 0, 0
-	printstring := make([]string, size)
+	var i, j, k, printlen int
+	const printwidth int = 80
+	divider := float64(size/printwidth)
+	extra := int(math.Floor(divider))
+	extra += size
+	printstring := make([]string, extra)
 
 	for i < count {
-
 		fmt.Println(">id ", i+1)
-		for j < size {
+
+		for j < extra {
 			r := rand.Float64()
 			k = findfloat(ch.Breakpts, r)
 			printstring[j] = ch.Ntoptions[k]
+			printlen++
+
+			if printlen == printwidth {
+				j++
+				printstring[j] = "\n"
+				printlen = 0
+			}
 			j++
 		}
-		fmt.Println(strings.Join(printstring, "")) //note not fasta format yet, needs to be 60 char then newline
+
 		i++
+		fmt.Print(strings.Join(printstring, ""), "\n")
 		j = 0
 	}
 }
@@ -105,4 +118,18 @@ func findfloat(breaks []float64, selector float64) int {
 	}
 
 	return index
+}
+
+
+func conditional(breaks []float64, selector float64) int {
+
+	if selector < breaks[0] {
+		return 0
+	} else if selector < breaks[1] {
+		return 1
+	} else if selector < breaks[2] {
+		return 2
+	} else {
+		return 3
+	}
 }
