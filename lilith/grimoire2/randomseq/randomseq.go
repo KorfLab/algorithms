@@ -82,7 +82,7 @@ func Seqprint(ch *Chooser, count int, size int) {
 
 		for j < extra {
 			r := rand.Float64()
-			k = findfloat(ch.Breakpts, r)
+			k = conditional(ch.Breakpts, r)
 			printstring[j] = ch.Ntoptions[k]
 			printlen++
 
@@ -120,7 +120,8 @@ func findfloat(breaks []float64, selector float64) int {
 	return index
 }
 
-
+// Scans through the breakpoints and returns the index of the base that was
+// selected for by the random number generator. 
 func conditional(breaks []float64, selector float64) int {
 
 	if selector < breaks[0] {
