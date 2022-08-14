@@ -34,12 +34,12 @@ func randomseq(n int, l int, a float64, c float64, g float64, t float64, prefix 
 			}
 		}
 		
-		seqq := strings.Join(seq, "")
-		for j := 0; j < len(seqq); j += 80 {
-			if j + 80 < len(seqq) {
-				fmt.Println(seqq[j:j+80])
+		out := strings.Join(seq, "")
+		for j:=0; j<len(out); j+=80 {
+			if j + 80 < len(out) {
+				fmt.Println(out[j:j+80])
 			} else {
-				fmt.Println(seqq[j:])
+				fmt.Println(out[j:])
 			} 
 		}
 	}
