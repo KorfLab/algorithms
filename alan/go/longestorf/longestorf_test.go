@@ -65,3 +65,34 @@ func TestLongestPep(t *testing.T) {
 		})
 	}
 }
+
+func TestRevcomp(t *testing.T) {
+	t.Parallel()
+	revcomp_tests := map[string]struct {
+		input string
+		output string
+	} {
+		"empty seq": {
+			input: "",
+			output: "",
+		},
+		"1 nt seq": {
+			input: "A",
+			output: "T",
+		},
+		"long seq": {
+			input: "GTAAGTTTCAG",
+			output: "CTGAAACTTAC",
+		},
+	}
+	
+	for name, test := range revcomp_tests {
+		test := test
+		t.Run(name, func(t *testing.T){
+			if got, expect := revcomp(test.input), test.output; got != expect {
+				t.Errorf("revcomp(%s) returned %s; expected %s \n", test.input, got, expect)
+			}
+		})
+	}
+
+}
