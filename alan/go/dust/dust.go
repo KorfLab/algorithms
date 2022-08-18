@@ -6,7 +6,7 @@ import (
 	"math"
 	"flag"
 	"strings"
-	"github.com/AlanAloha/si_read_record"
+	"github.com/AlanAloha/read_record"
 )
 
 func get_entropy (a float64, c float64, g float64, t float64) float64 {
@@ -52,7 +52,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	records := si_read_record.Read_record(*fasta)
+	records := read_record.Read_record(*fasta)
 	for records.Next() {
 		record := records.Record()
 		seq := strings.ToUpper(record.Seq)

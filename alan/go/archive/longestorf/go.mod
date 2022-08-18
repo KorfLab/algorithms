@@ -1,6 +1,6 @@
-module smithwater
+module github.com/AlanAloha/longestorf
 
-go 1.18
+go 1.16
 
 replace github.com/AlanAloha/read_record => ../read_record
 

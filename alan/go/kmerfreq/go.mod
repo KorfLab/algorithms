@@ -1,6 +1,6 @@
-module github.com/AlanAloha/kmerfreq
+module kmerfreq
 
-go 1.16
+go 1.18
 
 replace github.com/AlanAloha/read_record => ../read_record
 

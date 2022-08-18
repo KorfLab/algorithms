@@ -113,7 +113,9 @@ func main() {
 		os.Exit(1)
 	}
 	
-	read_record.Read_record(*fasta, func (record read_record.Record) {
+	records := read_record.Read_record(*fasta)
+	for records.Next() {
+		record := records.Record()
 		fmt.Printf(">%s\n",record.Id)
 		seq := record.Seq
 		if *r {
@@ -126,6 +128,6 @@ func main() {
 		} else {
 			fmt.Println(longestPep(seq))
 		}
-	})
+	}
 
 }

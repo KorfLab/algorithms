@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/AlanAloha/si_read_record"
+	"github.com/AlanAloha/read_record"
 	"flag"
 	"fmt"
 	"os"
@@ -49,7 +49,7 @@ func get_max (mat [][]int) (int, int, int) {
 	return max, maxi, maxj
 }
 
-func sm_align (qrr *si_read_record.Record, dbr *si_read_record.Record, m int, n int, g int) *sm_alignment {
+func sm_align (qrr *read_record.Record, dbr *read_record.Record, m int, n int, g int) *sm_alignment {
 	qrid := qrr.Id
 	dbid := dbr.Id
 	qrseq := qrr.Seq
@@ -169,10 +169,10 @@ func main() {
 		os.Exit(1)
 	}
 	
-	qr_records := si_read_record.Read_record(*query)
-	var qr_record *si_read_record.Record
+	qr_records := read_record.Read_record(*query)
+	var qr_record *read_record.Record
 	if qr_records.Next() {qr_record = qr_records.Record()}
-	db_records := si_read_record.Read_record(*db)
+	db_records := read_record.Read_record(*db)
 	for db_records.Next() {
 		db_record := db_records.Record()
 		alignment := sm_align(qr_record, db_record, *m, *n, *g)

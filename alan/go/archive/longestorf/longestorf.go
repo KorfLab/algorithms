@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/AlanAloha/si_read_record"
+	"github.com/AlanAloha/read_record"
 	"strings"
 	"flag"
 	"fmt"
@@ -113,9 +113,7 @@ func main() {
 		os.Exit(1)
 	}
 	
-	records := si_read_record.Read_record(*fasta)
-	for records.Next() {
-		record := records.Record()
+	read_record.Read_record(*fasta, func (record read_record.Record) {
 		fmt.Printf(">%s\n",record.Id)
 		seq := record.Seq
 		if *r {
@@ -128,6 +126,6 @@ func main() {
 		} else {
 			fmt.Println(longestPep(seq))
 		}
-	}
+	})
 
 }
