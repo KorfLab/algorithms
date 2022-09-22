@@ -16,7 +16,8 @@ genome. We can use these to derive default transition parameters.
 
 ## Emission Probabilities ##
 
-These should be trained from the `235.fa` and `300.fa` files.
+These should be trained from the `235.fa` and `300.fa` files. The 235 is +
+strand while the 300 is - strand.
 
 ## Tweaks ##
 
