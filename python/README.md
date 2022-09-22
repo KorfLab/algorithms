@@ -10,12 +10,11 @@ Checklist
 + `readfasta.py` needs internal API documentation
 + `randomseq` done
 + `kmerfreq` done
-+ `dust`
++ `dust` done
 + `longestorf`
 + `smithwaterman`
-+ test harness
++ test harness done (except for missing programs)
 + TUTORIAL.md
-+ pypi distribution?
 
 
 Testing
