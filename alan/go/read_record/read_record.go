@@ -8,28 +8,14 @@ import (
 	"os"
 )
 
+// Fasta reader
 type FastaRecord struct {
 	Seq string
 	Id string
 }
 
-type GffRecord struct {
-	Seqid string
-	Source string
-	Type string
-	Beg int64
-	End int64
-	Score float64
-	Strand byte
-	Phase byte
-	Id string
-	Parent []string
-}
-
-
 type fastaStatefulIterator struct {
 	scanner *bufio.Scanner
-	linecarrier string
 	gzfh *gzip.Reader
 	idcarrier string
 	current *FastaRecord
@@ -65,49 +51,66 @@ func (it *fastaStatefulIterator) Record() *FastaRecord {
 }
 
 func (it *fastaStatefulIterator) Next() bool {
-	if it.finished {
-		it.fh.Close()
-		if it.gzfh != nil {
-			it.gzfh.Close()
-		}
-		return false
-	}
+	scanner := it.scanner
+	not_empty := true
 	seq := ""
 	id := ""
-	scanner := it.scanner
-	for scanner.Scan() {
-		line := scanner.Text()
-		if strings.HasPrefix(line, ">") {
+	if it.finished {
+		return false
+	}
+	for true {
+		if scanner.Scan() {
+			line := scanner.Text()
+			if strings.HasPrefix(line, ">") {
+				if len(seq) == 0 {
+					id = line[1:]
+				} else {
+					if len(id) > 0 {
+						it.current = &FastaRecord{Id: id, Seq: seq}
+					} else {
+						it.current = &FastaRecord{Id: it.idcarrier, Seq: seq}
+					}
+					it.idcarrier = line[1:]
+					break
+				}
+			} else {
+				seq += line
+			}
+		} else {
 			if len(seq) > 0 {
-				if id == "" {
-					seq = it.linecarrier + seq
+				if len(it.idcarrier) > 0 {
 					it.current = &FastaRecord{Id: it.idcarrier, Seq: seq}
 				} else {
 					it.current = &FastaRecord{Id: id, Seq: seq}
 				}
-				it.idcarrier = line[1:]
-				break
 			} else {
-				id = line[1:]
+				not_empty = false
 			}
-		} else {
-			seq += line
+			it.fh.Close()
+			if it.gzfh != nil {
+				it.gzfh.Close()
+			}
+			it.finished  = true
+			break
 		}
 	}
-	//
-	if scanner.Scan() == true {
-		it.linecarrier = scanner.Text()
-		return true
-	} else {
-		it.finished = true
-		seq = it.linecarrier + seq
-		if id != "" {
-			it.current = &FastaRecord{Id: id, Seq: seq}
-		} else {
-			it.current = &FastaRecord{Id: it.idcarrier, Seq: seq}
-		}
-		return true
-	}
+	
+	return not_empty
+}
+
+// Gff reader
+
+type GffRecord struct {
+	Seqid string
+	Source string
+	Type string
+	Beg int64
+	End int64
+	Score float64
+	Strand byte
+	Phase byte
+	ID string
+	Parent []string
 }
 
 type gffStatefulIterator struct {
@@ -164,10 +167,12 @@ func (it *gffStatefulIterator) Next() bool {
 		atts := strings.Split(fields[8], ";")
 		for _, att := range atts {
 			if strings.HasPrefix(att, "Parent=") {
-				it.current.Parent = strings.Split(att, ",")
+				parents := strings.ReplaceAll(att, "Parent=", "")
+				it.current.Parent = strings.Split(parents, ",")
 			}
 			if strings.HasPrefix(att, "ID=") {
-				it.current.Id = att	
+				id := strings.ReplaceAll(att, "ID=", "")
+				it.current.ID = id
 			}
 		}
 		
