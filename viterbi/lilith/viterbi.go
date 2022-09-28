@@ -7,6 +7,10 @@ import (
   "math"
 )
 
+type Vnode struct {
+  prob float64
+  traceback *Vnode
+}
 
 //creates a simple model, only accounting for one position.
 func makemodel () map[string]float64 {
@@ -64,5 +68,5 @@ func main () {
   positivemodel = trainmodel(posfile)
   negativemodel = trainmodel(negfile)
 
-  
+  transition
 }
