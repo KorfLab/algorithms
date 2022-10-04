@@ -16,7 +16,7 @@ type Vnode struct {
 func makemodel () map[string]float64 {
   var bases = make(map[string]float64)
 
-  for _, letter := range('ACTG') {
+  for _, letter := range("ACTG") {
     bases[letter] = 0.0
   }
 }
