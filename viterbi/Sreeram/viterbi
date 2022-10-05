@@ -1,0 +1,115 @@
+import gzip
+import itertools
+import argparse
+import math
+
+from algorithms.python.readfasta import read_record
+
+parser = argparse.ArgumentParser(
+  description='HMM with viterbi algo for detecting r-loops')
+
+parser.add_argument('-p', type=str, metavar='<fasta_file>', help='fasta file input for training data on the positive strand')
+parser.add_argument('-n', type=str, metavar='<fasta_file>', help='fasta file input for training data on the negative strand')
+parser.add_argument('-t', type=str, metavar='<test_file>', help='fasta file input for testing')
+parser.add_argument('-nth', type=int, metavar='<int>', default=1, help='HMM nth order for emission probabilities (default: %(default)i)')
+
+arg = parser.parse_args()
+
+
+def read_seqs(file_name):
+  name = None
+  seq = []
+
+  fp = None
+  if file_name.endswith('.gz') : fp = gzip.open(file_name, 'rt')
+  else:                          fp = open(file_name)
+
+  while True:
+    cur_line = fp.readline()
+    if cur_line == '' : break
+
+    cur_line = cur_line.rstrip()
+
+    if cur_line.startswith('>') and len(seq) > 0:
+      seq = ''.join(seq)
+      yield (name, seq)
+      label = cur_line[1:]
+      seq = []
+    elif cur_line.startswith('>'):
+      label = cur_line[1:]
+    else:
+      seq.append(cur_line)
+  
+  yield (label, ''.join(seq))
+  fp.close()
+
+
+def model_make(num_order):
+  model_ret = {}
+
+  if num_order == 0:
+    for base in 'ACTG':
+      model_ret[base] = 0
+  else:
+    for kmer in itertools.product('ACTG', repeat=num_order):
+      model_ret[kmer] = {}
+      for base in 'ACGT':
+        model_ret[kmer][base] = 0
+  
+  return model_ret
+
+
+def log_convert(prob):
+  if prob == 0:
+    return -50
+  else:
+    return math.log2(prob/0.25)
+
+
+
+def train_model(file_name, order):
+  cur_model = model_make(order)
+
+  for _, seq in read_record(file_name):
+    if order == 0:
+      for base in seq: cur_model[base] += 1
+    else:
+      for i in range(len(seq)-order-1):
+        cur_subseq = seq[i:i+order]
+        cur_base = seq[i+order+1]
+        cur_model[cur_subseq][cur_base] += 1
+  if order == 0:
+    total_sum = sum(cur_model.values())
+    for base in cur_model:
+      prob = cur_model[base] / total_sum
+      cur_model[base] = log_convert(prob)
+  else:
+    for sub_seq in cur_model:
+      total_sum = sum(cur_model[sub_seq].values())
+      for base in cur_model[sub_seq]:
+        prob = cur_model[sub_seq][base] / total_sum
+        cur_model[sub_seq][base] = log_convert(prob)
+  return cur_model
+
+
+# emission prob (train from given seqs)
+
+order = arg.nth
+
+genomic_state = model_make(order)
+positive_state = train_model(arg.p, order)
+negative_state = train_model(arg.n, order)
+
+emission_array = [genomic_state, positive_state, negative_state]
+
+# transition probability
+
+transition_matrix = [[0] * 3 for i in range(3)]     # not sure about these nums
+
+# populate nums in matrix with probabilities that are converted to log2
+
+
+# viterbi main stuff after training and setting up emission and transition is done
+
+
+
