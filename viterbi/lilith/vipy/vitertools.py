@@ -3,29 +3,11 @@ import gzip
 import itertools
 import math
 
-class vnode:
-    def __init__(self):
-        self.probs = {"geno": 0, "pos": 0, "neg": 0}
-        self.trace = ""
-        self.maxp = None
-
-
-class fastaseq:
-    def __init__(self, name, sequence):
-        self.name = name
-        self.sequence = sequence
 """
 need to do transition probs
 need to do fill
 need to do decoding
 """
-parser = argparse.ArgumentParser(description="Algorithm to detect R-loops.")
-    parser.add_argument('fname', metavar='<file>', help="query file")
-    parser.add_argument('--pos', metavar='<file>', help="positive strand training file")
-    parser.add_argument('--neg', metavar='<file>', help="negative strand training file")
-    parser.add_argument('--n', metavar='<int>', type=int, help="order of HMM to construct")
-
-args = parser.parse_args()
 
 def readfasta (fname):
     seqname = ""
@@ -67,32 +49,26 @@ def makemodel(order):
     return model
 
 def trainmodel(fname, order, model):
-    seqs = []
     for name, sequence in readfasta(fname):
-        seq = fastaseq(name, sequence)
-        seqs.append(seq)
-
-    if order == 0:
-        for seq in seqs:
-            for letter in seq.sequence:
+        if order == 0:
+            for letter in sequence:
                 model[letter] += 1
-    else:
-        for seq in seqs:
+        else:
             j = 0
-            for i in range(order, len(seq.sequence)):
-                kmer = seq.sequence[j:i]
-                letter = seq.sequence[i]
+            for i in range(order, len(sequence)):
+                kmer = sequence[j:i]
+                letter = sequence[i]
 
                 model[kmer][letter] += 1
-
                 j += 1
     return model
 
-def logodds(prob, nullP):
+def prob2log(prob):
     if prob == 0:
         return -100
     else:
-        prob = math.log2(prob/nullP) #divide by null prob to get logodds
+        prob = math.log2(prob)
+        return prob
 
 def emissionP(model, order, log):
     sum = 0
@@ -112,61 +88,35 @@ def emissionP(model, order, log):
         emPs[letter] = round(emPs[letter] / sum, 2)
 
         if log:
-            emPs[letter] = logodds(emPs[letter], 0.25)
+            emPs[letter] = prob2log(emPs[letter])
 
     return emPs
 
 """
 Transition Probabilites:
 
-Start   Destination 
-Geno    Geno
-        R+
-        R-
+Start   index      Destination
+Geno    0          Geno
+                    R+
+                    R-
 
-R+      R+
-        Geno
+R+      1           Geno
+                    R+
 
-R-      R-
-        Geno
+R-      2           Geno
+                    R-
 """
-transitionP = {}
-
-transitionP["geno"] = {"geno" : 0.99999, "pos": 5e-6, "neg": 5e-6}
-transitionP["rpos"] = {"rpos" : 299/300, "geno": 1/300}
-transitionP["rneg"] = {"rneg" : 299/300, "geno": 1/300}
-
-for start in transitionP:
-    for end in start:
-        transitionP[start][end] = logodds(transitionP[start][end], 0.25)
-
-#make and train models
-
-posmodel = makemodel(args.n)
-negmodel = makemodel(args.n)
-
-posmodel = train(args.pos, args.n, posmodel)
-negmodel = train(args.neg, args.n, negmodel)
-
-#emission probs
-
-posemPs = emissionP(posmodel, args.n, True)
-negemPs = emissionP(negmodel, args.n, True)
-genoemPs = {"A": 0, "C": 0, "G": 0, "T": 0}
-
-#initialize fill
-
-viterbi = []
-
-initial = vnode()
-
-initial.probs["geno"] = 1
-initial.probs["pos"] = 0
-initial.probs["neg"] = 0
-
-viterbi.append(initial)
+def transPs():
+    transP = [[0 for i in range(3)] for j in range(3)]]
 
 
-#fill
 
-for name, sequence in readfasta(args.fname):
+    transP[0][0], transP[0][1], transP[0][2] = 0.99999, 5e-6, "5e-6
+    transP[1][0], transP[1][1], transP[1][2] = 299/300, 1/300, 0
+    transP[2][0], transP[2][1], transp[2][2] = 299/300, 0, 1/300
+
+    for col in range(len(transP)):
+        for row in range(len(transP[col])):
+            transP[col][row] = prob2log(transP[col][row])
+
+    return transP
