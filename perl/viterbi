@@ -181,13 +181,13 @@ sub viterbi {
 		if ($trace[$max_state][$i] == $max_state) {
 			$beg = $i;
 		} else {
-			push @feature, [$beg + $hk, $end + $hk, $max_state];
-			$beg = $i;
-			$end = $i;
+			push @feature, [$beg -1 + $hk, $end + $hk, $max_state];
+			$beg = $i -1;
+			$end = $i -1;
 			$max_state = $trace[$max_state][$i];
 		}
 	}
-	push @feature, [$beg + $hk, $end + $hk, $max_state];
+	push @feature, [$beg + $hk, $end+ $hk, $max_state];
 	@feature = reverse @feature;
 
 	return \@feature;
