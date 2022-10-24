@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+
+import argparse
+import json
+import sys
+sys.path.append('../../python')
+import readfasta
+
+def kmerify (file, k):
+	kmers = {}
+	total = 0
+	for name, seq in readfasta.read_record(file):
+		for i in range(len(seq) - k + 1):
+			kmer = seq[i:i+k]
+			if kmer not in kmers: kmers[kmer] = 0
+			kmers[kmer] += 1
+			total += 1
+	freq = {}
+	for kmer in kmers:
+		freq[kmer] = kmers[kmer] / total
+	return freq
+	
+
+parser = argparse.ArgumentParser(
+	description='R-loop HMM trainer demo')
+parser.add_argument('s1', metavar='<fasta file>', type=str, 
+	help='path to file for r-loop positive strand')
+parser.add_argument('s2', metavar='<fasta file>', type=str, 
+	help='path to file for r-loop negative strand')
+parser.add_argument('-rlen', type=int, metavar='<int>', required=False,
+	default=300, help='average length of r-loop [%(default)i]')
+parser.add_argument('-nlen', type=int, metavar='<int>', required=False,
+	default=10000, help='average length between r-loops [%(default)i]')
+parser.add_argument('-k', type=int, metavar='<int>', required=False,
+	default=3, help='k-mer size [%(default)i]')
+parser.add_argument('-author', type=str, metavar='<str>', required=False,
+	default='Ian Korf', help='author [%(default)s]')
+parser.add_argument('-species', type=str, metavar='<str>', required=False,
+	default='D.emo', help='species [%(default)s]')
+parser.add_argument('-p', action='store_true',
+	help='display as probabilities [default is log-space]')
+arg = parser.parse_args()
+
+rself = 1 - 1/arg.rlen
+nself = 1 - 1/arg.nlen
+
+k1 = kmerify(arg.s1, arg.k)
+k2 = kmerify(arg.s2, arg.k)
+ns = {}
+for kmer in k2:
+	ns[kmer] = 1 / 4**arg.k
+
+hmm = {
+	'author': arg.author,
+	'species': arg.species,
+	'probs': arg.p,
+	'states': ['s1', 's2', 'gen'],
+	'inits': {'s1': 0.0, 's2': 0.0, 'gen': 1.0},
+	'terms': {'s1': 0.0, 's2': 0.0, 'gen': 1.0},
+	'transitions': {
+		's1': {'s1': rself, 's2': 0, 'gen': 1 - rself},
+		's2': {'s1': 0, 's2': rself, 'gen': 1 - rself},
+		'gen': {'s1': (1 -nself)/2, 's2': (1 -nself)/2, 'gen': nself},
+	},
+	'emissions': {'s1': k1, 's2': k2, 'gen': ns},
+}
+
+print(json.dumps(hmm, indent=4))
