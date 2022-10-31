@@ -104,16 +104,16 @@ if not math.isclose(sum(inits), 1, abs_tol=0.02):
 	sys.exit('initial probability does not sum up close to 1')
 
 for i, state in enumerate(out['states']):
-	out['inits'][state] = inits[i]
-	out['terms'][state] = terms[i]
+	out['inits'][state] = prob2score(inits[i])
+	out['terms'][state] = prob2score(terms[i])
 	out['transitions'][state] = {}
 	for next in out['states']:
 		if state == next:
-			if state == 'genomic': out['transitions'][state][next] = 1 - 1/arg.glen
-			else:                  out['transitions'][state][next] = 1 - 1/arg.rlen
+			if state == 'genomic': out['transitions'][state][next] = prob2score(1 - 1/arg.glen)
+			else:                  out['transitions'][state][next] = prob2score(1 - 1/arg.rlen)
 		else:
-			if state == 'genomic':  out['transitions'][state][next] = 1/(2*arg.glen)
-			elif next == 'genomic': out['transitions'][state][next] = 1/(2*arg.rlen)
+			if state == 'genomic':  out['transitions'][state][next] = prob2score(1/(2*arg.glen))
+			elif next == 'genomic': out['transitions'][state][next] = prob2score(1/(2*arg.rlen))
 out['emissions']['positive'] = train(arg.pos, n)
 out['emissions']['negative'] = train(arg.neg, n)
 out['emissions']['genomic']  = make_model(n)
