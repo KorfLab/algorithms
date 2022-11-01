@@ -60,7 +60,7 @@ def train(file, n):
 		if n == 0:
 			for bp in seq: model[bp] += 1
 		else:
-			for i in range(len(seq)-n-1):
+			for i in range(len(seq)-n):
 				given = seq[i:i+n]
 				curbp = seq[i+n]
 				model[given][curbp] += 1
