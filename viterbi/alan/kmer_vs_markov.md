@@ -69,24 +69,12 @@ How accurate does each model predict the states on testseq.fa?
 
   One thing to note is that the testseq in generated using k-mer model.
 
-### Markov Model
 
-| Order | Accuracy |
-| ----- | -------- |
-| 0 | 0.313 |
-| 1 | 0.444 |
-| 2 | 0.478 |
-| 3 | 0.501 |
-| 4 | 0.521 |
-| 5 | 0.526 |
-
-### K-mer Model
-
-| K | Accuracy |
-| - | -------- |
-| 1 | 0.313 |
-| 2 | 0.366 |
-| 3 | 0.443 |
-| 4 | 0.535 |
-| 5 | 0.580 |
-| 6 | 0.585 |
+| Order | Accuracy |  K | Accuracy |
+| ----- | -------- |  - | -------- |
+| 0 | 0.313 | 1 | 0.313 |
+| 1 | 0.444 | 2 | 0.366 |
+| 2 | 0.478 | 3 | 0.443 |
+| 3 | 0.501 | 4 | 0.535 |
+| 4 | 0.521 | 5 | 0.580 |
+| 5 | 0.526 | 6 | 0.585 |
