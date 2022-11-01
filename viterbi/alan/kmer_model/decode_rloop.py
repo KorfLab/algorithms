@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from readfasta import read_record
 import argparse
 import json
@@ -20,44 +18,30 @@ arg = parser.parse_args()
 def decode(seq, states, transition, emission, inits, terms):
 	# Determine order
 	for kmer in emission[0].keys():
-		if type(emission[0][kmer]) is dict: n = len(kmer)
-		else: n = 0
+		n = len(kmer)
 		break
 
 	# Initialize matrices
-	prob = [[0]*(len(seq)-n+1) for _ in range(len(transition))]
-	tran = [[-1]*(len(seq)-n+1) for _ in range(len(transition))]
+	prob = [[0]*(len(seq)-n+2) for _ in range(len(transition))]
+	tran = [[-1]*(len(seq)-n+2) for _ in range(len(transition))]
 
 	# Initialize state probabilities
 	for i, init in enumerate(inits): prob[i][0] = init
 
 	# Fill
-	for i in range(len(seq)-n):
-		if n == 0:
-			letter = seq[i]
-			for j in range(len(transition)):
-				max_score = None
-				max_state = None
-				for s in range(len(transition)):
-					score = prob[s][i-1] + transition[s][j] + emission[j][letter]
-					if max_score is None or score > max_score:
-						max_score = score
-						max_state = s
-				prob[j][i+1] = max_score
-				tran[j][i+1] = max_state
-		else:
-			kmer = seq[i:i+n]
-			letter = seq[i+n]
-			for j in range(len(transition)):
-				max_score = None
-				max_state = None
-				for s in range(len(transition)):
-					score = prob[s][i-1] + transition[s][j] + emission[j][kmer][letter]
-					if max_score is None or score > max_score:
-						max_score = score
-						max_state = s	
-				prob[j][i+1] = max_score
-				tran[j][i+1] = max_state
+	for i in range(len(seq)-n+1):
+		kmer = seq[i:i+n]
+		for j in range(len(transition)):
+			max_score = None
+			max_state = None
+			for s in range(len(transition)):
+				score = prob[s][i-1] + transition[s][j] + emission[j][kmer]
+				if max_score is None or score > max_score:
+					max_score = score
+					max_state = s
+			prob[j][i+1] = max_score
+			tran[j][i+1] = max_state
+
 
 	# Trace back
 	max_score = None
@@ -88,7 +72,6 @@ def decode(seq, states, transition, emission, inits, terms):
 	decoded.append((states[cur_state],start+1+n,len(tb)+n))
 	
 	return decoded
-
 
 ######################
 ## Harvest HMM Data ##
