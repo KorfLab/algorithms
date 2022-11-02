@@ -67,7 +67,7 @@ How accurate does each model predict the states on testseq.fa?
  - 1st and 2nd order: Markov model performs better than K-mer counter part
   - Higher orders: K-mer model performs better
 
-  One thing to note is that the testseq in generated using k-mer model.
+  One thing to note is that the testseq is generated using k-mer model.
 
 
 | Order | Accuracy |  K | Accuracy |
