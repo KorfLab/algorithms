@@ -75,9 +75,6 @@ def decode(states, trans, emps, inits, terms, seq):
 					else:
 						sco = score[k][i - 1] + trans[pstate][cstate] + emps[cstate][kmer][letter]
 
-	printmatrix(score, seq, states)
-	printmatrix(trace, seq, states)
-
 
 	#Traceback
 	traceback = []
@@ -101,11 +98,26 @@ def decode(states, trans, emps, inits, terms, seq):
 		current = trace[current][index]
 		index -= 1
 
+	# Return
+	start = 1
+	end = 0
+	currentstate = traceback[0]
+	outstate = states[currentstate]
+	done = []
 
+	for i in range(len(traceback)):
+		if traceback[i] != currentstate:
+			end = i
+			outstate = states[currentstate]
+			done.append({"start": start, "end": end, "state": outstate})
+			start = i + 1
+			currentstate = traceback[i]
+	outstate = states[currentstate]
+	end = i + 1
+	done.append({"start": start, "end": end, "state": outstate})
 
-"""
+	return done
 
-"""
 
 parser = argparse.ArgumentParser(description = "Viterbi algorithm to decode hmms")
 parser.add_argument('input', metavar = 'file', type = str, help = "fasta file to decode")
@@ -113,10 +125,10 @@ parser.add_argument('hmm', metavar = 'file', type = str, help = ".jhmm model fil
 parser.add_argument('-bed', action = 'store_true', help = "output a .bed file, default .gff")
 args = parser.parse_args()
 
+
 # Extract Data from HMM
 with open(args.hmm) as fp:
 	jhmm = json.load(fp)
-
 	states = jhmm['states']
 	trans = jhmm['transitions']
 	emps = jhmm['emissions']
@@ -141,5 +153,14 @@ with open(args.hmm) as fp:
 
 # Decode Fasta file
 for idn, sequence in readfasta.read(args.input):
-	decode(states, trans, emps, inits, terms, sequence)
-	break
+	out = decode(states, trans, emps, inits, terms, sequence)
+
+	if args.bed:
+		for o in out:
+			print(idn, '\t', o['start'],'\t',o['end'], '\t', o['state'], sep='')
+
+	else:
+		for o in out:
+			print(idn, '\t', "mydecoder", '\t', o['state'], '\t', o['start'], '\t', o['end'],
+				"score", "strand", "phase")
+
