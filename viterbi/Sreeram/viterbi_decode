@@ -1,0 +1,48 @@
+import gzip
+import json
+import argparse
+import sys
+
+
+parser = argparse.ArgumentParser(
+  description='Decoding Viterbi algo for rloops')
+parser.add_argument('input', type=str, metavar='fasta_file',  help='input the fasta file for Viterbi analysis')
+parser.add_argument('jhmm', type=str, metavar='json', help='jhmm file for trained model')
+args = parser.parse_args()
+
+
+def read_seqs(file_name):
+  label = None
+  seq = []
+
+  fp = None
+  if    file_name == '-':         fp = sys.stdin
+  elif file_name.endswith('.gz'): fp = gzip.open(file_name, 'rt')
+  else:                          fp = open(file_name)
+
+  while True:
+    line = fp.readline()
+    if line == '': break
+    line = line.rstrip()
+    if line.startswith('>'):
+      if len(seq) > 0:
+        seq = ''.join(seq)
+        yield(label, seq)
+        label = line[1:]
+        seq = []
+      else:
+        label = line[1:]
+    else: seq.append(line)
+  yield(label, ''.join(seq))
+  fp.close()
+
+
+def hmm_decode(states, inits, terms, seq, transitions, emissions):
+
+  # order
+  for state in emissions:
+    for each in emissions[state]:
+      order = len(each) - 1
+      break
+    break
+  
