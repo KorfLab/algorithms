@@ -1,0 +1,46 @@
+{
+	"name": "test1.jhmm",
+	"author": "korf lab",
+	"version": 1.0,
+	"comments": "used for unit testing",
+	"states": 3,
+	"state": [
+		{
+			"name": "AT",
+			"init": 0.0,
+			"term": 0.0,
+			"transitions": 2,
+			"transition": {
+				"AT": 0.99,
+				"NT": 0.01
+			}
+			"emissions": 4,
+			"emission": [0.3, 0.2, 0.2, 0.3],
+		},
+		{
+			"name": "NT",
+			"init": 1.0,
+			"term": 1.0,
+			"transitions": 3,
+			"transition": {
+				"AT": 0.98,
+				"NT": 0.01,
+				"GC": 0.01
+			}
+			"emissions": 4,
+			"emission": [0.25, 0.25, 0.25, 0.25],
+		},
+		{
+			"name": "GC",
+			"init": 0.0,
+			"term": 0.0,
+			"transitions": 2,
+			"transition": {
+				"GC": 0.98,
+				"NT": 0.02
+			}
+			"emissions": 4,
+			"emission": [0.2, 0.3, 0.3, 0.2],			
+		},
+	]
+}
