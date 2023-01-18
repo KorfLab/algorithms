@@ -31,7 +31,7 @@ a related array.
 	"init": 0.5,
 	"term": 0.5,
 	"transitions": 2,
-		"transition": {
+	"transition": {
 		"exon": 0.99,
 		"intron": 0.01
 	}
