@@ -23,8 +23,8 @@
 			"term": 1.0,
 			"transitions": 3,
 			"transition": {
-				"AT": 0.98,
-				"NT": 0.01,
+				"AT": 0.01,
+				"NT": 0.98,
 				"GC": 0.01
 			}
 			"emissions": 4,
