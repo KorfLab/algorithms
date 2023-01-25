@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 from readfasta import read_record
+from itertools import product
 import argparse
 import json
+import math
 import sys
 
 parser = argparse.ArgumentParser(
@@ -16,13 +18,9 @@ arg = parser.parse_args()
 #####################
 ## Decode Function ##
 #####################
-
-def decode(seq, states, transition, emission, inits, terms):
+def decode(seq, states, transition, emission, orders, inits, terms):
 	# Determine order
-	for kmer in emission[0].keys():
-		if type(emission[0][kmer]) is dict: n = len(kmer)
-		else: n = 0
-		break
+	n = max(orders)
 
 	# Initialize matrices
 	prob = [[0]*(len(seq)-n+1) for _ in range(len(transition))]
@@ -33,32 +31,20 @@ def decode(seq, states, transition, emission, inits, terms):
 
 	# Fill
 	for i in range(len(seq)-n):
-		if n == 0:
-			letter = seq[i]
-			for j in range(len(transition)):
-				max_score = None
-				max_state = None
-				for s in range(len(transition)):
-					score = prob[s][i-1] + transition[s][j] + emission[j][letter]
-					if max_score is None or score > max_score:
-						max_score = score
-						max_state = s
-				prob[j][i+1] = max_score
-				tran[j][i+1] = max_state
-		else:
-			kmer = seq[i:i+n]
-			letter = seq[i+n]
-			for j in range(len(transition)):
-				max_score = None
-				max_state = None
-				for s in range(len(transition)):
-					score = prob[s][i-1] + transition[s][j] + emission[j][kmer][letter]
-					if max_score is None or score > max_score:
-						max_score = score
-						max_state = s	
-				prob[j][i+1] = max_score
-				tran[j][i+1] = max_state
-
+		for j in range(len(states)):
+			max_score = None
+			max_state = None
+			cur_order = orders[j]
+			kmer = seq[i+n-cur_order:i+n]
+			base = seq[i+n]
+			for s in range(len(states)):
+				score = prob[s][i] + transition[s][j] + emission[j][kmer][base]
+				if max_score is None or score > max_score:
+					max_score = score
+					max_state = s	
+			prob[j][i+1] = max_score
+			tran[j][i+1] = max_state
+	
 	# Trace back
 	max_score = None
 	max_state = None
@@ -93,30 +79,50 @@ def decode(seq, states, transition, emission, inits, terms):
 ######################
 ## Harvest HMM Data ##
 ######################
+def emission(num, probs):
+	emiss = {}
+	order = int(math.log(num, 4) - 1)
+	for i, kmer in enumerate(list(product('ACGT', repeat=order))):
+		kmer = ''.join(kmer)
+		emiss[kmer] = {}
+		for j, letter in enumerate('ACGT'):
+			emiss[kmer][letter] = log(probs[4*i+j])
+	return order, emiss
+
+def log(prob):
+	if prob == 0: return float('-inf')
+	else: return math.log(prob)
+	
 with open(arg.hmm) as fh: hmm = json.load(fh)
 
-states = hmm['states']
-transitions = hmm['transitions']
-emissions = hmm['emissions']
-
+states = []
+orders = []
 trans = []
 emiss = []
 inits = []
 terms = []
-for i, state in enumerate(states):
-	curr_trans = []
-	for nxt in states:
-		if nxt in transitions[state]: curr_trans.append(transitions[state][nxt])
-		else: curr_trans.append(-99)
-	trans.append(curr_trans)
-	emiss.append(emissions[state])
-	inits.append(hmm['inits'][state])
-	terms.append(hmm['terms'][state])
 
+
+for state in hmm['state']:
+	order, emis = emission(state['emissions'], state['emission'])
+	orders.append(order)
+	emiss.append(emis)
+	states.append(state['name'])
+	inits.append(log(state['init']))
+	terms.append(log(state['term']))
+	
+for f in hmm['state']:
+	cur_trans = []
+	for t in states:
+		if t in f['transition']: cur_trans.append(log(f['transition'][t]))
+		else: cur_trans.append(float('-inf'))
+	trans.append(cur_trans)
+
+	
 ##########
 ## Main ##
 ##########
 for idn, seq in read_record(arg.input):
-	decoded = decode(seq, states, trans, emiss, inits, terms)
+	decoded = decode(seq, states, trans, emiss, orders, inits, terms)
 	for d in decoded:
 		print(d[0],'\t',d[1],'\t',d[2],sep='')
