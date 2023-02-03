@@ -15,9 +15,9 @@ parser.add_argument('hmm', type=str, metavar='<json>',
 	help='input json file for trained hmm models')
 arg = parser.parse_args()
 
-#####################
-## Decode Function ##
-#####################
+#########################################
+## Decode Function and other functions ##
+#########################################
 def decode(seq, states, transition, emission, orders, inits, terms):
 	# Determine order
 	n = max(orders)
@@ -54,13 +54,14 @@ def decode(seq, states, transition, emission, orders, inits, terms):
 			max_score = score
 			max_state = i
 	
-	tb = []
+	tb = [max_state]
 	curi = max_state
 	curj = len(seq) - n
 	while tran[curi][curj] != -1:
-		tb.insert(0, tran[curi][curj])
+		tb.insert(0, curi)
 		curj -= 1
 		curi = tran[curi][curj]
+	tb.pop(0)
 	# Print result
 	cur_state = tb[0]
 	start, end = 0, 0
@@ -75,10 +76,6 @@ def decode(seq, states, transition, emission, orders, inits, terms):
 	
 	return decoded
 
-
-######################
-## Harvest HMM Data ##
-######################
 def emission(num, probs):
 	emiss = {}
 	order = int(math.log(num, 4) - 1)
@@ -92,7 +89,15 @@ def emission(num, probs):
 def log(prob):
 	if prob == 0: return float('-inf')
 	else: return math.log(prob)
-	
+
+def draw_mat(mat):
+	for row in mat:
+		for elem in row: print(f'{elem:.2f}', end='  ')
+		print('\n')
+
+######################
+## Harvest HMM Data ##
+######################
 with open(arg.hmm) as fh: hmm = json.load(fh)
 
 states = []
@@ -118,7 +123,6 @@ for f in hmm['state']:
 		else: cur_trans.append(float('-inf'))
 	trans.append(cur_trans)
 
-	
 ##########
 ## Main ##
 ##########
