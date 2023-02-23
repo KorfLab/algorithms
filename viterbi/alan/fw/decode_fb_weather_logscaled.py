@@ -30,10 +30,9 @@ states = ['rainy', 'sunny']
 trans = [[log(0.7), log(0.3)],
 		 [log(0.3), log(0.7)]]
 emiss = [{'U': log(0.9),
-		  'N': log(0.1)},
-		 {'U': log(0.2),
-		  'N': log(0.8)
-		 }]
+          'N': log(0.1)},
+         {'U': log(0.2),
+	  'N': log(0.8)}]
 inits = [log(0.5), log(0.5)]
 seq = 'UUNUU'
 
