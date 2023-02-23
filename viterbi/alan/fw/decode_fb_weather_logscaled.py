@@ -6,7 +6,7 @@ def draw_mat(mat):
 		for elem in row: print(f'{elem:.3f}', end='  ')
 		print('\n')
 		
-def log(p):
+def log(prob):
 	if prob == 0: return float('-inf')
 	else: return math.log(prob)
 
@@ -17,6 +17,12 @@ def sumlogp(a, b, mag=40):
 	if abs(a - b) > mag: return max(a, b)
 	if a < b: return math.log(1 + math.exp(a - b)) + b
 	return math.log(1 + math.exp(b - a)) + a
+	
+def norm_logs(logps):
+	prob_sum = logps[0]
+	for i in range(1, len(logps)): prob_sum = sumlogp(prob_sum, logps[i])
+	for i in range(len(logps)): logps[i] -= prob_sum
+	return logps
 
 # Set up states, transition probability, emission probablity,
 # and sequence of events
@@ -50,38 +56,37 @@ for i in range(1, len(seq)+1):
 		pre_norm.append(cur_prob)
 	
 	# normalize prob
-	prob_sum = sum(pre_norm)
-	for j in range(len(states)): frwd[j][i] = pre_norm[j] / prob_sum
+	normed = norm_logs(pre_norm)
+	for j in range(len(states)): frwd[j][i] = normed[j]
 
 # bcwd
 # initialize
-for i in range(len(states)): bcwd[i][-1] = 1.0
+for i in range(len(states)): bcwd[i][-1] = 0
 
 # fill
 for i in range(len(seq)-1, -1, -1):
 	event = seq[i]
 	pre_norm = []
 	for c in range(len(states)):
-		cur_prob = 0
+		cur_prob = log(0)
 		for n in range(len(states)):
-			cur_prob += bcwd[n][i+1] * trans[c][n] * emiss[n][event]
+			cur_prob = sumlogp(cur_prob, (bcwd[n][i+1] + trans[c][n] + emiss[n][event]))
 		pre_norm.append(cur_prob)	
 	
 	# normalize prob
-	prob_sum = sum(pre_norm)
-	for j in range(len(states)): bcwd[j][i] = pre_norm[j] / prob_sum
+	normed = norm_logs(pre_norm)
+	for j in range(len(states)): bcwd[j][i] = normed[j]
 
 
 # Merge forward and backward to get posterior probability
 for i in range(len(seq)+1):
 	pre_norm = []
 	for j in range(len(states)):
-		prob = frwd[j][i] * bcwd[j][i]
+		prob = frwd[j][i] + bcwd[j][i]
 		pre_norm.append(prob)
 	
-	prob_sum = sum(pre_norm)
-	for k in range(len(states)): post[k][i] = pre_norm[k] / prob_sum
-	
+	normed = norm_logs(pre_norm)
+	for k in range(len(states)): post[k][i] = normed[k]
 
 draw_mat(frwd)
 draw_mat(bcwd)
