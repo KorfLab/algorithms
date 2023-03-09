@@ -16,7 +16,8 @@ emiss = [{'U': 0.9,
 		 }]
 inits = [0.5, 0.5]
 seq = 'UUNUU'
-
+#print(0.5*0.7*0.9 + 0.5*0.3*0.9)
+#print(0.5*0.7*0.2 + 0.5*0.3*0.2)
 frwd = [[0]*(len(seq)+1) for _ in range(len(states))]
 bcwd = [[0]*(len(seq)+1) for _ in range(len(states))]
 post = [[0]*(len(seq)+1) for _ in range(len(states))]
@@ -37,7 +38,7 @@ for i in range(1, len(seq)+1):
 	
 	# normalize prob
 	prob_sum = sum(pre_norm)
-	for j in range(len(states)): frwd[j][i] = pre_norm[j] / prob_sum
+	for j in range(len(states)): frwd[j][i] = pre_norm[j]
 
 # bcwd
 # initialize
@@ -55,7 +56,7 @@ for i in range(len(seq)-1, -1, -1):
 	
 	# normalize prob
 	prob_sum = sum(pre_norm)
-	for j in range(len(states)): bcwd[j][i] = pre_norm[j] / prob_sum
+	for j in range(len(states)): bcwd[j][i] = pre_norm[j]
 
 
 # Merge forward and backward to get posterior probability
@@ -66,10 +67,13 @@ for i in range(len(seq)+1):
 		pre_norm.append(prob)
 	
 	prob_sum = sum(pre_norm)
-	for k in range(len(states)): post[k][i] = pre_norm[k] / prob_sum
+	for k in range(len(states)): post[k][i] = pre_norm[k]
 	
 
+print('forward:')
 draw_mat(frwd)
+print('backward:')
 draw_mat(bcwd)
+print('posterior:')
 draw_mat(post)
 	
