@@ -9,7 +9,8 @@ parser.add_argument('fasta', type=str, metavar='<file>',
 	help='input fasta file(s)')
 parser.add_argument('-r', action='store_true',
 	help='also translate reverse complement strand')
-#flags for incomplete 5' and 3' ends
+parser.add_argument('-ic', action='store_true',
+	help='allow incomplete peptides')
 arg = parser.parse_args()
 
 CODONS = {
@@ -64,7 +65,10 @@ def revcomp(seq):
 	anti = seq.translate(comp)[::-1]
 	return anti
 
-def findallpeps(seq):
+def findallpeps(seq, ic):
+	# pad seq for incomplete
+	seq += ''.join(['X' for _ in range(3-len(seq)%3)])
+	#print(seq)
 	peps = []
 	for i in range(0, len(seq) - 2):
 		start = (seq[i:i+3] in CODONS and CODONS[seq[i:i+3]] == 'M')
@@ -77,14 +81,14 @@ def findallpeps(seq):
 					if pep not in peps: peps.append(pep)
 					break
 				else: pep += CODONS[codon]
+			if ic and pep and pep not in peps: peps.append(pep)
 	return peps
 
 # Main
 for idn, seq in read_record(arg.fasta):
 	seq = seq.upper()
-	peps = findallpeps(seq)
-	if arg.r:
-		peps+=findallpeps(revcomp(seq))
+	peps = findallpeps(seq, arg.ic)
+	if arg.r: peps += findallpeps(revcomp(seq), arg.ic)
 	print(f'>{idn}')
 	if len(peps) >= 1:
 		protein = max(peps, key=len)

@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+
+import sys
+import math
+import argparse
+from readfasta import read_record
+
+parser = argparse.ArgumentParser(
+	description='complexity filter')
+parser.add_argument('fa', type=str, metavar='<fasta path>',
+	help='path to fasta file')
+parser.add_argument('-w', type=int, default=11, metavar='<int>',
+	help='input window size [%(default)s]')
+parser.add_argument('-t', type=float, default=1.5, metavar='<float>',
+	help='input entropy threshold [%(default)s]')
+parser.add_argument('-s', action='store_true',
+	help='soft masking (lowercase instead of N)')
+arg = parser.parse_args()
+
+def entropy(count, w):
+	pa = count['A'] / w
+	pc = count['C'] / w
+	pg = count['G'] / w
+	pt = count['T'] / w
+	
+	h = 0
+	if pa > 0: h -= pa * math.log(pa)
+	if pc > 0: h -= pc * math.log(pc)
+	if pg > 0: h -= pg * math.log(pg)
+	if pt > 0: h -= pt * math.log(pt)
+	h /= math.log(2)
+	
+	return h
+
+def mask(seq, w, t, s):
+	count = {'A': 0, 'C': 0, 'G': 0, 'T': 0}
+	seq = seq.upper()
+	new = list(seq)
+	# first window
+	for base in seq[0:w]:
+		if base in count: count[base] += 1
+		else: sys.exit(f'Unrecognized base: {base}')
+	if entropy(count, w) < t:
+		pos = i + int(w/2)
+		if s: new[pos] = new[pos].lower()
+		else:  new[pos] = 'N'
+	to_rmv = seq[0]
+		
+	# subsequent windows
+	for i in range(1, len(seq)-w+1):
+		to_add = seq[i+w-1]
+		count[to_rmv] -= 1
+		count[to_add] += 1
+		to_rmv = seq[i]
+		if entropy(count, w) < t:
+			pos = i + int(w/2)
+			if s: new[pos] = new[pos].lower()
+			else:  new[pos] = 'N'
+				
+	return ''.join(new)
+
+# Main
+w  = arg.w
+t  = arg.t
+s = arg.s
+
+for idn, seq in read_record(arg.fa):
+	print(f'>{idn}')
+	masked = mask(seq, w, t, s)
+	for i in range(0, len(masked), 80): print(masked[i:i+80])

@@ -2,52 +2,62 @@
 
 import argparse
 import math
-
 from readfasta import read_record
 
-def seq_entropy(seq):
-	a = 0
-	t = freqs[1]
-	g = freqs[2]
-	c = freqs[3]
-	total = sum(freqs)
-	if total == 0: return 0 # use math.isclose()
-	
-	pa = a/total
-	pt = t/total
-	pg = g/total
-	pc = c/total
-	
-	h = 0
-	if (a != 0): h -= pa * math.log(pa)
-	if (t != 0): h -= pt * math.log(pt)
-	if (g != 0): h -= pg * math.log(pg)
-	if (c != 0): h -= pc * math.log(pc)
-	
-	return h/math.log(2)
-
 parser = argparse.ArgumentParser(
-	description='Mask sequences with an entropy filter')
-parser.add_argument('fasta', metavar='<fasta file>', type=str, 
-	help='path to file')
-parser.add_argument('-w', type=int, metavar='<int>', required=False, default=11,
-	help = 'window size [%(default)i]')
-parser.add_argument('-t', type=float, metavar='<float>', required=False,
-	default=1.1, help = 'enthropy threshold [%(default).2f]')
+	description='mask sequences with an entropy filter')
+parser.add_argument('fasta', type=str, metavar='<file>',
+	help='input fasta file(s)')
+parser.add_argument('-w', '--window_size', required=False, type=int, default=11,
+	metavar='<int>', help='input window size [%(default)s]')
+parser.add_argument('-t', '--entropy_threshold', required=False, type=float,
+	default=1.5, metavar='<float>', help='input entropy threshold [%(default)s]')
 parser.add_argument('-s', action='store_true',
-	help='mask to lowercase, (default mask to N)')
+	help='soft masking (lowercase instead of N)')
 arg = parser.parse_args()
 
-half = arg.w // 2
-
-for id, seq in read_record(arg.fasta):
+def get_entropy(seq):
+	a, c, g, t = 0, 0, 0, 0
+	for nt in seq:
+		if nt == 'A': a+=1
+		if nt == 'C': c+=1
+		if nt == 'G': g+=1
+		if nt == 'T': t+=1
+	tot = a + c + g + t
 	
-	mask_seq = list(seq)
-
-	for i in range(len(seq) - arg.w + 1):
-		if seq_entropy(seq[i:i+arg.w]) < arg.t:
-			if arg.s:
-				mask_seq[i+half] = mask_seq[i+half].lower()
-			else:
-				mask_seq[i+half] = 'N'
+	pa = a / tot
+	pc = c / tot
+	pg = g / tot
+	pt = t / tot
 	
+	h = 0
+	if pa > 0: h -= pa * math.log(pa)
+	if pc > 0: h -= pc * math.log(pc)
+	if pg > 0: h -= pg * math.log(pg)
+	if pt > 0: h -= pt * math.log(pt)
+	h /= math.log(2)
+	
+	return h
+	
+# Main
+w = arg.window_size
+t = arg.entropy_threshold
+s = arg.s
+
+for idn, seq in read_record(arg.fasta):
+	mask = list(seq)
+	
+	for i in range(len(seq)-w+1):
+		sub = seq[i:i+w]
+		h = get_entropy(sub)
+		if h < t:
+			pos = i + int(w/2)
+			if s: mask[pos] = mask[pos].lower()
+			else:  mask[pos] = 'N'
+	
+	mask = ''.join(mask)
+	
+	print(f'>{idn}')
+	for i in range(0, len(mask), 80):
+		print(mask[i:i+80])
+			
