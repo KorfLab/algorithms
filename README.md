@@ -261,7 +261,7 @@ Benchmarks
 |      | sw   |  5.69 |  2.37 |
 | .py  | rseq |  0.99 |  0.43 |
 |      | kfreq|  5.49 |  2.23 |
-|      | dust |       |  6.70 | broken
+|      | dust |       |  6.70 |
 |      | fdust|       |  3.11 | faster version of dust
 |      | lorf |  3.52 |  1.81 |
 |      | sw   |       |       | missing
