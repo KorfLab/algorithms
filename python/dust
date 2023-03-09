@@ -1,34 +1,27 @@
 #!/usr/bin/env python3
 
-import argparse
+import sys
 import math
+import argparse
 from readfasta import read_record
 
 parser = argparse.ArgumentParser(
-	description='mask sequences with an entropy filter')
-parser.add_argument('fasta', type=str, metavar='<file>',
-	help='input fasta file(s)')
-parser.add_argument('-w', '--window_size', required=False, type=int, default=11,
-	metavar='<int>', help='input window size [%(default)s]')
-parser.add_argument('-t', '--entropy_threshold', required=False, type=float,
-	default=1.5, metavar='<float>', help='input entropy threshold [%(default)s]')
+	description='complexity filter')
+parser.add_argument('fa', type=str, metavar='<fasta path>',
+	help='path to fasta file')
+parser.add_argument('-w', type=int, default=11, metavar='<int>',
+	help='input window size [%(default)s]')
+parser.add_argument('-t', type=float, default=1.5, metavar='<float>',
+	help='input entropy threshold [%(default)s]')
 parser.add_argument('-s', action='store_true',
 	help='soft masking (lowercase instead of N)')
 arg = parser.parse_args()
 
-def get_entropy(seq):
-	a, c, g, t = 0, 0, 0, 0
-	for nt in seq:
-		if nt == 'A': a+=1
-		if nt == 'C': c+=1
-		if nt == 'G': g+=1
-		if nt == 'T': t+=1
-	tot = a + c + g + t
-	
-	pa = a / tot
-	pc = c / tot
-	pg = g / tot
-	pt = t / tot
+def entropy(count, w):
+	pa = count['A'] / w
+	pc = count['C'] / w
+	pg = count['G'] / w
+	pt = count['T'] / w
 	
 	h = 0
 	if pa > 0: h -= pa * math.log(pa)
@@ -38,26 +31,40 @@ def get_entropy(seq):
 	h /= math.log(2)
 	
 	return h
-	
+
+def mask(seq, w, t, s):
+	count = {'A': 0, 'C': 0, 'G': 0, 'T': 0}
+	seq = seq.upper()
+	new = list(seq)
+	# first window
+	for base in seq[0:w]:
+		if base in count: count[base] += 1
+		else: sys.exit(f'Unrecognized base: {base}')
+	if entropy(count, w) < t:
+		pos = int(w/2)
+		if s: new[pos] = new[pos].lower()
+		else:  new[pos] = 'N'
+	to_rmv = seq[0]
+		
+	# subsequent windows
+	for i in range(1, len(seq)-w+1):
+		to_add = seq[i+w-1]
+		count[to_rmv] -= 1
+		count[to_add] += 1
+		to_rmv = seq[i]
+		if entropy(count, w) < t:
+			pos = i + int(w/2)
+			if s: new[pos] = new[pos].lower()
+			else:  new[pos] = 'N'
+				
+	return ''.join(new)
+
 # Main
-w = arg.window_size
-t = arg.entropy_threshold
+w  = arg.w
+t  = arg.t
 s = arg.s
 
-for idn, seq in read_record(arg.fasta):
-	mask = list(seq)
-	
-	for i in range(len(seq)-w+1):
-		sub = seq[i:i+w]
-		h = get_entropy(sub)
-		if h < t:
-			pos = i + int(w/2)
-			if s: mask[pos] = mask[pos].lower()
-			else:  mask[pos] = 'N'
-	
-	mask = ''.join(mask)
-	
+for idn, seq in read_record(arg.fa):
 	print(f'>{idn}')
-	for i in range(0, len(mask), 80):
-		print(mask[i:i+80])
-			
+	masked = mask(seq, w, t, s)
+	for i in range(0, len(masked), 80): print(masked[i:i+80])
