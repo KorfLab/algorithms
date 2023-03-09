@@ -246,28 +246,29 @@ Outputs
 Benchmarks
 ----------
 
-| Lang | Prog | Time1 | Notes
-|:-----|:-----|:-----:|:------------
-| .c   | rseq |  0.10 |
-| .go  | rseq |       |
-|      | kfreq|       |
-|      | dust |       |
-|      | lorf |       |
-|      | sw   |       |
-| .pl  | rseq |  1.05 |
-|      | kfreq|  7.11 |
-|      | dust |  7.21 |
-|      | lorf |  2.75 |
-|      | sw   |  5.69 |
-| .py  | rseq |  0.99 |
-|      | kfreq|  5.49 |
-|      | dust |       | broken
-|      | lorf |  3.52 |
-|      | sw   |       | missing
+| Lang | Prog | Time1 | Time2 |Notes
+|:-----|:-----|:-----:|:-----:|:------------
+| .c   | rseq |  0.10 |       |
+| .go  | rseq |       |       |
+|      | kfreq|       |       |
+|      | dust |       |       |
+|      | lorf |       |       |
+|      | sw   |       |       |
+| .pl  | rseq |  1.05 |  0.46 |
+|      | kfreq|  7.11 |  2.97 |
+|      | dust |  7.21 |  3.14 |
+|      | lorf |  2.75 |  1.14 |
+|      | sw   |  5.69 |  2.37 |
+| .py  | rseq |  0.99 |  0.43 |
+|      | kfreq|  5.49 |  2.23 |
+|      | dust |       |  6.70 |
+|      | fdust|       |  3.11 | faster version of dust
+|      | lorf |  3.52 |  1.81 |
+|      | sw   |       |       | missing
 
 Times are recorded by running 3 times and taking the best real time. Time1
 corresponds to Ian's Lenovo IdeaPad3 running LinuxLite in a VirtualBox with 2
-cores and 4G RAM.
+cores and 4G RAM. Time 2 corresponds to Lightning.
 
 At some point this should be automated
 
@@ -286,6 +287,10 @@ subsequent tests.
 + Python
 	+ time ./randomseq 4000 1000 > foo
 	+ time ./kmerfreq -k 10 foo > /dev/null
+	+ time ./dust foo > /dev/null
+	+ time ./dust_fast foo > /dev/null
+	+ time ./longestorf -r foo > /dev/null
+	
 
 
 Pipelines
