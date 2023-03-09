@@ -41,7 +41,7 @@ def mask(seq, w, t, s):
 		if base in count: count[base] += 1
 		else: sys.exit(f'Unrecognized base: {base}')
 	if entropy(count, w) < t:
-		pos = i + int(w/2)
+		pos = int(w/2)
 		if s: new[pos] = new[pos].lower()
 		else:  new[pos] = 'N'
 	to_rmv = seq[0]
