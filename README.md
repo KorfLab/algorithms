@@ -278,6 +278,13 @@ The `randomseq` command generates a random sequence file approximately the size
 of a bacterial genome (4,000 genes, 1,000 bp per gene). This is used for
 subsequent tests.
 
++ go
+	+ time ./randomseq -num 4000 -len 1000 > foo
+	+ time ./kmerfreq -k 10 -in foo  > /dev/null
+	+ time ./dust -in foo > /dev/null
+	+ time ./longestorf -r -in foo > /dev/null
+	+ time ./smithwaterman -query data/testseq.fa -db db > /dev/null
+		+ head -80 foo > db
 + Perl
 	+ time ./randomseq 4000 1000 > foo
 	+ time ./kmerfreq -k 10 foo > /dev/null
