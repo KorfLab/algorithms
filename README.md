@@ -249,11 +249,11 @@ Benchmarks
 | Lang | Prog | Time1 | Time2 |Notes
 |:-----|:-----|:-----:|:-----:|:------------
 | .c   | rseq |  0.10 |       |
-| .go  | rseq |       |       |
-|      | kfreq|       |       |
-|      | dust |       |       |
-|      | lorf |       |       |
-|      | sw   |       |       |
+| .go  | rseq |       |  0.11 |
+|      | kfreq|       |  1.18 |
+|      | dust |       |  0.33 |
+|      | lorf |       |  0.39 |
+|      | sw   |       |  0.05 | Currently do not support STDIN
 | .pl  | rseq |  1.05 |  0.46 |
 |      | kfreq|  7.11 |  2.97 |
 |      | dust |  7.21 |  3.14 |
@@ -261,8 +261,8 @@ Benchmarks
 |      | sw   |  5.69 |  2.37 |
 | .py  | rseq |  0.99 |  0.43 |
 |      | kfreq|  5.49 |  2.23 |
-|      | dust |       |  6.70 |
-|      | fdust|       |  3.11 | faster version of dust
+|      | sdust|       |  6.70 | slower version of dust
+|      | dust |       |  3.11 |
 |      | lorf |  3.52 |  1.81 |
 |      | sw   |       |       | missing
 
