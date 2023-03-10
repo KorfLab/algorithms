@@ -294,8 +294,8 @@ subsequent tests.
 + Python
 	+ time ./randomseq 4000 1000 > foo
 	+ time ./kmerfreq -k 10 foo > /dev/null
+	+ time ./sdust foo > /dev/null
 	+ time ./dust foo > /dev/null
-	+ time ./dust_fast foo > /dev/null
 	+ time ./longestorf -r foo > /dev/null
 	+ time head -80 foo | ./smithwaterman data/testseq.fa - > /dev/null
 	
