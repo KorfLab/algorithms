@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+
+import argparse
+from readfasta import read_record
+
+parser = argparse.ArgumentParser(
+	description='mask sequences with an entropy filter')
+parser.add_argument('query', type=str, metavar='<query>',
+	help='input query file in FASTA format')
+parser.add_argument('db', type=str, metavar='<db>',
+	help='input database file in FASTA format')
+parser.add_argument('-m', '--match_score', required=False, type=float,
+	default=1.0, metavar='<float>', help='Input match score [%(default)s]')
+parser.add_argument('-n', '--mismatch_score', required=False, type=float,
+	default=-1.0, metavar='<float>', help='Input mismatch score [%(default)s]')
+parser.add_argument('-g', '--gap_score', required=False, type=float,
+	default=-2.0, metavar='<float>', help='Input gap score [%(default)s]')
+parser.add_argument('-t', '--tabular_out', action='store_true',
+	help='Output in tabular format')
+arg = parser.parse_args()
+
+def get_max(mat):
+	maxs, maxi, maxj = None, None, None
+	for i in range(len(mat)):
+		for j in range(len(mat[i])):
+			if maxs is None or mat[i][j] > maxs:
+				maxs = mat[i][j]
+				maxi = i
+				maxj = j
+	return maxs, maxi, maxj
+
+def align(qrseq, dbseq):
+	smat = [[0]*(len(dbseq)+1) for _ in range(len(qrseq)+1)]
+	tmat = [['N']*(len(dbseq)+1) for _ in range(len(qrseq)+1)]
+
+	for i in range(len(qseq)):
+		for j in range(len(dbseq)):
+			top = smat[i][j+1] + G
+			lft = smat[i+1][j] + G
+			if qrseq[i] == dbseq[j]: dgn = smat[i][j] + M
+			else:                    dgn = smat[i][j] + N
+
+			if dgn > top and dgn > lft and dgn > 0:
+				smat[i+1][j+1] = dgn
+				tmat[i+1][j+1] = "D"
+			elif top > lft and top > 0:
+				smat[i+1][j+1] = top
+				tmat[i+1][j+1] = "T"
+			elif lft > 0:
+				smat[i+1][j+1] = lft
+				tmat[i+1][j+1] = "L"
+	
+	maxs, maxi, maxj = get_max(smat)
+	curi, curj = maxi, maxj
+	qraln, dbaln, aln, qrs, qre, dbs, dbe, score = '', '', '', 0, 0, 0, 0, 0
+
+	if maxs > 0:
+		while smat[curi][curj] != 0:
+			if tmat[curi][curj] == 'D':
+				qraln += qrseq[curi-1]
+				dbaln += dbseq[curj-1]
+				aln   += '|'
+				curi -= 1
+				curj -= 1
+			elif tmat[curi][curj] == 'L':
+				qraln += '-'
+				dbaln += dbseq[curj-1]
+				aln   += ' '
+				curj -= 1
+			elif tmat[curi][curj] == 'T':
+				qraln += qrseq[curi-1]
+				dbaln += '-'
+				aln   += ' '
+				curi -= 1
+		qrs, qre, dbs, dbe, score = curi+1, maxi, curj+1, maxj, maxs
+
+	return qraln, dbaln, aln, qrs, qre, dbs, dbe, score
+
+M = arg.match_score
+N = arg.mismatch_score
+G = arg.gap_score
+for qidn, qseq in read_record(arg.query):
+	for didn, dseq in read_record(arg.db):
+		qraln, dbaln, aln, qrs, qre, dbs, dbe, score = align(qseq, dseq)
+		if arg.tabular_out:
+			print(f'{qidn}\t{didn}\t{score}\t{qrs}\t{qre}\t{dbs}\t{dbe}')
+		else:
+			print(f"Query: {qidn}")
+			print(f"Sbjct: {didn}")
+			print(f"Score: {score}\n")
+			print(f"{qrs}\t{qraln}\t{qre}")
+			print(f" \t{aln}")
+			print(f"{dbs}\t{dbaln}\t{dbe}\n")
+		
+	
