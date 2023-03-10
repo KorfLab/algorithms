@@ -264,7 +264,7 @@ Benchmarks
 |      | sdust|       |  6.70 | slower version of dust
 |      | dust |       |  3.11 |
 |      | lorf |  3.52 |  1.81 |
-|      | sw   |       |       | missing
+|      | sw   |       |  0.98 |l
 
 Times are recorded by running 3 times and taking the best real time. Time1
 corresponds to Ian's Lenovo IdeaPad3 running LinuxLite in a VirtualBox with 2
@@ -290,6 +290,7 @@ subsequent tests.
 	+ time ./dust foo > /dev/null
 	+ time ./dust_fast foo > /dev/null
 	+ time ./longestorf -r foo > /dev/null
+	+ time head -80 foo | ./smithwaterman data/testseq.fa - > /dev/null
 	
 
 
