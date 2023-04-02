@@ -31,7 +31,7 @@ for s1 in hmm['state']:
     init_dict[name1] = s1['init']
     term_dict[name1] = s1['term']
 
-oberservations = ['A', 'C', 'C', 'G', 'T', 'C', 'C', 'A', 'A', 'A']
+oberservations = ['A', 'C', 'G', 'T', 'A', 'C', 'G', 'T', 'A', 'C']
 #print(trans_dict)
 
 """
@@ -112,7 +112,7 @@ def viterbi(obs, states, start_prob, trans_prob, emit_prob, term_prob):
            
     print(vit)
     print(traceback)
-      
+    
 
     # STEP THREE: TRACEBACK (CURRENTLY DEBUGGING)
     # ------------------------
@@ -127,12 +127,21 @@ def viterbi(obs, states, start_prob, trans_prob, emit_prob, term_prob):
     
     #following the traceback to the first observation/emission (unsure about this as well). the way that this works is that it begins at the second to last column (last column is solved earlier) and goes back on step at a time, and inserts the state with the highest probability into the optimal path array at the first position (since it is moving backwards)
     for i in range(len(vit) - 2, -1, -1):
-        prev = traceback[prev + 1, prev] #the issue is here, prev gets turned from an int into a string
+        # APPROACH #1 (WORK IN PROGRESS)
+        #prev = traceback[prev + 1, prev] #the issue is here, prev gets turned from an int into a string
         #print(prev)
-        optimal_path.append(states[prev]) #prev must be an int when used as an index
-    
+        #optimal_path.insert(0, states[prev]) #prev must be an int when used as an index. find a way to keep it as an int.
+        #-------------------------------------------
+        # APPROACH #2 (NEW IDEA)
+        prev_state_name = traceback[prev+1, prev]
+        prev_state_index = states.index(prev_state_name)
+        optimal_path.insert(0, prev_state_name)
+        prev = prev_state_index
+
     return optimal_path
     #END OF FUNCTION
 
 
-viterbi(oberservations, states_list, init_dict, trans_dict, emit_dict, term_dict)
+path = viterbi(oberservations, states_list, init_dict, trans_dict, emit_dict, term_dict)
+
+print(path)
