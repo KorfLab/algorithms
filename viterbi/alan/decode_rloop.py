@@ -55,8 +55,8 @@ def decode(seq, states, transition, emission, orders, inits, terms):
 			max_state = i
 	
 	tb = [max_state]
-	curi = max_state
 	curj = len(seq) - n
+	curi = tran[max_state][curj]
 	while tran[curi][curj] != -1:
 		tb.insert(0, curi)
 		curj -= 1
