@@ -281,7 +281,7 @@
             "transition": {
                 "Exon": 0.8,
                 "Genomic": 0.1,
-                "D1": 0.1
+                "D0": 0.1
             },
             "emissions": 256,
             "emission": [
@@ -550,7 +550,7 @@
             "transitions": 2,
             "transition": {
                 "Intron": 0.95,
-                "A1": 0.05
+                "A0": 0.05
             },
             "emissions": 256,
             "emission": [

@@ -80,6 +80,60 @@ def read_jhmm(fh):
 	
 	return states, orders, trans, emiss, inits, terms
 
+def print_all_isoforms(paths, counts=None, total=None):
+	for i, path in enumerate(paths):
+		if counts:
+			print(f'isoform {i+1} {counts[i]/total:.2f}:')
+		else:
+			print(f'isoform iteration {i+1}:')
+		if path[0][0] == 'Genomic':
+			s = path[0]
+			print(s[0], '\t', 1, '\t', s[2], sep='')
+		else:
+			print('Genomic', '\t', 1, '\t', 3, sep='')
+			s = path[0]
+			print(s[0], '\t', s[1], '\t', s[2], sep='')
+		
+		# decoded
+		intron_start = None
+		intron_end   = None
+		for i in range(1, len(path)):
+			s = path[i]
+			if s[0] == 'D0': intron_start = s[1]
+			elif s[0] == 'A5':
+				intron_end = s[2]
+				print('Intron', '\t', intron_start, '\t', intron_end, sep='')
+			elif s[0] == 'Exon' or s[0] == 'Genomic':
+				print(s[0], '\t', s[1], '\t', s[2], sep='')
+		print()
+
+def get_distribution(paths):
+	isoforms = {}
+	for path in paths:
+		idn = []
+		for s in path: idn.append(''.join(list(map(str, s))))
+		idn = ''.join(idn)
+		if idn not in isoforms:
+			isoforms[idn] = [path, 1]
+		else:
+			isoforms[idn][1] += 1
+	
+	total = sum(val[1] for val in isoforms.values())
+	sorted_isoforms = dict(sorted(isoforms.items(), key=lambda x: x[1][1], reverse=True))
+
+	return sorted_isoforms.values()
+
+def print_distribution(dist, top=None):
+	ps = []
+	cs = []
+	for path, count in dist:
+		ps.append(path)
+		cs.append(count)
+		if top:
+			top -= 1
+			if top <= 0: break
+	print_all_isoforms(ps, cs, sum(cs))
+
 def simiso(states, orders, trans, emiss, inits, terms, iterations):
 	# n is the highest order in the states and used for initializing probability matrix
 	n = max(orders)
@@ -94,7 +148,7 @@ def simiso(states, orders, trans, emiss, inits, terms, iterations):
 		for j in range(l): cur.append(init - log(l))
 		probs[i][0] = cur
 	
-	# Fill
+	# Fill (Can beautify using matrix manipulation and numpy)
 	for i in range(n, len(seq)):
 		base = seq[i]
 		for c in range(l):
@@ -105,19 +159,43 @@ def simiso(states, orders, trans, emiss, inits, terms, iterations):
 				prob = sumlogps(probs[p][i-n]) + trans[p][c] + emiss[c][kmer][base]
 				cur_probs.append(prob)
 			probs[c][i-n+1] = cur_probs
-
-	# Trace Back
-	f_state = None
-	fps = []
-	for i in range(l):
-		fp = sumlogps(probs[i][-1]) + terms[i]
-		fps.append(fp)
-	f_state = choose_randstate(fps)
 	
-	print(f_state)
+	paths = []
+	# Trace back iteration
+	for it in range(iterations):
+		f_state = None
+		fps = []
+		for i in range(l):
+			fp = sumlogps(probs[i][-1]) + terms[i]
+			fps.append(fp)
+		f_state = choose_randstate(fps)
+		
+		tb = [f_state]
+		curj = len(seq)-n
+		cur_probs = probs[f_state][curj]
+		while curj > 0:
+			curi = choose_randstate(cur_probs)
+			tb.insert(0, curi)
+			curj -= 1
+			cur_probs = probs[curi][curj]
+		
+		tb.pop(0)
+		
+		# Store paths
+		cur_state = tb[0]
+		start, end = 0, 0
+		path = []
+		for i in range(1,len(tb)):
+			if tb[i] != cur_state:
+				end = i-1
+				path.append((states[cur_state], start+n+1, end+n+1))
+				start = i
+				cur_state = tb[i]
+		path.append((states[cur_state],start+1+n,len(tb)+n))
+		
+		paths.append(path)
 	
-	tb = [f_state]
-	
+	return paths
 	
 ##########
 ## Main ##
@@ -126,12 +204,15 @@ seq_fp  = sys.argv[1]
 jhmm_fp = sys.argv[2]
 iterations = int(sys.argv[3])
 
-random.seed(1)
-
 for i, s in read_record(seq_fp): seq = s
 
 with open(jhmm_fp) as fh: 
 	states, orders, trans, emiss, inits, terms = read_jhmm(fh)
 
-isoforms = simiso(states, orders, trans, emiss, inits, terms, iterations)
+paths = simiso(states, orders, trans, emiss, inits, terms, iterations)	
 
+#print_all_isoforms(paths)
+dist = get_distribution(paths)
+print_distribution(dist, top=5)
+		
+		

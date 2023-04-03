@@ -42,11 +42,11 @@ genomic['Exon'] = 0.01
 exon = states_dict['Exon']['transition']
 exon['Exon'] = 0.8 
 exon['Genomic'] = 0.1
-exon['D1'] = 0.1
+exon['D0'] = 0.1
 # Intron
 intron = states_dict['Intron']['transition']
 intron['Intron'] = 0.95
-intron['A1'] = 0.05
+intron['A0'] = 0.05
 # Donor
 for i in range(4): states_dict[f'D{i}']['transition'][f'D{i+1}'] = 1.0
 states_dict['D4']['transition']['Intron'] = 1.0
