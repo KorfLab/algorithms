@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from readfasta import read_record
 from itertools import product
+import argparse
 import random
 import math
 import json
@@ -83,29 +84,48 @@ def read_jhmm(fh):
 def print_all_isoforms(paths, counts=None, total=None):
 	for i, path in enumerate(paths):
 		if counts:
-			print(f'isoform {i+1} {counts[i]/total:.2f}:')
+			print(f'isoform {i+1} {counts[i]/total:.3f}:')
 		else:
 			print(f'isoform iteration {i+1}:')
-		if path[0][0] == 'Genomic':
-			s = path[0]
-			print(s[0], '\t', 1, '\t', s[2], sep='')
-		else:
-			print('Genomic', '\t', 1, '\t', 3, sep='')
-			s = path[0]
-			print(s[0], '\t', s[1], '\t', s[2], sep='')
 		
-		# decoded
 		intron_start = None
-		intron_end   = None
-		for i in range(1, len(path)):
-			s = path[i]
+		intron_end = None
+		for j in range(len(path)):
+			s = path[j]
 			if s[0] == 'D0': intron_start = s[1]
 			elif s[0] == 'A5':
 				intron_end = s[2]
 				print('Intron', '\t', intron_start, '\t', intron_end, sep='')
 			elif s[0] == 'Exon' or s[0] == 'Genomic':
 				print(s[0], '\t', s[1], '\t', s[2], sep='')
+		
 		print()
+			
+#	for i, path in enumerate(paths):
+#		if counts:
+#			print(f'isoform {i+1} {counts[i]/total:.2f}:')
+#		else:
+#			print(f'isoform iteration {i+1}:')
+#		if path[0][0] == 'Genomic':
+#			s = path[0]
+#			print(s[0], '\t', 1, '\t', s[2], sep='')
+#		else:
+#			print('Genomic', '\t', 1, '\t', 3, sep='')
+#			s = path[0]
+#			print(s[0], '\t', s[1], '\t', s[2], sep='')
+#		
+#		# decoded
+#		intron_start = None
+#		intron_end   = None
+#		for i in range(1, len(path)):
+#			s = path[i]
+#			if s[0] == 'D0': intron_start = s[1]
+#			elif s[0] == 'A5':
+#				intron_end = s[2]
+#				print('Intron', '\t', intron_start, '\t', intron_end, sep='')
+#			elif s[0] == 'Exon' or s[0] == 'Genomic':
+#				print(s[0], '\t', s[1], '\t', s[2], sep='')
+#		print()
 
 def get_distribution(paths):
 	isoforms = {}
@@ -117,8 +137,7 @@ def get_distribution(paths):
 			isoforms[idn] = [path, 1]
 		else:
 			isoforms[idn][1] += 1
-	
-	total = sum(val[1] for val in isoforms.values())
+
 	sorted_isoforms = dict(sorted(isoforms.items(), key=lambda x: x[1][1], reverse=True))
 
 	return sorted_isoforms.values()
@@ -126,15 +145,16 @@ def get_distribution(paths):
 def print_distribution(dist, top=None):
 	ps = []
 	cs = []
+	total = sum(elem[1] for elem in dist)
 	for path, count in dist:
 		ps.append(path)
 		cs.append(count)
 		if top:
 			top -= 1
 			if top <= 0: break
-	print_all_isoforms(ps, cs, sum(cs))
+	print_all_isoforms(ps, cs, total)
 
-def simiso(states, orders, trans, emiss, inits, terms, iterations):
+def simiso(states, orders, trans, emiss, inits, terms, iterations, no_genomic):
 	# n is the highest order in the states and used for initializing probability matrix
 	n = max(orders)
 	l = len(states)
@@ -188,7 +208,10 @@ def simiso(states, orders, trans, emiss, inits, terms, iterations):
 		for i in range(1,len(tb)):
 			if tb[i] != cur_state:
 				end = i-1
-				path.append((states[cur_state], start+n+1, end+n+1))
+				if no_genomic:
+					path.append((states[cur_state], start+n+1+101, end+n+1+101))
+				else:
+					path.append((states[cur_state], start+n+1, end+n+1))
 				start = i
 				cur_state = tb[i]
 		path.append((states[cur_state],start+1+n,len(tb)+n))
@@ -200,19 +223,37 @@ def simiso(states, orders, trans, emiss, inits, terms, iterations):
 ##########
 ## Main ##
 ##########
-seq_fp  = sys.argv[1]
-jhmm_fp = sys.argv[2]
-iterations = int(sys.argv[3])
 
-for i, s in read_record(seq_fp): seq = s
+parser = argparse.ArgumentParser(
+	description='Splicing simulator using stochastic viterbi')
+parser.add_argument('fasta', type=str, metavar='<fasta>',
+	help='path to FASTA file')
+parser.add_argument('jhmm', type=str, metavar='<jhmm>',
+	help='path to JHMM file')
+parser.add_argument('--iterations', required=False, type=int, metavar='<int>',
+	default=500, help='number of iterations [%(default)i]')
+parser.add_argument('--top', required=False, type=int, metavar='<int>',
+	default=10, help='out put top n isoforms [%(default)i]')
+parser.add_argument('-ng', '--no_genomic', action='store_true',
+	help='no genomic state (exon, intron, donor, acceptor states only)')
+parser.add_argument('--all', action='store_true',
+	help='print all isoforms')
+arg = parser.parse_args()
 
-with open(jhmm_fp) as fh: 
+
+for i, s in read_record(arg.fasta): seq = s
+
+if arg.no_genomic: seq = seq[101:-99]
+with open(arg.jhmm) as fh: 
 	states, orders, trans, emiss, inits, terms = read_jhmm(fh)
 
-paths = simiso(states, orders, trans, emiss, inits, terms, iterations)	
+paths = simiso(states, orders, trans, emiss, inits, terms, arg.iterations, arg.no_genomic)	
 
 #print_all_isoforms(paths)
 dist = get_distribution(paths)
-print_distribution(dist, top=5)
+if arg.all:
+	print_distribution(dist)
+else:
+	print_distribution(dist, top=arg.top)
 		
 		
