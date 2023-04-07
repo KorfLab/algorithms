@@ -1,0 +1,373 @@
+cmd: ./simiso data/apc/ch.3571.fa test_data/splicing_01_no_genomic.jhmm -ng -gff data/apc/ch.3571.gff3 --all --iterations 1000
+
+isoform 1 0.30500:
+Exon	103	203
+Intron	204	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 2 0.14100:
+Exon	103	203
+Intron	204	427
+Exon	428	547
+Intron	548	603
+Exon	604	819
+
+isoform 3 0.12200:
+Exon	103	203
+Intron	204	603
+Exon	604	819
+
+isoform 4 0.09700:
+Exon	103	215
+Intron	216	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 5 0.04700:
+Exon	103	215
+Intron	216	603
+Exon	604	819
+
+isoform 6 0.04700:
+Exon	103	215
+Intron	216	427
+Exon	428	547
+Intron	548	603
+Exon	604	819
+
+isoform 7 0.03400:
+Exon	103	115
+Intron	116	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 8 0.01900:
+Exon	103	115
+Intron	116	427
+Exon	428	547
+Intron	548	603
+Exon	604	819
+
+isoform 9 0.01800:
+Exon	103	203
+Intron	204	270
+Exon	271	547
+Intron	548	603
+Exon	604	819
+
+isoform 10 0.01500:
+Exon	103	215
+Intron	216	270
+Exon	271	547
+Intron	548	603
+Exon	604	819
+
+isoform 11 0.01400:
+Exon	103	115
+Intron	116	603
+Exon	604	819
+
+isoform 12 0.01300:
+Exon	103	203
+Intron	204	440
+Exon	441	819
+
+isoform 13 0.01300:
+Exon	103	245
+Intron	246	603
+Exon	604	819
+
+isoform 14 0.01300:
+Exon	103	245
+Intron	246	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 15 0.01200:
+Exon	103	161
+Intron	162	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 16 0.00900:
+Exon	103	245
+Intron	246	427
+Exon	428	547
+Intron	548	603
+Exon	604	819
+
+isoform 17 0.00900:
+Exon	103	130
+Intron	131	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 18 0.00700:
+Exon	103	130
+Intron	131	427
+Exon	428	547
+Intron	548	603
+Exon	604	819
+
+isoform 19 0.00600:
+Exon	103	226
+Intron	227	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 20 0.00500:
+Exon	103	139
+Intron	140	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 21 0.00500:
+Exon	103	203
+Intron	204	427
+Exon	428	819
+
+isoform 22 0.00400:
+Exon	103	226
+Intron	227	603
+Exon	604	819
+
+isoform 23 0.00300:
+Exon	103	161
+Intron	162	603
+Exon	604	819
+
+isoform 24 0.00300:
+Exon	103	161
+Intron	162	427
+Exon	428	547
+Intron	548	603
+Exon	604	819
+
+isoform 25 0.00300:
+Exon	103	215
+Intron	216	440
+Exon	441	819
+
+isoform 26 0.00300:
+Exon	103	115
+Intron	116	270
+Exon	271	547
+Intron	548	603
+Exon	604	819
+
+isoform 27 0.00200:
+Exon	103	130
+Intron	131	270
+Exon	271	547
+Intron	548	603
+Exon	604	819
+
+isoform 28 0.00200:
+Exon	103	139
+Intron	140	603
+Exon	604	819
+
+isoform 29 0.00200:
+Exon	103	215
+Intron	216	270
+Exon	271	303
+Intron	304	603
+Exon	604	819
+
+isoform 30 0.00200:
+Exon	103	130
+Intron	131	603
+Exon	604	819
+
+isoform 31 0.00100:
+Exon	103	215
+Intron	216	427
+Exon	428	819
+
+isoform 32 0.00100:
+Exon	103	139
+Intron	140	427
+Exon	428	547
+Intron	548	603
+Exon	604	819
+
+isoform 33 0.00100:
+Exon	103	203
+Intron	204	270
+Exon	271	819
+
+isoform 34 0.00100:
+Exon	103	240
+Intron	241	603
+Exon	604	819
+
+isoform 35 0.00100:
+Exon	103	203
+Intron	204	440
+Exon	441	547
+Intron	548	603
+Exon	604	729
+Intron	730	789
+Exon	790	819
+
+isoform 36 0.00100:
+Exon	103	173
+Intron	174	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 37 0.00100:
+Exon	103	203
+Intron	204	270
+Exon	271	289
+Intron	290	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 38 0.00100:
+Exon	103	245
+Intron	246	270
+Exon	271	547
+Intron	548	603
+Exon	604	819
+
+isoform 39 0.00100:
+Exon	103	226
+Intron	227	270
+Exon	271	303
+Intron	304	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 40 0.00100:
+Exon	103	115
+Intron	116	270
+Exon	271	289
+Intron	290	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 41 0.00100:
+Exon	103	245
+Intron	246	427
+Exon	428	819
+
+isoform 42 0.00100:
+Exon	103	203
+Intron	204	270
+Exon	271	303
+Intron	304	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 43 0.00100:
+Exon	103	161
+Intron	162	270
+Exon	271	547
+Intron	548	603
+Exon	604	819
+
+isoform 44 0.00100:
+Exon	103	203
+Intron	204	427
+Exon	428	547
+Intron	548	704
+Exon	705	819
+
+isoform 45 0.00100:
+Exon	103	115
+Intron	116	186
+Exon	187	203
+Intron	204	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 46 0.00100:
+Exon	103	245
+Intron	246	270
+Exon	271	303
+Intron	304	440
+Exon	441	547
+Intron	548	603
+Exon	604	819
+
+isoform 47 0.00100:
+Exon	103	115
+Intron	116	440
+Exon	441	819
+
+isoform 48 0.00100:
+Exon	103	203
+Intron	204	270
+Exon	271	303
+Intron	304	427
+Exon	428	547
+Intron	548	603
+Exon	604	819
+
+isoform 49 0.00100:
+Exon	103	203
+Intron	204	427
+Exon	428	494
+Intron	495	603
+Exon	604	819
+
+isoform 50 0.00100:
+Exon	103	215
+Intron	216	481
+Exon	482	547
+Intron	548	603
+Exon	604	819
+
+isoform 51 0.00100:
+Exon	103	173
+Intron	174	427
+Exon	428	547
+Intron	548	603
+Exon	604	819
+
+isoform 52 0.00100:
+Exon	103	115
+Intron	116	440
+Exon	441	547
+Intron	548	603
+Exon	604	742
+Intron	743	789
+Exon	790	819
+
+isoform 53 0.00100:
+Exon	103	203
+Intron	204	270
+Exon	271	289
+Intron	290	603
+Exon	604	819
+
+isoform 54 0.00100:
+Exon	103	226
+Intron	227	270
+Exon	271	547
+Intron	548	603
+Exon	604	819
+
+isoform 55 0.00100:
+Exon	103	226
+Intron	227	427
+Exon	428	547
+Intron	548	603
+Exon	604	819
+

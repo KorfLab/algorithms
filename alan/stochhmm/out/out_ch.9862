@@ -1,0 +1,107 @@
+cmd: ./simiso data/apc/ch.9862.fa test_data/splicing_01_no_genomic.jhmm -ng -gff data/apc/ch.9862.gff3 --all --iterations 1000
+
+isoform 1 0.39300:
+Exon	103	281
+Intron	282	339
+Exon	340	883
+
+isoform 2 0.33900:
+Exon	103	289
+Intron	290	339
+Exon	340	883
+
+isoform 3 0.18500:
+Exon	103	883
+
+isoform 4 0.03700:
+Exon	103	263
+Intron	264	339
+Exon	340	883
+
+isoform 5 0.03400:
+Exon	103	261
+Intron	262	339
+Exon	340	883
+
+isoform 6 0.00100:
+Exon	103	386
+Intron	387	409
+Exon	410	883
+
+isoform 7 0.00100:
+Exon	103	281
+Intron	282	339
+Exon	340	386
+Intron	387	400
+Exon	401	883
+
+isoform 8 0.00100:
+Exon	103	281
+Intron	282	339
+Exon	340	521
+Intron	522	557
+Exon	558	883
+
+isoform 9 0.00100:
+Exon	103	289
+Intron	290	339
+Exon	340	758
+Intron	759	787
+Exon	788	883
+
+isoform 10 0.00100:
+Exon	103	219
+Intron	220	256
+Exon	257	281
+Intron	282	339
+Exon	340	883
+
+isoform 11 0.00100:
+Exon	103	263
+Intron	264	339
+Exon	340	386
+Intron	387	409
+Exon	410	883
+
+isoform 12 0.00100:
+Exon	103	289
+Intron	290	339
+Exon	340	758
+Intron	759	806
+Exon	807	883
+
+isoform 13 0.00100:
+Exon	103	289
+Intron	290	339
+Exon	340	386
+Intron	387	409
+Exon	410	883
+
+isoform 14 0.00100:
+Exon	103	281
+Intron	282	339
+Exon	340	386
+Intron	387	409
+Exon	410	883
+
+isoform 15 0.00100:
+Exon	103	281
+Intron	282	339
+Exon	340	378
+Intron	379	409
+Exon	410	883
+
+isoform 16 0.00100:
+Exon	103	263
+Intron	264	339
+Exon	340	521
+Intron	522	557
+Exon	558	883
+
+isoform 17 0.00100:
+Exon	103	289
+Intron	290	339
+Exon	340	386
+Intron	387	400
+Exon	401	883
+

@@ -1,0 +1,42 @@
+cmd: ./simiso data/apc/ch.17744.fa test_data/splicing_01_no_genomic.jhmm -ng -gff data/apc/ch.17744.gff3 --all --iterations 1000
+
+isoform 1 0.97300:
+Exon	103	271
+Intron	272	332
+Exon	333	588
+
+isoform 2 0.00800:
+Exon	103	271
+Intron	272	292
+Exon	293	588
+
+isoform 3 0.00600:
+Exon	103	291
+Intron	292	332
+Exon	333	588
+
+isoform 4 0.00500:
+Exon	103	275
+Intron	276	332
+Exon	333	588
+
+isoform 5 0.00300:
+Exon	103	588
+
+isoform 6 0.00200:
+Exon	103	278
+Intron	279	332
+Exon	333	588
+
+isoform 7 0.00200:
+Exon	103	268
+Intron	269	332
+Exon	333	588
+
+isoform 8 0.00100:
+Exon	103	271
+Intron	272	292
+Exon	293	294
+Intron	295	332
+Exon	333	588
+

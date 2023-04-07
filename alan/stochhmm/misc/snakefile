@@ -1,0 +1,16 @@
+configfile: "config.yaml"
+
+
+rule all:
+	input:
+		expand("out/out_{sample}", sample=config["samples"])
+		
+rule simiso:
+	input:
+		fasta = "data/apc/{sample}.fa",
+		gff = "data/apc/{sample}.gff3"
+	output:
+		o = "out/out_{sample}"
+	shell:
+		"./simiso {input.fasta} test_data/splicing_01_no_genomic.jhmm -ng -gff {input.gff} --all --iterations 1000 > {output.o}"
+	

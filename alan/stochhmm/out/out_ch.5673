@@ -1,0 +1,141 @@
+cmd: ./simiso data/apc/ch.5673.fa test_data/splicing_01_no_genomic.jhmm -ng -gff data/apc/ch.5673.gff3 --all --iterations 1000
+
+isoform 1 0.77800:
+Exon	105	218
+Intron	219	271
+Exon	272	416
+Intron	417	628
+Exon	629	764
+
+isoform 2 0.06600:
+Exon	105	218
+Intron	219	271
+Exon	272	458
+Intron	459	628
+Exon	629	764
+
+isoform 3 0.04100:
+Exon	105	218
+Intron	219	271
+Exon	272	420
+Intron	421	628
+Exon	629	764
+
+isoform 4 0.03500:
+Exon	105	416
+Intron	417	628
+Exon	629	764
+
+isoform 5 0.02800:
+Exon	105	207
+Intron	208	271
+Exon	272	416
+Intron	417	628
+Exon	629	764
+
+isoform 6 0.01400:
+Exon	105	218
+Intron	219	271
+Exon	272	470
+Intron	471	628
+Exon	629	764
+
+isoform 7 0.00500:
+Exon	105	259
+Intron	260	271
+Exon	272	416
+Intron	417	628
+Exon	629	764
+
+isoform 8 0.00500:
+Exon	105	218
+Intron	219	271
+Exon	272	460
+Intron	461	628
+Exon	629	764
+
+isoform 9 0.00400:
+Exon	105	458
+Intron	459	628
+Exon	629	764
+
+isoform 10 0.00400:
+Exon	105	218
+Intron	219	271
+Exon	272	431
+Intron	432	628
+Exon	629	764
+
+isoform 11 0.00300:
+Exon	105	420
+Intron	421	628
+Exon	629	764
+
+isoform 12 0.00300:
+Exon	105	218
+Intron	219	271
+Exon	272	383
+Intron	384	628
+Exon	629	764
+
+isoform 13 0.00300:
+Exon	105	222
+Intron	223	271
+Exon	272	416
+Intron	417	628
+Exon	629	764
+
+isoform 14 0.00200:
+Exon	105	218
+Intron	219	332
+Exon	333	416
+Intron	417	628
+Exon	629	764
+
+isoform 15 0.00200:
+Exon	105	470
+Intron	471	628
+Exon	629	764
+
+isoform 16 0.00200:
+Exon	105	207
+Intron	208	271
+Exon	272	470
+Intron	471	628
+Exon	629	764
+
+isoform 17 0.00100:
+Exon	105	175
+Intron	176	271
+Exon	272	416
+Intron	417	628
+Exon	629	764
+
+isoform 18 0.00100:
+Exon	105	218
+Intron	219	290
+Exon	291	416
+Intron	417	628
+Exon	629	764
+
+isoform 19 0.00100:
+Exon	105	259
+Intron	260	271
+Exon	272	458
+Intron	459	628
+Exon	629	764
+
+isoform 20 0.00100:
+Exon	105	460
+Intron	461	628
+Exon	629	764
+
+isoform 21 0.00100:
+Exon	105	207
+Intron	208	271
+Exon	272	416
+Intron	417	628
+Exon	629	707
+Intron	708	752
+Exon	753	764
+

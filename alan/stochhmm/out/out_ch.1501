@@ -1,0 +1,166 @@
+cmd: ./simiso data/apc/ch.1501.fa test_data/splicing_01_no_genomic.jhmm -ng -gff data/apc/ch.1501.gff3 --all --iterations 1000
+
+isoform 1 0.71600:
+Exon	103	446
+Intron	447	525
+Exon	526	1036
+
+isoform 2 0.13500:
+Exon	103	446
+Intron	447	525
+Exon	526	688
+Intron	689	876
+Exon	877	1036
+
+isoform 3 0.05700:
+Exon	103	446
+Intron	447	525
+Exon	526	688
+Intron	689	836
+Exon	837	1036
+
+isoform 4 0.04000:
+Exon	103	450
+Intron	451	525
+Exon	526	1036
+
+isoform 5 0.00800:
+Exon	103	443
+Intron	444	525
+Exon	526	1036
+
+isoform 6 0.00600:
+Exon	103	446
+Intron	447	525
+Exon	526	690
+Intron	691	876
+Exon	877	1036
+
+isoform 7 0.00500:
+Exon	103	446
+Intron	447	525
+Exon	526	690
+Intron	691	836
+Exon	837	1036
+
+isoform 8 0.00500:
+Exon	103	439
+Intron	440	525
+Exon	526	1036
+
+isoform 9 0.00500:
+Exon	103	450
+Intron	451	525
+Exon	526	688
+Intron	689	876
+Exon	877	1036
+
+isoform 10 0.00300:
+Exon	103	450
+Intron	451	525
+Exon	526	688
+Intron	689	836
+Exon	837	1036
+
+isoform 11 0.00300:
+Exon	103	439
+Intron	440	525
+Exon	526	688
+Intron	689	836
+Exon	837	1036
+
+isoform 12 0.00200:
+Exon	103	443
+Intron	444	525
+Exon	526	688
+Intron	689	876
+Exon	877	1036
+
+isoform 13 0.00200:
+Exon	103	446
+Intron	447	525
+Exon	526	828
+Intron	829	876
+Exon	877	1036
+
+isoform 14 0.00200:
+Exon	103	446
+Intron	447	525
+Exon	526	814
+Intron	815	836
+Exon	837	1036
+
+isoform 15 0.00200:
+Exon	103	446
+Intron	447	525
+Exon	526	555
+Intron	556	570
+Exon	571	1036
+
+isoform 16 0.00100:
+Exon	103	446
+Intron	447	525
+Exon	526	688
+Intron	689	846
+Exon	847	1036
+
+isoform 17 0.00100:
+Exon	103	446
+Intron	447	525
+Exon	526	688
+Intron	689	960
+Exon	961	1036
+
+isoform 18 0.00100:
+Exon	103	443
+Intron	444	525
+Exon	526	688
+Intron	689	836
+Exon	837	1036
+
+isoform 19 0.00100:
+Exon	103	450
+Intron	451	525
+Exon	526	555
+Intron	556	570
+Exon	571	690
+Intron	691	836
+Exon	837	1036
+
+isoform 20 0.00100:
+Exon	103	446
+Intron	447	525
+Exon	526	688
+Intron	689	705
+Exon	706	1036
+
+isoform 21 0.00100:
+Exon	103	439
+Intron	440	525
+Exon	526	690
+Intron	691	876
+Exon	877	1036
+
+isoform 22 0.00100:
+Exon	103	446
+Intron	447	525
+Exon	526	688
+Intron	689	787
+Exon	788	1036
+
+isoform 23 0.00100:
+Exon	103	446
+Intron	447	525
+Exon	526	688
+Intron	689	789
+Exon	790	1036
+
+isoform 24 0.00100:
+Exon	103	446
+Intron	447	525
+Exon	526	555
+Intron	556	570
+Exon	571	688
+Intron	689	836
+Exon	837	1036
+

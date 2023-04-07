@@ -1,0 +1,144 @@
+cmd: ./simiso data/apc/ch.12308.fa test_data/splicing_01_no_genomic.jhmm -ng -gff data/apc/ch.12308.gff3 --all --iterations 1000
+
+isoform 1 0.74200:
+Exon	103	433
+Intron	434	493
+Exon	494	846
+
+isoform 2 0.05900:
+Exon	103	349
+Intron	350	493
+Exon	494	846
+
+isoform 3 0.05000:
+Exon	103	349
+Intron	350	420
+Exon	421	433
+Intron	434	493
+Exon	494	846
+
+isoform 4 0.05000:
+Exon	103	433
+Intron	434	455
+Exon	456	846
+
+isoform 5 0.03100:
+Exon	103	385
+Intron	386	493
+Exon	494	846
+
+isoform 6 0.02500:
+Exon	103	385
+Intron	386	420
+Exon	421	433
+Intron	434	493
+Exon	494	846
+
+isoform 7 0.00700:
+Exon	103	433
+Intron	434	586
+Exon	587	846
+
+isoform 8 0.00600:
+Exon	103	846
+
+isoform 9 0.00400:
+Exon	103	349
+Intron	350	420
+Exon	421	433
+Intron	434	455
+Exon	456	846
+
+isoform 10 0.00400:
+Exon	103	433
+Intron	434	493
+Exon	494	738
+Intron	739	843
+Exon	844	846
+
+isoform 11 0.00300:
+Exon	103	349
+Intron	350	376
+Exon	377	433
+Intron	434	493
+Exon	494	846
+
+isoform 12 0.00300:
+Exon	103	311
+Intron	312	420
+Exon	421	433
+Intron	434	493
+Exon	494	846
+
+isoform 13 0.00200:
+Exon	103	293
+Intron	294	420
+Exon	421	433
+Intron	434	493
+Exon	494	846
+
+isoform 14 0.00200:
+Exon	103	349
+Intron	350	455
+Exon	456	846
+
+isoform 15 0.00200:
+Exon	103	311
+Intron	312	493
+Exon	494	846
+
+isoform 16 0.00200:
+Exon	103	433
+Intron	434	538
+Exon	539	846
+
+isoform 17 0.00100:
+Exon	103	349
+Intron	350	376
+Exon	377	433
+Intron	434	455
+Exon	456	846
+
+isoform 18 0.00100:
+Exon	103	385
+Intron	386	420
+Exon	421	433
+Intron	434	455
+Exon	456	846
+
+isoform 19 0.00100:
+Exon	103	433
+Intron	434	493
+Exon	494	537
+Intron	538	586
+Exon	587	846
+
+isoform 20 0.00100:
+Exon	103	385
+Intron	386	455
+Exon	456	846
+
+isoform 21 0.00100:
+Exon	103	433
+Intron	434	493
+Exon	494	625
+Intron	626	843
+Exon	844	846
+
+isoform 22 0.00100:
+Exon	103	433
+Intron	434	517
+Exon	518	846
+
+isoform 23 0.00100:
+Exon	103	293
+Intron	294	493
+Exon	494	846
+
+isoform 24 0.00100:
+Exon	103	433
+Intron	434	455
+Exon	456	537
+Intron	538	586
+Exon	587	846
+
