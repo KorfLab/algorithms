@@ -36,12 +36,12 @@ for state in states:
 # Fill in transitions
 # Exon
 exon = states_dict['Exon']['transition']
-exon['Exon'] = 0.9
-exon['D0'] = 0.1
+exon['Exon'] = 1-1/215
+exon['D0'] = 1/215
 # Intron
 intron = states_dict['Intron']['transition']
-intron['Intron'] = 0.95
-intron['A0'] = 0.05
+intron['Intron'] = 1 - 1/220
+intron['A0'] = 1/220
 # Donor
 for i in range(4): states_dict[f'D{i}']['transition'][f'D{i+1}'] = 1.0
 states_dict['D4']['transition']['Intron'] = 1.0

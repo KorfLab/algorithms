@@ -6,6 +6,7 @@ import random
 import math
 import json
 import sys
+import os
 
 
 ###############
@@ -54,6 +55,14 @@ def choose_randstate(logps):
 	choice = random.choices(range(len(logps)), weights=probs)[0]
 	return choice
 
+def locate_gene_start(gff):
+	with open(gff) as fh:
+		for line in fh:
+			if 'mRNA' in line:
+				fields = line.split()
+				return int(fields[3])-1, int(fields[4])
+	return -1, -1
+
 def read_jhmm(fh):
 	hmm = json.load(fh)
 	
@@ -100,6 +109,13 @@ def print_all_isoforms(paths, counts=None, total=None):
 				print(s[0], '\t', s[1], '\t', s[2], sep='')
 		
 		print()
+
+def print_prob_mat(probs):
+	for i in range(len(probs[0])):
+		for j in range(len(probs)):
+			normalized = norm_logs(probs[j][i])
+			ps = logs2probs(normalized)
+			print(i, j, ps)
 			
 #	for i, path in enumerate(paths):
 #		if counts:
@@ -179,6 +195,7 @@ def simiso(states, orders, trans, emiss, inits, terms, iterations, no_genomic):
 				prob = sumlogps(probs[p][i-n]) + trans[p][c] + emiss[c][kmer][base]
 				cur_probs.append(prob)
 			probs[c][i-n+1] = cur_probs
+
 	
 	paths = []
 	# Trace back iteration
@@ -209,12 +226,15 @@ def simiso(states, orders, trans, emiss, inits, terms, iterations, no_genomic):
 			if tb[i] != cur_state:
 				end = i-1
 				if no_genomic:
-					path.append((states[cur_state], start+n+1+101, end+n+1+101))
+					path.append((states[cur_state], start+n+1+MRNA_START, end+n+1+MRNA_START))
 				else:
 					path.append((states[cur_state], start+n+1, end+n+1))
 				start = i
 				cur_state = tb[i]
-		path.append((states[cur_state],start+1+n,len(tb)+n))
+		if no_genomic:
+			path.append((states[cur_state],start+1+n+MRNA_START,len(tb)+n+MRNA_START))
+		else:
+			path.append((states[cur_state],start+1+n,len(tb)+n))
 		
 		paths.append(path)
 	
@@ -236,6 +256,8 @@ parser.add_argument('--top', required=False, type=int, metavar='<int>',
 	default=10, help='out put top n isoforms [%(default)i]')
 parser.add_argument('-ng', '--no_genomic', action='store_true',
 	help='no genomic state (exon, intron, donor, acceptor states only)')
+parser.add_argument('-gff', type=str, metavar='<gff>',
+	help='path to GFF file, used to locate genomic-exon boundary (required when no_genomic tag is on)')
 parser.add_argument('--all', action='store_true',
 	help='print all isoforms')
 arg = parser.parse_args()
@@ -243,17 +265,22 @@ arg = parser.parse_args()
 
 for i, s in read_record(arg.fasta): seq = s
 
-if arg.no_genomic: seq = seq[101:-99]
+if arg.no_genomic:
+	if not arg.gff: sys.exit('No gff input')
+	MRNA_START, MRNA_END = locate_gene_start(arg.gff)
+	if MRNA_START == -1: sys.exit('Can\'t locate mRNA')
+	seq = seq[MRNA_START:MRNA_END]
 with open(arg.jhmm) as fh: 
 	states, orders, trans, emiss, inits, terms = read_jhmm(fh)
 
 paths = simiso(states, orders, trans, emiss, inits, terms, arg.iterations, arg.no_genomic)	
 
-#print_all_isoforms(paths)
 dist = get_distribution(paths)
 if arg.all:
+	print(f"cmd: {' '.join(sys.argv)}\n")
 	print_distribution(dist)
 else:
+	print(f"cmd: {' '.join(sys.argv)}\n")
 	print_distribution(dist, top=arg.top)
 		
 		
