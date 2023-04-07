@@ -34,7 +34,7 @@ def search(sim_fp, ref_fp):
 		tmp.append(feature[:-1])
 	
 	ref = tmp
-	ref = sorted(ref, key=lambda x: x[-1])
+	ref = sorted(ref, key=lambda x: int(x[-1]))
 
 	#for feature in ref: print('\t'.join(feature))
 
