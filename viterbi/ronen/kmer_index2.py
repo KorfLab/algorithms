@@ -13,6 +13,8 @@ def kmer_index(input, k):
 
   for x in range(len(input)-1+k):
     kmer = input[x:x+k]
+
+    #if the kmer being read has already been read, then add the index to the kmer_index set. if it hasn't, then add it to the kmers set
     if kmer in kmers:
         kmer_index.add(x)
     else:
