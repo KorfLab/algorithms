@@ -1,7 +1,6 @@
 import numpy as np
 import sys
 import json
-#from math import log2
 
 hmm = None
 with open("test1.jhmm") as fp:
@@ -31,8 +30,10 @@ for s1 in hmm['state']:
     init_dict[name1] = s1['init']
     term_dict[name1] = s1['term']
 
+#test string for the obervations
 oberservations = ['A', 'C', 'G', 'T', 'A', 'C', 'G', 'T', 'A', 'C']
-#print(trans_dict)
+
+#print(trans_dict) #debugging print statement
 
 """
 viterbi(obs, states, start_prob, trans_prob, emit_prob):
@@ -52,7 +53,7 @@ term_prob: dict of the probability of a state ending at the term state
 
 note: each state emits an observation. emission probabilities indicate how likely a state is to emit a particular observation (such as the example above) 
 """
-#make sure to add term_prob when you get to term implementation
+
 def viterbi(obs, states, start_prob, trans_prob, emit_prob, term_prob):
     # STEP ONE: INITIALIZATION
     # ------------------------
@@ -75,7 +76,9 @@ def viterbi(obs, states, start_prob, trans_prob, emit_prob, term_prob):
         value = term_prob[st]
         term_arr.append(value)
     term_arr = np.array(term_arr)
-    
+
+
+    #the commented out code below was not needed in the end
     '''
     #emit arr: will contain the emission probabilities for the first observation in the 'obs' list, for each state in the 'states' list (this may not be needed for initialization, actually)
     emit_arr = []
@@ -91,9 +94,7 @@ def viterbi(obs, states, start_prob, trans_prob, emit_prob, term_prob):
 
     # STEP TWO: MATRIX FILLING
     # ------------------------
-    
-    #issue: bounds might be incorrect? bring up in meeting
-    #update on issue: changed range upper bound from len(obs) to len(obs)+1 and the obs index on the value assignment line from obs[x] to obs[x-1]. This was an issue because the range loop begins at one, but the obs list begins at index 0, so we were leaving one obs behind with the whole looping process
+    #update: changed range upper bound from len(obs) to len(obs)+1 and the obs index on the value assignment line from obs[x] to obs[x-1]. This was an issue because the range loop begins at one, but the obs list begins at index 0, so we were leaving one obs behind with the whole looping process
     for x in range(1, len(obs)+1):
         #print("iteration: ", x)
         for st in range(len(states)):
@@ -110,8 +111,9 @@ def viterbi(obs, states, start_prob, trans_prob, emit_prob, term_prob):
             vit[x, st] = max(highest_prob_state)
             traceback[x, st] = states[prev_st_index[np.argmax(highest_prob_state)]]
            
-    print(vit)
-    print(traceback)
+    #debugging print statements below 
+    #print(vit)
+    #print(traceback)
     
 
     # STEP THREE: TRACEBACK (CURRENTLY DEBUGGING)
@@ -121,7 +123,9 @@ def viterbi(obs, states, start_prob, trans_prob, emit_prob, term_prob):
     #store the highest probability of the last iteration in prev. vit[-1] will contain an array of these probabilities (last column in the table). the argmax() function will take the highest value (highest probability), which is assigned to prev, whose state will be appended to the optimal path 
     prev = np.argmax(vit[-1])
     
-    print("*****", prev, type(prev), states[prev])
+    #debugging comment
+    #print("*****", prev, type(prev), states[prev])
+    
     optimal_path.append(states[prev])
     
     
@@ -132,7 +136,7 @@ def viterbi(obs, states, start_prob, trans_prob, emit_prob, term_prob):
         #print(prev)
         #optimal_path.insert(0, states[prev]) #prev must be an int when used as an index. find a way to keep it as an int.
         #-------------------------------------------
-        # APPROACH #2 (NEW IDEA)
+        # APPROACH #2 (NEW IDEA) seems to work
         prev_state_name = traceback[prev+1, prev]
         prev_state_index = states.index(prev_state_name)
         optimal_path.insert(0, prev_state_name)
