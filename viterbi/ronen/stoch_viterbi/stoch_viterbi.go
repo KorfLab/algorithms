@@ -67,13 +67,13 @@ func main() {
 	fmt.Println(trans_map)
 
 	// define the observations
-	//var observations string = "AGTCAGCTGCA"
+	var observations string = "AGTCAGCTGC"
 
-	//stoch_viterbi(observations, states, )
+	stoch_viterbi(observations, states, init_map, trans_map, emit_map, term_map)
 
 }
 
-func stoch_viterbi(obs []string, states []string, init_prob map[string]float64, trans_prob map[string]float64, emit_prob map[string]float64, term_prob map[string]float64) {
+func stoch_viterbi(obs string, states []string, init_prob map[string]float64, trans_prob map[string]map[string]float64, emit_prob map[string]map[string]float64, term_prob map[string]float64) {
 	/*
 		STEP ONE: INITIALIZATION
 		------------------------
@@ -92,9 +92,38 @@ func stoch_viterbi(obs []string, states []string, init_prob map[string]float64, 
 		vit[i] = make([]float64, len(states))
 	}
 
+	//fmt.Println(vit)
+
+	/*start arr: will contain the values inside of the start_prob dictionary for each state in the 'states' list*/
+	var start_arr = make([]float64, 0)
+	for _, name := range states {
+
+		value := init_prob[name]
+		fmt.Println(value)
+		start_arr = append(start_arr, value)
+
+		//start_arr = append(start_arr, init_prob[name])
+	}
+
+	//fmt.Println(start_arr)
+
+	/*term arr: will contain the values inside the term_prob dictionary for each state in the 'states' list*/
+	var term_arr []float64
+	for _, name := range states {
+		value := term_prob[name]
+		term_arr = append(term_arr, value)
+	}
+
+	//fmt.Println(term_arr)
+
+	vit[0] = start_arr
+	vit[(len(obs) + 1)] = term_arr
+
 	fmt.Println(vit)
 
-	//start arr: will contain the values inside of the start_prob dictionary for each state in the 'states' list
-	//var start_arr []string
+	/*
+		STEP TWO: MATRIX FILLING
+		------------------------
+	*/
 
 }
