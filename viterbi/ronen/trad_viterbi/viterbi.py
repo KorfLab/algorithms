@@ -30,10 +30,33 @@ for s1 in hmm['state']:
     init_dict[name1] = s1['init']
     term_dict[name1] = s1['term']
 
-#test string for the obervations
-oberservations = ['A', 'C', 'G', 'T', 'A', 'C', 'G', 'T', 'A', 'C']
 
-#print(trans_dict) #debugging print statement
+#debugging statements
+#--------------------
+#print(trans_dict['NT']['NT']) 
+
+
+"""
+read_fa_file(file_path):
+-------------------------
+file_path: the path under which the .fa file used for testing is located. This is entered by the user in the command line
+-------------------------
+this is a general helper function to read in the .fa file with the testing sequence
+"""
+def read_fa_file(file_path):
+    sequence = ""
+
+    with open(file_path, "r") as file:
+        for line in file:
+            if line.startswith(">"):
+                continue
+            sequence += line.strip()
+    return sequence
+
+#get the file path from the command line
+file_path = sys.argv[1]
+
+observations = read_fa_file(file_path)
 
 """
 viterbi(obs, states, start_prob, trans_prob, emit_prob):
@@ -79,6 +102,7 @@ def viterbi(obs, states, start_prob, trans_prob, emit_prob, term_prob):
 
 
     #the commented out code below was not needed in the end
+    #------------------------------------------------------
     '''
     #emit arr: will contain the emission probabilities for the first observation in the 'obs' list, for each state in the 'states' list (this may not be needed for initialization, actually)
     emit_arr = []
@@ -106,46 +130,72 @@ def viterbi(obs, states, start_prob, trans_prob, emit_prob, term_prob):
                     highest_prob_state.append(value)
                     prev_st_index.append(states.index(prev_st))
             highest_prob_state = np.array(highest_prob_state)
+            
             #traceback matrix: contains the state that most likely leads us to the current iteration (state) in the viterbi algorithm. For instance, if traceback[x, st] contains state "AT" when x is 'A' and st is "NT", then it means that at that point in the algorithm, AT is the most likely state that would lead us to "NT" 
             
             vit[x, st] = max(highest_prob_state)
             traceback[x, st] = states[prev_st_index[np.argmax(highest_prob_state)]]
-           
-    #debugging print statements below 
+    
+    #debugging statements
+    #--------------------
     #print(vit)
     #print(traceback)
     
 
-    # STEP THREE: TRACEBACK (CURRENTLY DEBUGGING)
-    # ------------------------
+    # STEP THREE: TRACEBACK
+    # ---------------------
     optimal_path = []
+
     
     #store the highest probability of the last iteration in prev. vit[-1] will contain an array of these probabilities (last column in the table). the argmax() function will take the highest value (highest probability), which is assigned to prev, whose state will be appended to the optimal path 
+    #prev = np.argmax(vit[-1])
     prev = np.argmax(vit[-1])
+
     
-    #debugging comment
+    #debugging statements
+    #--------------------
     #print("*****", prev, type(prev), states[prev])
     
     optimal_path.append(states[prev])
     
     
     #following the traceback to the first observation/emission (unsure about this as well). the way that this works is that it begins at the second to last column (last column is solved earlier) and goes back on step at a time, and inserts the state with the highest probability into the optimal path array at the first position (since it is moving backwards)
+
     for i in range(len(vit) - 2, -1, -1):
-        # APPROACH #1 (WORK IN PROGRESS)
-        #prev = traceback[prev + 1, prev] #the issue is here, prev gets turned from an int into a string
         #print(prev)
-        #optimal_path.insert(0, states[prev]) #prev must be an int when used as an index. find a way to keep it as an int.
-        #-------------------------------------------
-        # APPROACH #2 (NEW IDEA) seems to work
+
+        """
         prev_state_name = traceback[prev+1, prev]
         prev_state_index = states.index(prev_state_name)
         optimal_path.insert(0, prev_state_name)
-        prev = prev_state_index
+        prev = np.argmax(vit[i, prev_state_index])
+        #print(prev)
+        """
+        
+        prev_state_name = traceback[i + 1, prev]
+        if prev_state_name == '':
+            optimal_path.insert(0, 'NT')
+            continue
+        prev = np.argmax(vit[i])
+        optimal_path.insert(0, prev_state_name)
 
     return optimal_path
     #END OF FUNCTION
 
 
-path = viterbi(oberservations, states_list, init_dict, trans_dict, emit_dict, term_dict)
+#test string 
+#-----------
+#obs = ['A','A','A','A','A','A']
 
+path = viterbi(observations, states_list, init_dict, trans_dict, emit_dict, term_dict)
+
+print("-------------")
+print("OPTIMAL PATH:")
+print("-------------")
 print(path)
+
+#potential updates: 
+#------------------
+#make it so that instead of there being an optimal path, there is a count of the indexes in which every base is repeated to make it more organized and easy to read
+
+#change the matric filling approach to using temp variables instead of linear search
