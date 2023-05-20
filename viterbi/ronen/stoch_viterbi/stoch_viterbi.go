@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
 )
@@ -60,11 +59,13 @@ func main() {
 		init_map[name_of_state] = state.Init
 		term_map[name_of_state] = state.Term
 	}
-	fmt.Println(states)
-	fmt.Println(init_map)
-	fmt.Println(term_map)
-	fmt.Println(emit_map)
-	fmt.Println(trans_map)
+	/*
+		fmt.Println(states)
+		fmt.Println(init_map)
+		fmt.Println(term_map)
+		fmt.Println(emit_map)
+		fmt.Println(trans_map)
+	*/
 
 	// define the observations
 	var observations string = "AGTCAGCTGC"
@@ -86,12 +87,15 @@ func stoch_viterbi(obs string, states []string, init_prob map[string]float64, tr
 		vit[i] = make([]float64, len(states))
 	}
 
-	traceback := make([][]float64, len(obs)+2)
+	/*the teaceback matrix will contain */
+	traceback := make([][][]float64, len(obs)+2)
 
 	for i := range traceback {
-		vit[i] = make([]float64, len(states))
+		traceback[i] = make([][]float64, len(states))
+		for j := range traceback[i] {
+			traceback[i][j] = make([]float64, len(states))
+		}
 	}
-
 	//fmt.Println(vit)
 
 	/*start arr: will contain the values inside of the start_prob dictionary for each state in the 'states' list*/
@@ -99,7 +103,6 @@ func stoch_viterbi(obs string, states []string, init_prob map[string]float64, tr
 	for _, name := range states {
 
 		value := init_prob[name]
-		fmt.Println(value)
 		start_arr = append(start_arr, value)
 
 		//start_arr = append(start_arr, init_prob[name])
@@ -119,11 +122,43 @@ func stoch_viterbi(obs string, states []string, init_prob map[string]float64, tr
 	vit[0] = start_arr
 	vit[(len(obs) + 1)] = term_arr
 
-	fmt.Println(vit)
+	//fmt.Println(vit)
 
 	/*
 		STEP TWO: MATRIX FILLING
 		------------------------
+		go throughout the matrix and calculate the probabilities of each state leading to the current state in the given time step, then find the maximum, and save the probability in the vit matrix and save the state in the traceback matrix
 	*/
+
+	/*outer-most loop that will go through the matrix one column at a time*/
+	for i := 1; i <= len(obs); i++ {
+		for j := 0; j < len(states); j++ {
+			/*the initial maximum probability and most likely state, which will get editted as the matix filling proceeds every iteration*/
+			//
+			//fmt.Println(i)
+			max_prob := -1.0
+			//max_state := 0
+
+			//issue:
+			for k := 0; k < len(states); k++ {
+
+				prob := vit[i-1][k] * trans_prob[states[k]][states[j]] * emit_prob[states[j]][string(obs[i-1])]
+
+				if prob > max_prob {
+					max_prob = prob
+					//max_state = k
+				}
+
+			}
+
+			vit[i][j] = max_prob
+			//fmt.Println(vit)
+			//fix: place the state name into the traceback, string value not int/float
+			//traceback[i][j] = float64(max_state)
+
+		}
+
+	}
+	//fmt.Println(vit)
 
 }
