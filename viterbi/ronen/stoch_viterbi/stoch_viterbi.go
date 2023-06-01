@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 )
@@ -20,6 +21,12 @@ type HMM struct {
 	States int
 	State  []State
 }
+
+type TracebackPointer struct {
+	curr_state  string // not totally needed, but can leave it in anyways
+	prev_state  string // makes more sense to enumerate the states
+	probability float64
+} //ask ian if this is the right way to structure the traceback pointer
 
 func main() {
 	// opening the json
@@ -68,7 +75,7 @@ func main() {
 	*/
 
 	// define the observations
-	var observations string = "AGTCAGCTGC"
+	var observations string = "AGTCT"
 
 	stoch_viterbi(observations, states, init_map, trans_map, emit_map, term_map)
 
@@ -87,16 +94,30 @@ func stoch_viterbi(obs string, states []string, init_prob map[string]float64, tr
 		vit[i] = make([]float64, len(states))
 	}
 
-	/*the teaceback matrix will contain */
-	traceback := make([][][]float64, len(obs)+2)
+	/*change this to contain linked lists - adjust matrix filling step too*/
+
+	traceback := make([][][]*TracebackPointer, len(obs)+2)
 
 	for i := range traceback {
-		traceback[i] = make([][]float64, len(states))
+		traceback[i] = make([][]*TracebackPointer, len(states))
 		for j := range traceback[i] {
-			traceback[i][j] = make([]float64, len(states))
+			traceback[i][j] = make([]*TracebackPointer, len(states))
 		}
 	}
-	//fmt.Println(vit)
+
+	/*
+		ORIGINAL TRACEBACK DECLARATION - DONT DELETE
+		traceback := make([][][]float64, len(obs)+2)
+
+		for i := range traceback {
+			traceback[i] = make([][]float64, len(states))
+			for j := range traceback[i] {
+				traceback[i][j] = make([]float64, len(states))
+			}
+		}
+	*/
+	///traceback[0][0][0] = 1
+	//fmt.Println(traceback)
 
 	/*start arr: will contain the values inside of the start_prob dictionary for each state in the 'states' list*/
 	var start_arr = make([]float64, 0)
@@ -131,6 +152,7 @@ func stoch_viterbi(obs string, states []string, init_prob map[string]float64, tr
 	*/
 
 	/*outer-most loop that will go through the matrix one column at a time*/
+	/*FIGURE OUT HOW TO FILL IN TRACEBACK ALL THE WAY, not getting filled in all the way?*/
 	for i := 1; i <= len(obs); i++ {
 		for j := 0; j < len(states); j++ {
 			/*the initial maximum probability and most likely state, which will get editted as the matix filling proceeds every iteration*/
@@ -143,6 +165,15 @@ func stoch_viterbi(obs string, states []string, init_prob map[string]float64, tr
 			for k := 0; k < len(states); k++ {
 
 				prob := vit[i-1][k] * trans_prob[states[k]][states[j]] * emit_prob[states[j]][string(obs[i-1])]
+
+				//line below related to the original traceback matrix implamentation, meet with ian before editting
+				//traceback[i-1][j][k] = prob
+
+				tp := &TracebackPointer{}
+				tp.probability = prob
+				tp.prev_state = states[k]
+				tp.curr_state = states[j]
+				traceback[i-1][j][k] = tp
 
 				if prob > max_prob {
 					max_prob = prob
@@ -160,5 +191,16 @@ func stoch_viterbi(obs string, states []string, init_prob map[string]float64, tr
 
 	}
 	//fmt.Println(vit)
+	//fmt.Println(traceback)
+	for i := 1; i <= len(obs); i++ {
+		for j := 0; j < len(states); j++ {
+			for k := 0; k < len(states); k++ {
+				probab := (*traceback[i][j][k]).probability
+				fmt.Println(probab)
+			}
+			fmt.Println()
+		}
+		fmt.Println()
+	}
 
 }
