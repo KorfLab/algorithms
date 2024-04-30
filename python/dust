@@ -7,13 +7,13 @@ from readfasta import read_record
 #Parse command line arguments
 parser = argparse.ArgumentParser(description='complexity filter')
 parser.add_argument('fa', type=str, metavar='<fasta path>',
-					help='path to fasta file')
+		    help='path to fasta file')
 parser.add_argument('-w', type=int, default=11, metavar='<int>',
-					help='input window size [%(default)s]')
+		    help='input window size [%(default)s]')
 parser.add_argument('-t', type=float, default=1.5, metavar='<float>',
-					help='input entropy threshold [%(default)s]')
+		    help='input entropy threshold [%(default)s]')
 parser.add_argument('-s', action='store_true',
-					help='soft masking (lowercase instead of N)')
+		    help='soft masking (lowercase instead of N)')
 arg = parser.parse_args()
 
 def entropy(count, w):
