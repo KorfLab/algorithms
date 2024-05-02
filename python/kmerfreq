@@ -5,26 +5,27 @@ import csv
 import json
 from readfasta import read_record
 
-parser = argparse.ArgumentParser(
-	description='Determine the kmer frequencies in a fasta file')
+parser = argparse.ArgumentParser(description='Determine the kmer frequencies in a fasta file')
 parser.add_argument('fasta', type=str, metavar='<path>',
-	help='path to fasta file')
-parser.add_argument('-k', type=int, required=False, default=3,
-	metavar='<int>', help='K-mer size [%(default)i]')
+		     help='path to fasta file')
+parser.add_argument('-k', type=int, required=False, default=3, metavar='<int>', help='K-mer size [%(default)i]')
 parser.add_argument('-j', action="store_true",
-	help='output in json [default: tab-separated]')
+		     help='output in json [default: tab-separated]')
 arg = parser.parse_args()
 
 total = 0
 freq = {}
+
 for id, seq in read_record(arg.fasta):
 	for i in range(len(seq) - arg.k + 1):
 		kmer = seq[i:i+arg.k]
-		if kmer not in freq: freq[kmer] = 0
+		if kmer not in freq:
+			freq[kmer] = 0
 		freq[kmer] += 1
 		total += 1
 
-for kmer in freq: freq[kmer] /= total
+for kmer in freq:
+	freq[kmer] /= total
 
 if arg.j:
 	print(json.dumps(freq, indent=4))
