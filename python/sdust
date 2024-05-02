@@ -8,10 +8,10 @@ parser = argparse.ArgumentParser(
 	description='mask sequences with an entropy filter')
 parser.add_argument('fasta', type=str, metavar='<file>',
 	help='input fasta file(s)')
-parser.add_argument('-w', '--window_size', required=False, type=int, default=11,
-	metavar='<int>', help='input window size [%(default)s]')
-parser.add_argument('-t', '--entropy_threshold', required=False, type=float,
-	default=1.5, metavar='<float>', help='input entropy threshold [%(default)s]')
+parser.add_argument('-w', '--window_size', required=False, type=int, default=11, metavar='<int>',
+	help='input window size [%(default)s]')
+parser.add_argument('-t', '--entropy_threshold', required=False, type=float, default=1.5, metavar='<float>',
+	help='input entropy threshold [%(default)s]')
 parser.add_argument('-s', action='store_true',
 	help='soft masking (lowercase instead of N)')
 arg = parser.parse_args()
