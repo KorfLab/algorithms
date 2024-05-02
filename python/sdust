@@ -17,6 +17,13 @@ parser.add_argument('-s', action='store_true',
 arg = parser.parse_args()
 
 def get_entropy(seq):
+    """
+    Calculates entropy of each window
+    Parameters:
+    - seq (list): list of nucleotide bases in particular sequence
+    Returns:
+    - h (float): entropy value
+    """
 	a, c, g, t = 0, 0, 0, 0
 	for nt in seq:
 		if nt == 'A': a+=1
@@ -31,10 +38,14 @@ def get_entropy(seq):
 	pt = t / tot
 	
 	h = 0
-	if pa > 0: h -= pa * math.log(pa)
-	if pc > 0: h -= pc * math.log(pc)
-	if pg > 0: h -= pg * math.log(pg)
-	if pt > 0: h -= pt * math.log(pt)
+	if pa > 0:
+		h -= pa * math.log(pa)
+	if pc > 0:
+		h -= pc * math.log(pc)
+	if pg > 0:
+		h -= pg * math.log(pg)
+	if pt > 0:
+		h -= pt * math.log(pt)
 	h /= math.log(2)
 	
 	return h
@@ -52,8 +63,10 @@ for idn, seq in read_record(arg.fasta):
 		h = get_entropy(sub)
 		if h < t:
 			pos = i + int(w/2)
-			if s: mask[pos] = mask[pos].lower()
-			else:  mask[pos] = 'N'
+			if s:
+				mask[pos] = mask[pos].lower()
+			else: 
+				mask[pos] = 'N'
 	
 	mask = ''.join(mask)
 	
