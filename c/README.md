@@ -8,9 +8,9 @@ programs.
 Disclaimer
 ----------
 
-I don't encourage people in my lab to program in C. If your project requires a
-compiled language, I prefer that you write it in Go. That said, if you want to
-learn C for the sake of learning C, I'm all for it.
+I don't encourage people in my lab to write lab software in C. If your project
+requires a compiled language, I prefer that you write it in Go. That said, if
+you want to learn C for the sake of learning C, please do that.
 
 
 Resources
