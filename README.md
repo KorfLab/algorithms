@@ -45,10 +45,11 @@ Languages
 + Python - default
 + Go - high performance
 + Snakemake - pipelines
++ SQL - for databases
 + R - some statistical analyses
 + Perl - legacy, hacks
 + C - legacy, high performance
-+ Shell - automation
++ Shell - simple things
 
 Python is our default language. Python is a very popular and useful language
 with minimal development time, so always start here.
@@ -59,6 +60,8 @@ other.
 
 Snakemake is becoming the community standard for pipelines, so that's what we
 use.
+
+SQL is used in a few projects. We prefer SQLite.
 
 R is used for some statistical analyses. Although we don't write R very often,
 there are a variety of very useful programs written in R.
@@ -121,9 +124,6 @@ include the following in your document.
 Most projects should also include a `TUTORIAL.md` that walks a user through
 using the various programs and/or libraries in the project.
 
-Libraries should have API documentation. See `STYLE.md`, which describes
-language-specific guidelines for documentation (among other things).
-
 
 Testing
 -------
@@ -136,20 +136,34 @@ testing harness should generally follow community standards.
 + Pipelines should have functional tests
 
 
-Programs
---------
+CLI
+---
 
 All programs should have command line arguments that follow the Unix standard.
 This includes a usage statement that is reported when supplied with `-h` or
 `--help`. The usage statement should also be reported when the command line is
 malformed (e.g. no input where a positional argument is required).
 
+
+Simplicity
+----------
+
 Each program in this repo is written in multiple languages to get the feel of
 how to program in that language. Generally, we seek to follow the community
 style guides, however there is always some room for personal style. When
 coding, there are difficult choices between simple vs. abstract, simple vs.
-efficient, simple vs. sophisticated, and simple vs. language-specific. In this
-lab, we lean towards the simple.
+efficient, simple vs. fast, simple vs. sophisticated, and simple vs.
+language-specific. In this lab, we lean towards the simple.
+
+Why do we favor simplicity? Because bioinformatics programmers in the lab tend
+to be transient and inexperienced. The most difficult problem to solve is how
+to get new people into the codebase. Abstraction, efficiency, and speed
+generally increase complexity. We dont' code for ourselves. We code for the
+next person who isn't as sophisticated as we are.
+
+
+Programs
+--------
 
 + randomseq - generate random FASTA files of DNA sequences
 + kmerfreq - read sequences, output a table of kmer frequencies
@@ -246,31 +260,7 @@ Outputs
 Benchmarks
 ----------
 
-| Lang | Prog | Time1 | Time2 |Notes
-|:-----|:-----|:-----:|:-----:|:------------
-| .c   | rseq |  0.10 |       |
-| .go  | rseq |       |  0.11 |
-|      | kfreq|       |  1.18 |
-|      | dust |       |  0.33 |
-|      | lorf |       |  0.39 |
-|      | sw   |       |  0.05 | Currently do not support STDIN
-| .pl  | rseq |  1.05 |  0.46 |
-|      | kfreq|  7.11 |  2.97 |
-|      | dust |  7.21 |  3.14 |
-|      | lorf |  2.75 |  1.14 |
-|      | sw   |  5.69 |  2.37 |
-| .py  | rseq |  0.99 |  0.43 |
-|      | kfreq|  5.49 |  2.23 |
-|      | sdust|       |  6.70 | slower version of dust
-|      | dust |       |  3.11 |
-|      | lorf |  3.52 |  1.81 |
-|      | sw   |       |  0.98 |
-
-Times are recorded by running 3 times and taking the best real time. Time1
-corresponds to Ian's Lenovo IdeaPad3 running LinuxLite in a VirtualBox with 2
-cores and 4G RAM. Time 2 corresponds to Lightning.
-
-At some point this should be automated
+Need to finish the programs and automate the timings.
 
 ### command lines for each program
 
@@ -298,7 +288,7 @@ subsequent tests.
 	+ time ./dust foo > /dev/null
 	+ time ./longestorf -r foo > /dev/null
 	+ time head -80 foo | ./smithwaterman data/testseq.fa - > /dev/null
-	
+
 
 
 Pipelines
