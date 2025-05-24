@@ -11,7 +11,7 @@ parser.add_argument('num', type=int, default=10,
 	metavar='<num>', help='number of sequences [%(default)i]')
 parser.add_argument('len', type=int, default=100,
 	metavar='<len>', help='length of sequences [%(default)i]')
-parser.add_argument('--freqs', required=False, type=float, nargs=4,
+parser.add_argument('--comp', required=False, type=float, nargs=4,
 	default=[0.25, 0.25, 0.25, 0.25], metavar='<float>',
 	help='frequency of each base: A C G T [%(default)s]')
 parser.add_argument('--prefix', required=False, type=str, default='id.',
@@ -22,12 +22,10 @@ arg = parser.parse_args()
 
 if arg.seed: random.seed(arg.seed)
 
-if abs(1-sum(arg.freqs)) > 0.00:
-	warnstring = f'Warning: Sum of nucleotide freqs {sum(arg.freqs)} is not 1.00 (Are used as weights)'
-	warnings.warn(warnstring) #Composition Error
+if not math.isclose(sum(arg.comp), 1): sys.exit('compositions error')
 
 for i in range(arg.num):
 	print(f'>{arg.prefix}{i+1}')
-	seq = ''.join(random.choices('ACGT', weights=arg.freqs, k=arg.len))
+	seq = ''.join(random.choices('ACGT', weights=arg.comp, k=arg.len))
 	for i in range(0, len(seq), 80):
 		print(seq[i:i+80])
