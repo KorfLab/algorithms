@@ -18,12 +18,12 @@ my $PREFIX = "seq-";
 die "
 usage: $0 <count> <length>
 options:
-	-a <float>  percentage of A [$A]
-	-c <float>  percentage of C [$C]
-	-g <float>  percentage of G [$G]
-	-t <float>  percentage of T [$T]
-	-p <string> prefix          [$PREFIX]
-	-s <int>    random seed
+  -a <float>  percentage of A [$A]
+  -c <float>  percentage of C [$C]
+  -g <float>  percentage of G [$G]
+  -t <float>  percentage of T [$T]
+  -p <string> prefix          [$PREFIX]
+  -s <int>    random seed
 " unless @ARGV == 2;
 
 my ($count, $length) = @ARGV;

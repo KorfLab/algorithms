@@ -18,10 +18,10 @@ my $G = -2;
 my $usage = "
 usage: $0 <query> <database>
 options:
-	-m <int>   match score [$M]
-	-n <int>   mismatch score [$N]
-	-g <int>   gap penalty [$G]
-	-t         tabular output
+  -m <int>   match score [$M]
+  -n <int>   mismatch score [$N]
+  -g <int>   gap penalty [$G]
+  -t         tabular output
 notes:
   query may be compressed
   database may be compressed or stdin (use -)

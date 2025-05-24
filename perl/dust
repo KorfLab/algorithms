@@ -17,9 +17,9 @@ my $T = 1.5;
 my $usage = "
 usage: $0 <fasta file>
 options:
-	-w <int>   window size [$W]
-	-t <float> entropy threshold [$T]
-	-s         soft masking (lowercase instead of N)
+  -w <int>   window size [$W]
+  -t <float> entropy threshold [$T]
+  -s         soft masking (lowercase instead of N)
 note: use - for stdin
 ";
 die $usage unless @ARGV == 1;

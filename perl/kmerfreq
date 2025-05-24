@@ -16,9 +16,9 @@ my $K = 3;
 my $usage = "
 usage: $0 <fasta file>
 options:
-	-k <int> k-mer size [$K]
-	-j       json output [default is tsv]
-	-h       help (this message)
+  -k <int> k-mer size [$K]
+  -j       json output [default is tsv]
+  -h       help (this message)
 note: use - for stdin
 ";
 die $usage if $opt_h or @ARGV != 1;

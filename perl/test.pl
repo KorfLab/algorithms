@@ -76,7 +76,7 @@ my @TEST = (
 		cli  => "gunzip -c $TD | head -8 | ./smithwaterman -t $TS - | $sum",
 		pass => "4023237785",
 	},
-	
+
 	# viterbi
 	{
 		name => "viterbi",

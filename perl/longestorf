@@ -38,7 +38,7 @@ getopts("6");
 my $usage = "
 usage: $0 <fasta file>
 options:
-	-6  perform a 6-frame translation [default 3]
+  -6  perform a 6-frame translation [default 3]
 note: use - for stdin
 ";
 die $usage unless @ARGV == 1;
